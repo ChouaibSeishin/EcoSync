@@ -1,0 +1,38 @@
+{
+  "verifiedOn": "2026-10-29",
+  "scope": "Source-free dependency graph resolution only; no compilation, application startup or protocol conformance.",
+  "backend": {
+    "result": "PASS",
+    "boot": "4.1.2",
+    "springAi": "2.0.2",
+    "mavenRuntime": "3.9.9",
+    "javaRuntime": "21.0.4",
+    "managedVersionsAsserted": {
+      "mcpJavaSdk": "2.1.0",
+      "junitJupiter": "6.0.3",
+      "testcontainers": "2.0.5",
+      "flyway": "12.4.0",
+      "postgresqlJdbc": "42.7.14",
+      "mysqlConnectorJ": "9.7.0",
+      "springSecurity": "7.1.2"
+    },
+    "treeSha256": "65b7d1edb4826d6842f18ac597153504ca7e33215f5aa6ced70e084c9ff3ff9c"
+  },
+  "frontend": {
+    "result": "PASS",
+    "node": "24.22.2",
+    "npm": "11.19.1",
+    "strictPeerDeps": true,
+    "engineStrict": true,
+    "lifecycleScripts": false,
+    "auditedPackagesReported": 227,
+    "vulnerabilitiesReported": 0,
+    "lockPackageEntries": 252,
+    "lockSha256": "1ef3bfdb95f85ded3dfc3727c4c2fb1bbaf706c114e7d3b3d2e34ed74e0502dd"
+  },
+  "toolDownload": {
+    "nodeArchive": "node-v24.22.2-win-x64.zip",
+    "verifiedAgainst": "https://nodejs.org/dist/v24.22.2/SHASUMS256.txt",
+    "sha256": "ca1bff5d8ead13c9f2ea404a176db46bd430704d5b5113734049fa365e7799e2"
+  }
+}

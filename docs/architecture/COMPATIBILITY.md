@@ -25,7 +25,7 @@ Checked 2026-10-29 UTC. This is a pinned design baseline, not a successful appli
 
 Use Boot parent 4.1.2 for backend framework/plugin management and import Spring AI BOM 2.0.2. Pin springdoc separately. Managed observations are assertions to recheck against the effective graph, not extra property overrides. Boot 4 uses newer modular starters and Jackson 3; do not copy Boot 3 starter/test or Jackson 2 customization examples without checking exact artifacts. The SDK's JSON abstraction is an explicit integration boundary.
 
-Frontend direct dependencies use exact versions and Phase 1 commits a real application package-lock.json; use `npm ci`. The Phase 0 compatibility probe generates a separate disposable lockfile for peer resolution only. Additional libraries must be researched and pinned when first introduced. No application dependency lock is claimed before an application exists. Phase 10 infrastructure/model/observability tools are not runtime dependencies in Phase 0 and get exact pins before use.
+Frontend direct dependencies use exact versions and Phase 1 commits a real application package-lock.json; use `npm ci`. The Phase 0 compatibility probe generates a separate disposable lockfile for peer resolution; a snapshot is retained as verification evidence, not as an application lockfile. Additional libraries must be researched and pinned when first introduced. No application dependency lock is claimed before an application exists. Phase 10 infrastructure/model/observability tools are not runtime dependencies in Phase 0 and get exact pins before use.
 
 ## MCP APIs and design implications
 

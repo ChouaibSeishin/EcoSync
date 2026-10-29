@@ -4,7 +4,7 @@ Updated: 2026-10-29 UTC. Current authorized scope: **Phase 0 only**.
 
 ## Delivery state
 
-Phase 0 foundation is written; final verification and Git recording are in progress. Phases 1-11 are unimplemented. No application, source connector, MCP server, database schema, CI workflow, container image, benchmark result or deployment is being claimed.
+**Phase 0 is complete within its design/foundation scope.** Phases 1-11 are unimplemented. No application, source connector, MCP server, database schema, CI workflow, container image, benchmark result or deployment is being claimed.
 
 The private repository origin was verified as `https://github.com/ChouaibSeishin/EcoSync.git`. Inspection found a new local repository with no commits and no remote refs. No existing project files, history or user changes needed preservation. No applicable AGENTS.md was found in the inspected ancestor/workspace paths.
 
@@ -19,11 +19,17 @@ The private repository origin was verified as `https://github.com/ChouaibSeishin
 
 ## Verification and limitations
 
-See [Phase 0 verification report](docs/development/PHASE_0_VERIFICATION.md) for actual commands and results. Version pins are design decisions backed by official documentation/package metadata; application runtime verification remains a later-phase requirement.
+See [Phase 0 verification report](docs/development/PHASE_0_VERIFICATION.md) for actual commands and results. Documentation/link/pin checks and both source-free dependency graph probes passed. Seven managed Maven versions and all nineteen frontend direct versions matched the resolved graphs; npm reported zero vulnerabilities across 227 audited packages. Sanitized graph snapshots and hashes are retained with the report. This is dependency/design evidence; application runtime verification remains a later-phase requirement.
 
 Installed Node 20.17 is unsuitable for the chosen frontend stack. Phase 1 must use Node 24.22.2/npm 11.19.1 and a maintained JDK 21 patch; Maven wrapper pins 3.9.16. Docker responds in the full user context; the restricted context denied its pipe/config. Existing external Kubernetes context presence does not establish connectivity or deployment permission. No cloud cluster was contacted.
 
-MCP SDK 2.1.0 lists protocol constants through 2025-11-25. Current specification 2026-07-28 compatibility remains explicitly unverified; P3-01 must prove interoperability or update the coordinated dependency baseline. JUnit Jupiter 6 is the documented compatibility deviation from the brief's JUnit 5 preference. Model artifact selection and infrastructure tool/image-digest pins occur before their first implementation.
+MCP SDK 2.1.0 lists protocol constants through 2025-11-25. Current specification 2026-07-28 compatibility remains explicitly unverified; P3-01 must prove interoperability or update the coordinated dependency baseline. JUnit Jupiter 6 is the documented compatibility deviation from the brief's JUnit 5 preference. Model artifact selection and infrastructure tool/image-digest pins occur before their first implementation. No backend dependency security scan or application vulnerability assessment has run; the npm audit result has only its stated graph scope.
+
+## Phase 0 acceptance
+
+All four design-scope criteria are complete: documented decisions (five ADRs); defined repository/module structure; exact dependency baseline with official-source and graph evidence; and a prioritized, testable Phase 1 backlog with environment prerequisites. Runtime feature acceptance is deliberately reserved for its implementation phase.
+
+Git work is on `codex/phase-0-foundation`. The initial design commit is `9c36648`; the following evidence/handoff commit completes this phase. The repository's commit history is the authoritative list; no placeholder hash is used for the commit containing this status file.
 
 ## Next authorized-work boundary
 

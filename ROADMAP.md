@@ -4,7 +4,7 @@ Each phase ends with a reviewable Git state, updated status/backlog, relevant te
 
 | Phase | Deliverable | Required exit evidence | State |
 | --- | --- | --- | --- |
-| 0 | Discovery and foundation | Architecture, module/data/security designs, sourced version pins, dependency compatibility assessment, local/deployment/research plans, prioritized Phase 1 backlog, documentation checks, Git commits | In progress until verification |
+| 0 | Discovery and foundation | Architecture, module/data/security designs, sourced version pins, dependency compatibility assessment, local/deployment/research plans, prioritized Phase 1 backlog, documentation checks, Git commits | Complete (design scope) |
 | 1 | Working skeleton | Backend/frontend production builds; platform PostgreSQL and Flyway baseline; Compose startup; useful status/dashboard/empty integrations screens; guarded endpoints; positive/negative tests; actual GitHub Actions result; ordinary tests need no provider secrets | Planned |
 | 2 | Independent demo ecosystem | Separate sales PostgreSQL, inventory MySQL, supplier REST service; each runs independently; reproducible synthetic seed data and expected answers; identifiers and schema differences documented | Planned |
 | 3 | Native MCP | Admin registration and real discovery/calls against separate servers; version/transport verification; namespace/schema checks; authorization denials; timeouts, disconnection, recovery, lifecycle tests | Planned |
