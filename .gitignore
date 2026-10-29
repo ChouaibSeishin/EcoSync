@@ -1,0 +1,26 @@
+# Credentials and local configuration
+.env
+.env.*
+!.env.example
+*.pem
+*.key
+*.p12
+*.pfx
+secrets/
+.gcm/
+.aws/
+.kube/
+
+# Build products and local tooling
+node_modules/
+target/
+dist/
+coverage/
+playwright-report/
+test-results/
+.verification/
+*.log
+.idea/
+.vscode/
+.DS_Store
+Thumbs.db

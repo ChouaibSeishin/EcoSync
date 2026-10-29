@@ -1,0 +1,58 @@
+# Compatibility assessment and source ledger
+
+Checked 2026-10-29 UTC. This is a pinned design baseline, not a successful application build. [versions.json](../../config/versions.json) is the machine-readable source of truth; [verification](../development/PHASE_0_VERIFICATION.md) records actual resolution results separately from official support claims.
+
+## Selection and compatibility reasoning
+
+| Selection | Evidence / consequence |
+| --- | --- |
+| Eclipse Temurin JDK 21.0.13+9; Java release 21 | Adoptium API reports this JDK 21 build. Boot 4.1.2 supports Java 21. Installed Oracle 21.0.4 is older; refresh the patch before Phase 1 production-oriented work. No host JDK change in Phase 0. |
+| Spring Boot 4.1.2 + Spring AI 2.0.2 | Spring AI's current getting-started guide supports Boot 4.0/4.1, and its exact v2.0.2 parent selects Boot 4.1.2. Prefer this supported release combination over an older tutorial baseline. Boot 3.5's final OSS release announcement says OSS support ended. |
+| Maven 3.9.16 | Stable 3.9 line in Maven Central metadata; satisfies Boot's Maven >=3.6.3 requirement. Installed Maven 3.9.9 can run a resolution probe; Phase 1 wrapper pins selected 3.9.16 with checksum. Do not select Maven 4 RC merely because metadata calls it a release. |
+| JUnit Jupiter 6.0.3 / Testcontainers 2.0.5 | Managed by Boot 4.1.2. Intentional JUnit 5 preference deviation in ADR 0002; do not force an older JUnit BOM into the supported baseline. Testcontainers 2 uses `testcontainers-postgresql` and `testcontainers-junit-jupiter` coordinates. |
+| Flyway 12.4.0, PostgreSQL JDBC 42.7.14, MySQL Connector/J 9.7.0, Spring Security 7.1.2 | Observed from exact Boot BOM. Inherit versions rather than duplicate them as overrides. Flyway PostgreSQL support needs its database module. Driver major is not database server major. |
+| springdoc-openapi 3.2.0 | Its official matrix pairs Boot 4.1 with springdoc 3.1-3.2; springdoc 2 belongs to Boot 3. |
+| MCP Java SDK 2.1.0 | Exact Spring AI 2.0.2 `spring-ai-mcp` POM depends on SDK `mcp:2.1.0`; keep this transitive version. Avoid adding an arbitrary newer SDK alongside Spring AI. |
+| MCP initial protocol 2025-11-25, Streamable HTTP | SDK v2.1.0 `ProtocolVersions.java` lists 2025-03-26, 2025-06-18 and 2025-11-25. Actual negotiation/conformance remains Phase 3. The current 2026-07-28 spec changes transport/session behavior; do not claim support for it from the transport name alone. |
+| Node.js 24.22.2 + bundled npm 11.19.1 | Official Node index reports this supported LTS 24 build. Vite requires 20.19+/22.12+, and selected jsdom needs >=24.15 on Node 24. Installed Node 20.17 cannot run the intended frontend toolchain. Staying on maintained LTS 24 avoids adopting newly current LTS 26 immediately. |
+| React and react-dom 19.3.1; Vite 8.3.5 + plugin-react 6.1.2 | Exact registry manifests: React DOM requires React ^19.3.1; plugin-react requires Vite ^8. Match pairs rather than independently picking old plugin versions. |
+| TypeScript 6.0.3; ESLint 10.13.0; typescript-eslint 8.72.1 | Registry latest TypeScript was 7.0.2, but typescript-eslint declares TypeScript >=4.8.4 <6.1.0 and supports ESLint 10. Pin 6.0.3; do not suppress the peer mismatch to adopt TS 7. |
+| React Query 5.105.0 / Router 7.18.5 / Radix Dialog 1.3.1 | Registry peer ranges include React 19. CSS tokens and accessible primitives keep the initial UI modest and maintainable. |
+| Vitest 5.0.5 / Testing Library React 16.3.3 / DOM 10.4.2 / jest-dom 7.0.1 / jsdom 30.1.3 / Playwright 1.64.1 | Exact registry versions and peers recorded in manifest; Node 24 meets their engine ranges. Browser binaries and tests are Phase 1 work, not provided by metadata resolution. |
+| PostgreSQL 17.11-bookworm / MySQL 8.4.13 | Supported PG 17 line from official policy, MySQL LTS 8.4; exact official-image tags confirmed in Docker Hub. Platform and sales DBs use separate containers/roles/volumes. Resolve immutable digests at first Compose implementation and record architecture-specific choice; tags alone are not immutable image locks. |
+
+## Dependency management rules
+
+Use Boot parent 4.1.2 for backend framework/plugin management and import Spring AI BOM 2.0.2. Pin springdoc separately. Managed observations are assertions to recheck against the effective graph, not extra property overrides. Boot 4 uses newer modular starters and Jackson 3; do not copy Boot 3 starter/test or Jackson 2 customization examples without checking exact artifacts. The SDK's JSON abstraction is an explicit integration boundary.
+
+Frontend direct dependencies use exact versions and Phase 1 commits a real application package-lock.json; use `npm ci`. The Phase 0 compatibility probe generates a separate disposable lockfile for peer resolution only. Additional libraries must be researched and pinned when first introduced. No application dependency lock is claimed before an application exists. Phase 10 infrastructure/model/observability tools are not runtime dependencies in Phase 0 and get exact pins before use.
+
+## MCP APIs and design implications
+
+Spring AI's standard MCP client starter uses JDK HttpClient Streamable HTTP. The documentation recommends WebFlux transport for production; start with synchronous client semantics and evaluate transport scaling in Phase 3 before production commitment. Programmatic per-integration lifecycle management is needed for runtime onboarding, rather than only boot-time `connections` properties. The gateway uses `spring-ai-starter-mcp-server-webmvc` with `spring.ai.mcp.server.protocol=STREAMABLE` and SDK runtime `addTool/removeTool` APIs. Restrict authentication and endpoint exposure explicitly.
+
+The selected SDK's source retains initialization and session-oriented transport semantics. The current specification's July 2026 revision removes protocol-level sessions and the GET stream, among other changes. This is a documented interoperability limitation of the initial target, not an assertion that the older protocol is the latest. P3-01 must prove compatible version negotiation with real servers and decide whether a coordinated Spring AI/SDK update is needed. A server requiring only an unsupported revision must fail clearly.
+
+## Official sources inspected
+
+These are primary documentation, publisher-maintained source tags and package manifests. Dynamic `/latest` pages are dated observations; exact release tags/POMs anchor the decision. No source code downloaded for research is executed.
+
+| Source | What was verified |
+| --- | --- |
+| [Boot requirements](https://docs.spring.io/spring-boot/system-requirements.html), [Boot 3.5 final OSS release](https://spring.io/blog/2026/06/25/spring-boot-3-5-16-available-now/) | Supported Java/Maven and reason to avoid the older baseline |
+| [Spring AI getting started](https://docs.spring.io/spring-ai/reference/getting-started.html), [v2.0.2 parent](https://raw.githubusercontent.com/spring-projects/spring-ai/v2.0.2/pom.xml) | Boot compatibility and release pair |
+| [Boot 4.1.2 BOM](https://repo.maven.apache.org/maven2/org/springframework/boot/spring-boot-dependencies/4.1.2/spring-boot-dependencies-4.1.2.pom), [Spring AI 2.0.2 BOM](https://repo.maven.apache.org/maven2/org/springframework/ai/spring-ai-bom/2.0.2/spring-ai-bom-2.0.2.pom), [AI MCP POM](https://repo.maven.apache.org/maven2/org/springframework/ai/spring-ai-mcp/2.0.2/spring-ai-mcp-2.0.2.pom) | Managed versions and exact SDK dependency |
+| [Maven metadata](https://repo.maven.apache.org/maven2/org/apache/maven/apache-maven/maven-metadata.xml), [Adoptium JDK 21 API](https://api.adoptium.net/v3/assets/latest/21/hotspot?architecture=x64&image_type=jdk&os=windows&vendor=eclipse) | Stable Maven 3.9.16 and JDK build |
+| [springdoc matrix](https://springdoc.org/#what-is-the-compatibility-matrix-of-springdoc-openapi-with-spring-boot) | Boot 4.1 / springdoc 3.2 |
+| [Spring AI MCP client](https://docs.spring.io/spring-ai/reference/api/mcp/mcp-client-boot-starter-docs.html), [Streamable server](https://docs.spring.io/spring-ai/reference/api/mcp/mcp-streamable-http-server-boot-starter-docs.html) | Starters, transport selection, configuration and client lifecycle |
+| [SDK server guide](https://java.sdk.modelcontextprotocol.io/latest/server/), [v2.1.0 McpSyncServer](https://raw.githubusercontent.com/modelcontextprotocol/java-sdk/v2.1.0/mcp-core/src/main/java/io/modelcontextprotocol/server/McpSyncServer.java), [protocol constants](https://raw.githubusercontent.com/modelcontextprotocol/java-sdk/v2.1.0/mcp-core/src/main/java/io/modelcontextprotocol/spec/ProtocolVersions.java) | Runtime registration/removal and supported protocol constants; source tags take precedence over moving documentation |
+| [2025-11-25 transport](https://modelcontextprotocol.io/specification/2025-11-25/basic/transports), [2026-07-28 transport](https://github.com/modelcontextprotocol/modelcontextprotocol/blob/main/docs/specification/2026-07-28/basic/transports/streamable-http.mdx) | Initial target and newer semantic changes |
+| [Node release index](https://nodejs.org/dist/index.json), [Vite requirements](https://vite.dev/guide/) | Node/npm build and minimum runtime |
+| [TypeScript registry](https://registry.npmjs.org/typescript), [typescript-eslint manifest](https://registry.npmjs.org/typescript-eslint/8.72.1), [Vite manifest](https://registry.npmjs.org/vite/8.3.5), [React plugin](https://registry.npmjs.org/@vitejs%2fplugin-react/6.1.2) | Exact versions, engine and peer ranges; all selected frontend package manifests inspected through the same publisher registry |
+| [PostgreSQL support policy](https://www.postgresql.org/support/versioning/), [MySQL release policy](https://dev.mysql.com/doc/refman/8.4/en/mysql-releases.html), [Postgres tag](https://hub.docker.com/v2/repositories/library/postgres/tags/17.11-bookworm), [MySQL tag](https://hub.docker.com/v2/repositories/library/mysql/tags/8.4.13) | Supported DB lines and image tag availability |
+| [GitHub Actions secure use](https://docs.github.com/en/actions/reference/security/secure-use), [image publishing](https://docs.github.com/en/actions/tutorials/publish-packages/publish-docker-images) | Job permissions, SHA pinning, GHCR workflow prerequisites |
+| [Kubernetes releases](https://kubernetes.io/releases/), [version skew](https://kubernetes.io/releases/version-skew-policy/), [Kustomize](https://kubernetes.io/docs/tasks/manage-kubernetes-objects/kustomization/) | Currently supported lines observed as 1.35-1.37; installed kubectl 1.32 is not selected for future deployment |
+| [Argo automated sync](https://argo-cd.readthedocs.io/en/stable/user-guide/auto_sync/), [projects](https://argo-cd.readthedocs.io/en/stable/user-guide/projects/) | Git-driven delivery, explicit pruning/self-heal, project restrictions and rollback constraints |
+| [Spring AI Ollama](https://docs.spring.io/spring-ai/reference/api/chat/ollama-chat.html) | Local optional model provider abstraction; no tool-capable model/hardware claim from library support alone |
+
+Some versioned Spring AI 1.1 pages and the older `modelcontextprotocol.io/sdk/java/mcp-server` path were inaccessible/404 during inspection. Current official reference and exact tagged source replaced those lookups; no compatibility conclusion depends on an unavailable page.
