@@ -1,4 +1,10 @@
 name: ecosync-phase1
+x-backend: &backend-image
+  image: ecosync-platform:phase1
+  platform: linux/amd64
+  security_opt:
+    - no-new-privileges:true
+  cap_drop: [ALL]
 services:
   db:
     image: postgres:17.11-bookworm@sha256:2cd2c0f809604aaeff6f0ec8f40aecbd025613107561015c69369a1a7f1d3416
@@ -19,5 +25,58 @@ services:
       interval: 3s
       timeout: 3s
       retries: 30
+  setup:
+    <<: *backend-image
+    depends_on:
+      db: { condition: service_healthy }
+    environment:
+      DB_URL: jdbc:postgresql://db:5432/ecosync
+      DB_USERNAME: ecosync_migrator
+      DB_PASSWORD: ${DB_MIGRATION_PASSWORD:?Required}
+      MIGRATIONS_ENABLED: "true"
+      SETUP_ONLY: "true"
+      BOOTSTRAP_ENABLED: "true"
+      BOOTSTRAP_USERNAME: ${BOOTSTRAP_USERNAME:?Required}
+      BOOTSTRAP_PASSWORD: ${BOOTSTRAP_PASSWORD:?Required}
+      BOOTSTRAP_ORGANIZATION: ${BOOTSTRAP_ORGANIZATION:-Ecosync Workspace}
+    command: ["--spring.main.web-application-type=none"]
+  backend:
+    <<: *backend-image
+    build:
+      context: ../../backend
+    depends_on:
+      setup: { condition: service_completed_successfully }
+    environment:
+      DB_URL: jdbc:postgresql://db:5432/ecosync
+      DB_USERNAME: ecosync_runtime
+      DB_PASSWORD: ${DB_RUNTIME_PASSWORD:?Required}
+      COOKIE_SECURE: "false"
+    ports:
+      - "127.0.0.1:${API_PORT:-18080}:8080"
+    healthcheck:
+      test: ["CMD", "bash", "-c", "exec 3<>/dev/tcp/127.0.0.1/8080; printf 'GET /actuator/health/readiness HTTP/1.0\\r\\nHost: localhost\\r\\n\\r\\n' >&3; head -1 <&3 | grep -q '200'"]
+      interval: 5s
+      timeout: 4s
+      start_period: 45s
+      retries: 20
+  frontend:
+    build:
+      context: ../../frontend
+    image: ecosync-web:phase1
+    platform: linux/amd64
+    security_opt: [no-new-privileges:true]
+    cap_drop: [ALL]
+    depends_on:
+      backend: { condition: service_healthy }
+    environment:
+      API_PROXY_TARGET: http://backend:8080
+    ports:
+      - "127.0.0.1:${WEB_PORT:-5173}:5173"
+    healthcheck:
+      test: ["CMD", "node", "-e", "fetch('http://127.0.0.1:5173').then(r=>process.exit(r.ok?0:1)).catch(()=>process.exit(1))"]
+      interval: 5s
+      timeout: 4s
+      start_period: 10s
+      retries: 15
 volumes:
   platform-data:

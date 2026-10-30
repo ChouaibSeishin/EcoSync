@@ -1,0 +1,4 @@
+*
+!Dockerfile
+!target/
+!target/ecosync-platform-0.1.0-SNAPSHOT.jar

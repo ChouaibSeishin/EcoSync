@@ -9,7 +9,7 @@ try {
     'DB_OWNER_PASSWORD=' + secret(), 'DB_MIGRATION_PASSWORD=' + secret(),
     'DB_RUNTIME_PASSWORD=' + secret(), 'BOOTSTRAP_USERNAME=admin',
     'BOOTSTRAP_PASSWORD=' + secret(), 'BOOTSTRAP_ORGANIZATION=Ecosync Workspace',
-    'DB_PORT=55432', 'WEB_PORT=5173', 'API_PORT=8080', ''
+    'DB_PORT=55432', 'WEB_PORT=5173', 'API_PORT=18080', ''
   ].join('\n'), { flag: 'wx', mode: 0o600 });
   console.log('Created infra/docker/.env with unique local credentials. Open it locally to read the initial password.');
 } catch (error) {
