@@ -1,36 +1,29 @@
 # Project status
 
-Updated: 2026-10-30 UTC. Current authorized scope: **Phase 1 only**, in progress.
+Updated: 2026-10-30 UTC. Authorized scope: **Phase 1 only**.
 
-## Delivery state
+## Current delivery state
 
-**Phase 0 is complete. Phase 1 Checkpoint A is verified; application implementation is in progress.** Phases 2-11 remain unimplemented. No application, source connector, MCP server, database schema, CI workflow, container image, benchmark result or deployment is being claimed.
+Phase 0 is accepted and preserved at 6a1749f40d394933c0e4b421048eab96818da436. Phase 1 P1-01 through P1-07 have passed local acceptance. The actual GitHub Actions workflow is implemented; P1-08 remote execution and P1-09 final handoff remain pending until CI is inspected. Phase 1 is not being marked complete before that evidence exists.
 
-The repository now reports public visibility via the authenticated GitHub API; visibility was not changed. The repository origin was verified as `https://github.com/ChouaibSeishin/EcoSync.git`. Inspection found a new local repository with no commits and no remote refs. No existing project files, history or user changes needed preservation. No applicable AGENTS.md was found in the inspected ancestor/workspace paths.
+Work branch: codex/phase-1-foundation, based on verified local/remote Phase 0. GitHub's repository API reports **public** visibility; this work did not change visibility. No unrelated starting user changes were present.
 
-## Delivered foundation
+## Implemented and locally verified
 
-- Architecture with explicit module contracts, real MCP gateway path, integration lifecycle and provenance.
-- Initial tenant-scoped data model and threat/control/test matrix.
-- Dated official-source compatibility assessment, exact version manifest and five ADRs.
-- Phase acceptance criteria, prioritized Phase 1 backlog, local and GitOps design.
-- Research hypotheses, controlled baseline, metric definitions and reproducibility plan.
-- Dependency-free documentation checker and disposable source-free dependency probe generator.
+- Temurin Java 21.0.13+9, checksum-pinned Maven Wrapper 3.9.16, verified Node 24.22.2/npm 11.19.1 and a real application lockfile/strict clean install.
+- Spring MVC platform with sanitized REST errors, correlation IDs, status-only public liveness/readiness and authenticated live DB status.
+- PostgreSQL/Flyway organization/user/membership/role schema, tenant composite constraints and one-time bootstrap marker. Separate non-superuser migrator and read-only runtime credentials; a versioned permission correction protects control metadata on the existing volume.
+- Actual session authentication, adaptive password hashing, login throttle, CSRF, session rotation/logout, role and tenant enforcement; controlled random initial administrator credentials.
+- Responsive React dashboard, navigation, login/session state, empty integrations, error/loading/retry states, system status and explicitly unavailable AI. No fake operational metrics or AI answers.
+- Digest-pinned localhost Compose stack with one-shot setup; metadata survives backend restart. Real database outage behavior is visible in health/API/UI and recovers after restart.
+- Four backend unit tests, ten PostgreSQL-backed integration tests, ten frontend component tests and a real Playwright smoke journey passed. Source/link/pin/whitespace checks and screenshot review passed after correcting mobile navigation accessibility.
 
-## Verification and limitations
+Detailed commands, results, corrected failures and limitations: [Phase 1 verification](docs/development/PHASE_1_VERIFICATION.md). Runtime evidence and toolchain hashes are retained there. Local app: http://127.0.0.1:5173; API host port 18080, DB host port 55432. Initial credentials are only in the ignored local configuration; none are documented or committed.
 
-See [Phase 0 verification report](docs/development/PHASE_0_VERIFICATION.md) for actual commands and results. Documentation/link/pin checks and both source-free dependency graph probes passed. Seven managed Maven versions and all nineteen frontend direct versions matched the resolved graphs; npm reported zero vulnerabilities across 227 audited packages. Sanitized graph snapshots and hashes are retained with the report. This is dependency/design evidence; application runtime verification remains a later-phase requirement.
+## Limits and next boundary
 
-Installed Node 20.17 is unsuitable for the chosen frontend stack. Phase 1 must use Node 24.22.2/npm 11.19.1 and a maintained JDK 21 patch; Maven wrapper pins 3.9.16. Docker responds in the full user context; the restricted context denied its pipe/config. Existing external Kubernetes context presence does not establish connectivity or deployment permission. No cloud cluster was contacted.
+The frontend container is a development Vite server. Sessions and bounded login throttling are single-instance/in-memory; a backend restart intentionally invalidates sessions. General identity/role administration, persistent audit browsing, multi-instance abuse controls and production deployment remain later work. No comprehensive backend/container vulnerability assessment or production-readiness claim is made.
 
-MCP SDK 2.1.0 lists protocol constants through 2025-11-25. Current specification 2026-07-28 compatibility remains explicitly unverified; P3-01 must prove interoperability or update the coordinated dependency baseline. JUnit Jupiter 6 is the documented compatibility deviation from the brief's JUnit 5 preference. Model artifact selection and infrastructure tool/image-digest pins occur before their first implementation. No backend dependency security scan or application vulnerability assessment has run; the npm audit result has only its stated graph scope.
+Only platform metadata PostgreSQL is included. There are no demo source systems, MCP/gateway/native server integrations, external customer DB/API connectors, model calls, chat orchestration, mapping UI, benchmark results, Kubernetes/Argo resources or GHCR publishing. The accepted MCP compatibility gap remains a Phase 3 gate.
 
-## Phase 0 acceptance
-
-All four design-scope criteria are complete: documented decisions (five ADRs); defined repository/module structure; exact dependency baseline with official-source and graph evidence; and a prioritized, testable Phase 1 backlog with environment prerequisites. Runtime feature acceptance is deliberately reserved for its implementation phase.
-
-Git work is on `codex/phase-0-foundation`. The initial design commit is `9c36648`; the following evidence/handoff commit completes this phase. The repository's commit history is the authoritative list; no placeholder hash is used for the commit containing this status file.
-
-## Next authorized-work boundary
-
-Phase 1 is authorized; work follows docs/development/PHASE_1_PLAN.md. Start with P1-01 toolchain/wrapper/lockfile, then P1-02 backend skeleton and P1-03 real PostgreSQL/Flyway baseline. Follow [BACKLOG.md](BACKLOG.md) through the real frontend/Compose/CI acceptance evidence. No Phase 2 work is authorized.
+After actual CI and final review pass, Phase 1 can be reported complete. Phase 2 still requires explicit authorization.

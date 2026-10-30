@@ -1,0 +1,71 @@
+name: Phase 1 verification
+on:
+  push:
+  pull_request:
+  workflow_dispatch:
+permissions:
+  contents: read
+concurrency:
+  group: phase1-${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+jobs:
+  verify:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 30
+    steps:
+      - name: Checkout source
+        uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803 # v6, verified 2026-10-30
+        with:
+          persist-credentials: false
+      - name: Set up maintained Java 21
+        uses: actions/setup-java@b6effb05e454b25005698d916606bdc6ffcbf961 # v5
+        with:
+          distribution: temurin
+          java-version: '21.0.13+9'
+          cache: maven
+          cache-dependency-path: backend/pom.xml
+      - name: Set up pinned Node
+        uses: actions/setup-node@249970729cb0ef3589644e2896645e5dc5ba9c38 # v6
+        with:
+          node-version: '24.22.2'
+          cache: npm
+          cache-dependency-path: frontend/package-lock.json
+      - name: Verify toolchain and foundation
+        run: |
+          node --version
+          npm --version
+          java -version
+          node scripts/verify-foundation.mjs
+          node scripts/review-repository.mjs
+          git diff --check
+      - name: Backend build, unit tests and PostgreSQL integration tests
+        working-directory: backend
+        run: ./mvnw -B -ntp verify
+      - name: Frontend clean install, lint, types, tests, build and audit
+        working-directory: frontend
+        run: |
+          npm ci
+          npm run lint
+          npm run typecheck
+          npm test -- --run
+          npm run build
+          npm audit --audit-level=high
+      - name: Install pinned browser
+        working-directory: frontend
+        run: npx --no-install playwright install --with-deps chromium
+      - name: Validate and start real local stack
+        run: |
+          node scripts/init-local.mjs
+          docker compose -f infra/docker/compose.yaml config --quiet
+          docker compose -f infra/docker/compose.yaml build backend frontend
+          docker compose -f infra/docker/compose.yaml up -d --wait --wait-timeout 180
+      - name: Browser smoke and security verification
+        run: node scripts/run-e2e.mjs
+      - name: Persistence, outage and recovery verification
+        run: node scripts/verify-local-stack.mjs
+      - name: Stop only this job's stack
+        if: always()
+        run: |
+          if [ -f infra/docker/.env ]; then
+            docker compose -f infra/docker/compose.yaml stop
+          fi

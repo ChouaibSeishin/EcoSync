@@ -1,46 +1,63 @@
 # Ecosync AI
 
-An AI interoperability platform for discovering approved capabilities across independent databases, REST APIs, and MCP servers, answering questions with traceable source evidence.
+A controlled workspace for connecting heterogeneous systems and, in later phases, answering questions with traceable evidence.
 
-Research topic: **AI-Driven Interoperability: Exploring the Role of Large Language Models and the Model Context Protocol in Digital Ecosystem Integration.**
+Research: **AI-Driven Interoperability: Exploring the Role of Large Language Models and the Model Context Protocol in Digital Ecosystem Integration.**
 
-## Current state
+## Current release
 
-Phase 0 establishes the architecture, security model, version baseline, research design, and implementation plan. There is no application, running chat, connector, database migration, deployment, or CI workflow yet. Compatibility probes are design verification tools, not application modules.
+Phase 1 implements a Spring MVC/PostgreSQL foundation, secure session login, tenant-scoped workspace access, and a responsive React interface. It includes a dashboard, empty integrations page, system status, and an explicitly unavailable AI workspace. No MCP, customer database/API connectors, AI orchestration, demo source systems or deployment automation are implemented yet.
 
-The existing private repository is [ChouaibSeishin/EcoSync](https://github.com/ChouaibSeishin/EcoSync). The product name remains Ecosync AI; no replacement repository is needed.
+The repository is currently [public](https://github.com/ChouaibSeishin/EcoSync) (verified 2026-10-30); visibility was not changed by this work. Application work is on `codex/phase-1-foundation`. The default Phase 0 branch remains preserved.
 
-## Start here
+## Run locally
 
-- [Project status and verification](PROJECT_STATUS.md)
-- [Roadmap and phase acceptance criteria](ROADMAP.md)
-- [Phase 1 implementation backlog](BACKLOG.md)
-- [Architecture and proposed repository structure](docs/architecture/ARCHITECTURE.md)
-- [Dependency compatibility and official sources](docs/architecture/COMPATIBILITY.md)
-- [Security and threat model](docs/architecture/SECURITY.md)
-- [Initial data model](docs/architecture/DATA_MODEL.md)
-- [Local prerequisites and planned development workflow](docs/development/LOCAL_SETUP.md)
-- [Deployment and GitOps design](docs/deployment/DEPLOYMENT.md)
-- [Research methodology](docs/research/METHODOLOGY.md)
-- [Phase 0 verification report](docs/development/PHASE_0_VERIFICATION.md)
+Requires Java 21 (Temurin 21.0.13+9), Node 24.22.2/npm 11.19.1 and Docker with Linux containers. The Maven wrapper pins Maven 3.9.16 and verifies its distribution checksum. See [local setup](docs/development/LOCAL_SETUP.md) for Windows/POSIX commands and portable tool usage.
 
-## Design baseline
+```powershell
+# The default branch still contains Phase 0; select the implementation branch.
+git clone --branch codex/phase-1-foundation https://github.com/ChouaibSeishin/EcoSync.git
+Set-Location EcoSync
+Push-Location backend
+./mvnw.cmd -B -ntp verify
+Pop-Location
+Push-Location frontend
+npm ci
+npm run lint
+npm run typecheck
+npm test -- --run
+npm run build
+npx --no-install playwright install chromium
+Pop-Location
+node scripts/init-local.mjs
+docker compose -f infra/docker/compose.yaml config --quiet
+docker compose -f infra/docker/compose.yaml up --build -d --wait --wait-timeout 180
+```
 
-Java 21, Spring Boot 4.1.2, Spring AI 2.0.2, React 19.3.1, TypeScript 6.0.3, Vite 8.3.5, Node.js 24.22.2, and PostgreSQL 17.11. Exact pins are in [config/versions.json](config/versions.json). Boot-managed JUnit Jupiter 6 replaces the brief's JUnit 5 preference for compatibility with the supported Spring baseline; see [ADR 0002](docs/architecture/decisions/0002-supported-dependencies.md).
+Open [the local workspace](http://127.0.0.1:5173). Read your unique administrator username/password locally from ignored `infra/docker/.env`. There is no universal password. A one-shot setup process applies migrations and provisions the first administrator; later starts cannot reset it. The runtime backend does not receive bootstrap credentials.
 
-The main platform starts as a modular monolith. Independently deployable demo systems and MCP servers demonstrate actual heterogeneity. Existing MCP servers and managed database/API connectors have distinct configuration workflows. The managed gateway will expose approved connector capabilities through actual MCP calls. MCP does not establish semantic equivalence between source identifiers.
+No paid model credentials or live model are needed. The frontend container is a local development server, not a production deployment.
 
-## Verify this foundation
-
-With an available Node.js runtime (20.17+ is sufficient for this documentation checker):
+## Verification
 
 ```powershell
 node scripts/verify-foundation.mjs
+node scripts/run-e2e.mjs
+node scripts/verify-local-stack.mjs
 git diff --check
 ```
 
-Application tooling requires the pinned Node 24 baseline. See [local setup](docs/development/LOCAL_SETUP.md) for compatibility probes and Phase 1 prerequisites. There is no application start command until Phase 1 is implemented.
+The last script restarts **only this project's backend**, temporarily stops **only this project's database**, checks liveness/readiness/API/UI failure behavior, restores the database, and verifies persisted identity. It never deletes a volume. Run against the initialized local stack; it must not target production infrastructure.
 
-## Working agreement
+[Phase 1 results and CI evidence](docs/development/PHASE_1_VERIFICATION.md) distinguish passed tests, corrected failures and remaining checks. [Project status](PROJECT_STATUS.md) is the completion authority.
 
-Implement one authorized phase at a time. Inspect before editing; preserve unrelated work; test real behavior; record failures and skipped checks. Update status, roadmap, backlog, and ADRs with evidence. Keep secrets, external personal data, and generated credentials out of Git. Do not claim production readiness or research outcomes from design documents or model-generated examples.
+## Architecture and next work
+
+- `backend/`: Spring Boot 4.1.2, Spring Security, JPA, JDBC and Flyway; identity, organizations, authorization, web and observability modules. Spring AI 2.0.2 BOM only; no runtime AI/MCP dependencies.
+- `frontend/`: React 19.3.1, strict TypeScript 6.0.3, Vite 8.3.5, React Query, React Router, Radix dialog and CSS tokens.
+- `infra/docker/`: digest-pinned platform PostgreSQL, one-shot migration/bootstrap, backend and frontend; localhost ports and a persistent named volume.
+- `.github/workflows/ci.yml`: actual build/test/browser/runtime workflow with verified action SHAs and read-only repository permissions; no publishing/deployment credentials.
+- [Version pins](config/versions.json), [image pins](config/container-images.json), [compatibility and official sources](docs/architecture/COMPATIBILITY.md), [architecture](docs/architecture/ARCHITECTURE.md), [security](docs/architecture/SECURITY.md), [data model](docs/architecture/DATA_MODEL.md).
+- [Roadmap](ROADMAP.md), [backlog](BACKLOG.md), [Phase 1 identity/runtime decision](docs/architecture/decisions/0006-phase1-identity-and-local-stack.md), [research methodology](docs/research/METHODOLOGY.md), [deployment design](docs/deployment/DEPLOYMENT.md), [historical Phase 0 report](docs/development/PHASE_0_VERIFICATION.md).
+
+Phase 2 requires separate authorization. Preserve unrelated work, use small commits, verify real behavior, and keep secrets/generated credentials out of Git.

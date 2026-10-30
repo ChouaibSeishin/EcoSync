@@ -1,70 +1,111 @@
-# Local setup and Phase 1 handoff
+# Local setup
 
-## What works in Phase 0
+Phase 1 application setup; updated 2026-10-30. The repository's default branch still contains Phase 0. Use `codex/phase-1-foundation` for the application. The repository API currently reports public visibility; no visibility changes were made.
 
-Only documentation and dependency verification tooling are provided. There is no backend/frontend application or Compose file to start. No API key, paid model, cloud account or cluster is required for Phase 0.
+## Prerequisites
 
-From repository root:
-
-```powershell
-node scripts/verify-foundation.mjs
-git diff --check
-node scripts/prepare-compatibility.mjs
-```
-
-The generator writes disposable, ignored files under `.verification/compatibility/`: a source-free POM and a frontend dependency-only package manifest. It does not create an application. Run a dependency graph probe with available Maven:
-
-```powershell
-mvn -B -ntp -f .verification/compatibility/backend/pom.xml org.apache.maven.plugins:maven-dependency-plugin:3.8.1:tree
-```
-
-Use Node 24.22.2/npm 11.19.1 for the frontend resolution probe, from `.verification/compatibility/frontend/`:
-
-```powershell
-npm install --package-lock-only --ignore-scripts --strict-peer-deps --engine-strict
-```
-
-This resolves peer/engine declarations without executing package lifecycle scripts or building the app. `npm ci`, actual TypeScript checks, native bundler loading and browser tests remain Phase 1 evidence. Standard Maven/npm caches require appropriate user access; do not disable TLS or store credentials in a repository to fix access problems. A portable verified Node distribution under ignored `.verification/tools/` can be used without changing global installations.
-
-## Inspected workstation (2026-10-29)
-
-| Component | Observed | Phase 1 implication |
-| --- | --- | --- |
-| Git | 2.47.0.windows.2; existing empty repo with authenticated private origin | Git credential access requires the full user context in this agent session; never print credential-helper output |
-| Java/Javac | Oracle 21.0.4 | Correct major; update to selected supported JDK 21 patch before production-oriented development |
-| Maven | 3.9.9 | Meets Boot minimum; Phase 1 adds pinned 3.9.16 wrapper |
-| Node/npm | 20.17.0 / 10.8.2 | Too old for selected frontend; use pinned 24.22.2 / 11.19.1 |
-| Docker / Compose | 28.3.2 / v2.39.1-desktop.1 | Installed; daemon 28.3.2 responded in full user context; restricted context denied config/pipe access |
-| kubectl / Kustomize | v1.32.2 / v5.5.0 | Old client; do not use it as the planned future cluster baseline |
-| Kubernetes config | Existing external cloud context | Presence only; connectivity, version, ownership and suitability not verified; no cluster requests or changes performed |
-| Helm / Argo CD CLI | v3.17.0 / v2.14.14 | Installed versions only; no Argo server connected or verified |
-| kind / GitHub CLI / Python | Unavailable on PATH | Not required for Phase 0; kind only selected if needed for later local Kubernetes |
-
-No parent or repository AGENTS.md was found during inspection. The workspace contained only `.git`, no commits, tracked files or existing status documents. Recheck instructions at the start of subsequent phases.
-
-## Phase 1 prerequisites and intended developer experience
-
-P1-01 adds the Maven wrapper, frontend lockfile/engines and Node version file. Use maintained JDK 21 and the pinned Node/npm, Docker with Linux container support, and accessible Maven Central/npm registries. Database integration tests require real Docker access; inability to start containers must be reported, not replaced silently with an H2-only green build. Tool versions are pinned in [versions.json](../../config/versions.json); coordinate any changes with the compatibility assessment.
-
-The intended commands below are **Phase 1 targets, not executable instructions for the current repository**:
-
-| Planned command/location | Required result before documenting it as usable |
+| Tool | Required baseline |
 | --- | --- |
-| `backend/mvnw.cmd verify` (Windows), `./backend/mvnw verify` (POSIX) | Unit/integration tests and production package succeed; actual working directory/paths confirmed |
-| `npm ci`, `npm run lint`, `npm run typecheck`, `npm test -- --run`, `npm run build` in frontend | Locked clean install, strict compilation, meaningful UI tests and production assets |
-| `docker compose -f infra/docker/compose.yaml config` and `up --build -d` | Real local platform DB/backend/frontend start; expose only localhost development ports |
-| Documented Playwright smoke command | Browser login/status journey uses real backend/DB and reports actionable errors |
+| Java | Temurin JDK 21.0.13+9, Java release 21 |
+| Maven | Wrapper downloads/verifies 3.9.16; no global Maven installation required |
+| Node / npm | 24.22.2 / 11.19.1, exact engines enforced by frontend/.npmrc |
+| Docker | Linux containers and Docker Compose v2; daemon access required by integration tests |
+| Browser tests | Pinned Playwright package; install its Chromium browser once |
 
-Compose initially runs only platform components; Phase 2 adds independent source systems. Use separate named volumes and roles per database, deterministic synthetic fixtures, health checks and explicit network boundaries. Stopping services must not remove persisted data; volume deletion is never a routine verification step.
+This workstation originally had Oracle 21.0.4/Node 20.17. Portable verified tools remain under ignored `.verification/tools/`. To reuse them in this workstation's PowerShell session:
 
-## Configuration plan
+```powershell
+$taskJdk = Join-Path $PWD '.verification/tools/jdk-21.0.13+9'
+$taskNode = Join-Path $PWD '.verification/tools/node-v24.22.2-win-x64'
+$env:JAVA_HOME = $taskJdk
+$env:PATH = "$taskJdk/bin;$taskNode;" + $env:PATH
+java -version
+node --version
+npm --version
+```
 
-Phase 1 supplies `.env.example` with names and documentation but no working credentials. Local secrets live in an ignored `.env` or environment; production secrets come from an external store/Kubernetes secret references. Values include platform DB connection, one-time admin bootstrap input, cookie/profile settings and (when introduced) a separately supplied credential-encryption key. Bootstrap inputs are cleared after provisioning and never logged.
+A fresh clone does not include portable tool downloads; install the pinned tools from their official distributions or supply equivalent verified local paths. No global uninstall/upgrade was performed by the agent. In this managed agent environment, Git/Docker/Node entry-point access needed full user context; do not weaken ACLs or TLS to work around a restricted-context failure.
 
-AI defaults to disabled. Tests use an explicit deterministic model stub profile. Phase 6 adds an optional Spring AI Ollama profile, validates a tool-capable model on available hardware, and records an immutable model artifact/digest; no model download or provider contact on startup by default. A test double cannot be presented as live AI behavior. An alternative provider can be added behind ChatModel configuration when researched and authorized.
+## Build and test
 
-Vite's dev proxy will forward `/api` to Spring so browser auth/CSRF is same-origin. Production serves frontend and API under one origin. Frontend configuration contains no secrets. Check UI loading/empty/error states, not fabricated connection totals.
+Windows PowerShell, from repository root:
 
-## Troubleshooting boundaries
+```powershell
+Push-Location backend
+./mvnw.cmd -B -ntp verify
+Pop-Location
+Push-Location frontend
+npm ci
+npm run lint
+npm run typecheck
+npm test -- --run
+npm run build
+npx --no-install playwright install chromium
+Pop-Location
+node scripts/verify-foundation.mjs
+```
 
-If Node fails engine checks, use the pinned runtime rather than suppress engine requirements. If Docker or Git works in your terminal but is denied in the restricted agent context, use the approved full-user execution context; do not change ACLs or dump configuration files that might contain secrets. Maven version output emitted an access warning in the restricted shell; record it separately from actual build evidence. If a preconfigured cloud context exists, do not infer deployment authorization from it.
+POSIX:
+
+```sh
+(cd backend && ./mvnw -B -ntp verify)
+(cd frontend && npm ci && npm run lint && npm run typecheck && npm test -- --run && npm run build)
+(cd frontend && npx --no-install playwright install --with-deps chromium)
+node scripts/verify-foundation.mjs
+```
+
+`verify` compiles/packages the backend, runs unit tests and Failsafe `*IT` tests against actual PostgreSQL Testcontainers. There is no H2 alternative or blanket Docker skip. A missing Docker daemon fails the relevant test. Spring AI is a managed BOM only; no model is contacted. Frontend dependencies and the actual application lockfile are separate from historical Phase 0 probes.
+
+## Initialize and start
+
+```powershell
+node scripts/init-local.mjs
+docker compose -f infra/docker/compose.yaml config --quiet
+docker compose -f infra/docker/compose.yaml up --build -d --wait --wait-timeout 180
+docker compose -f infra/docker/compose.yaml ps
+```
+
+Build the backend jar first as above; its Dockerfile packages that already verified artifact. Compose builds one shared backend image used by setup and runtime, plus the frontend development image. Base images are pinned to verified linux/amd64 manifests in [container-images.json](../../config/container-images.json). Docker Desktop on another CPU needs matching platform emulation or deliberately reverified architecture-specific pins.
+
+The generator preserves any existing `infra/docker/.env`; it does not overwrite or print credentials. Read the initial username/password from that file locally and sign in at [127.0.0.1:5173](http://127.0.0.1:5173). Database credentials are unique random values. Port defaults: frontend 5173, backend 18080 (container 8080), DB 55432; all host bindings are localhost. Adjust ports in the ignored file if occupied; never stop unrelated services to free them.
+
+Database initialization creates an owner for local initialization, a non-superuser migrator owning schema `app`, and a runtime role with SELECT on identity/workspace tables, no access to migration/bootstrap control tables, and no schema CREATE/superuser/createdb privileges. The one-shot setup process runs Flyway and initial administrator provisioning. The backend runs as a non-root container user with runtime DB credentials, migrations off, and no bootstrap password. Schema validation is enabled; Hibernate auto-update is not used.
+
+The bootstrap marker and advisory lock prevent concurrent or repeated administrator reset. Additional identity/role administration is not exposed in this release. A later start reuses the persisted identity; changing bootstrap values cannot replace it. Local `.env` and stopped setup-container metadata retain local configuration, so protect workstation access. After initial provisioning, retain the administrator password securely and remove the stopped setup container if desired; the running backend has none of that bootstrap input. Database password changes require explicit role rotation; editing the environment alone does not change passwords in an existing volume.
+
+## Browser, persistence and outage checks
+
+```powershell
+node scripts/run-e2e.mjs
+node scripts/verify-local-stack.mjs
+```
+
+The smoke runner reads generated local credentials without printing them; operators/CI may supply `E2E_USERNAME`, `E2E_PASSWORD` and `E2E_BASE_URL`. The runtime verifier is intentionally for this specific local Compose project: it checks real browser layout, runtime-role privileges, migration checksums, metadata persistence across backend restart, invalidation of old sessions, DB outage liveness/readiness/API/UI behavior and recovery. It restores the database in a finally block and never removes volumes. Local screenshots/results stay ignored under `.verification/`; test screenshots/traces must not be used to publish credentials.
+
+## Run backend/frontend on the host (optional)
+
+First initialize the database and run setup via Compose. Stop only this project's backend/frontend containers before using the same host ports. Supply backend environment values from your local configuration:
+
+| Variable | Host development value |
+| --- | --- |
+| DB_URL | jdbc:postgresql://127.0.0.1:55432/ecosync (adjust selected port) |
+| DB_USERNAME | ecosync_runtime |
+| DB_PASSWORD | Your ignored local DB_RUNTIME_PASSWORD value |
+| COOKIE_SECURE | false for localhost HTTP only |
+| MIGRATIONS_ENABLED | false after the one-shot setup |
+
+Then run `./mvnw spring-boot:run` from backend (Windows: `./mvnw.cmd spring-boot:run`) and `npm run dev` from frontend. The Vite proxy defaults to host 127.0.0.1:18080; override `API_PROXY_TARGET` if needed. Primary end-to-end acceptance uses the actual Compose stack; this optional host invocation is a development convenience, not separate verified deployment evidence.
+
+## Health, sessions and stopping
+
+Public status-only probes: `/actuator/health/liveness` checks process state; `/actuator/health/readiness` includes DB state and returns 503 during DB loss. Other Actuator endpoints are denied. Authenticated `/api/system/status` reports live DB availability without connection details. The frontend exposes loading/error/retry states, empty integration management and unavailable AI honestly.
+
+Sessions use HttpOnly/SameSite Strict cookies, rotate at login and invalidate at logout. Secure cookies are the default; Compose has a clearly local HTTP exception. Authentication state is not in localStorage. Login throttling is bounded and single-instance; it resets after restart. Data persists across restart; in-memory sessions intentionally do not.
+
+```powershell
+docker compose -f infra/docker/compose.yaml stop
+# To resume without resetting data:
+docker compose -f infra/docker/compose.yaml up -d --wait --wait-timeout 180
+```
+
+Do not use volume deletion to fix startup or change credentials. No Kubernetes, Argo CD, GHCR publishing, paid model, source-system connector or cloud credentials are needed here.

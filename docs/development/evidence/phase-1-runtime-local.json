@@ -1,0 +1,13 @@
+{
+  "checkedOn": "2026-10-30T11:06:01.684Z",
+  "cookieRotation": true,
+  "runtimeRoleRestricted": true,
+  "persistenceAcrossBackendRestart": true,
+  "oldSessionInvalidated": true,
+  "livenessDuringDbFailure": true,
+  "readinessDuringDbFailure": true,
+  "statusApiDuringDbFailure": true,
+  "statusUiDuringDbFailure": true,
+  "recovery": true,
+  "responsiveLayout": true
+}

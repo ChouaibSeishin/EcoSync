@@ -1,6 +1,6 @@
 # Security design and threat model
 
-Phase 0 design; all controls below are requirements for implementation and verification, not claims that protections exist today. Security is part of each phase's acceptance criteria. Phase 8 adds hardening rather than starting security work.
+Target security design with Phase 1 implementation evidence dated 2026-10-30. Session/CSRF/password/bootstrap/tenant enforcement, bounded login throttling, safe errors, public status-only probes and runtime DB least privilege are implemented and tested; see [Phase 1 verification](../development/PHASE_1_VERIFICATION.md). Connector/MCP/model defenses, persistent audit browsing, broader rate limits and multi-instance governance remain future requirements. The matrix below remains the target; it does not claim every control is already delivered.
 
 ## Assets and trust boundaries
 

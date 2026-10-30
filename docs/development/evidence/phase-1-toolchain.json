@@ -1,0 +1,34 @@
+{
+  "verifiedOn": "2026-10-30",
+  "platform": "Windows amd64 local; Ubuntu/linux amd64 CI",
+  "node": {
+    "nodeArchive": "node-v24.22.2-win-x64.zip",
+    "verifiedAgainst": "https://nodejs.org/dist/v24.22.2/SHASUMS256.txt",
+    "sha256": "ca1bff5d8ead13c9f2ea404a176db46bd430704d5b5113734049fa365e7799e2",
+    "executableMatchesArchive": true
+  },
+  "java": {
+    "java": "21.0.13+9-LTS",
+    "url": "https://github.com/adoptium/temurin21-binaries/releases/download/jdk-21.0.13%2B9/OpenJDK21U-jdk_x64_windows_hotspot_21.0.13_9.zip",
+    "sha256": "a4dbaa05fca4bd89d84584e58c459bd732efebb1722af80ab13c6516832004f9"
+  },
+  "maven": {
+    "url": "https://repo.maven.apache.org/maven2/org/apache/maven/apache-maven/3.9.16/apache-maven-3.9.16-bin.zip",
+    "sha512": "ed41650d42485cfc243fad22158caf9cbb5dc408ce7a09ddb94dd42a019de929ca43065bfa450612cf12bf78b5cafa3884b96c090de326ff590448c933454af3",
+    "sha256": "5af3b743dd8b876b5c45da33b676251e5f1687712644abb4ee519ca56e1d89ce"
+  },
+  "actions": {
+    "checkout": {
+      "tag": "v6",
+      "sha": "d23441a48e516b6c34aea4fa41551a30e30af803"
+    },
+    "setup-java": {
+      "tag": "v5",
+      "sha": "b6effb05e454b25005698d916606bdc6ffcbf961"
+    },
+    "setup-node": {
+      "tag": "v6",
+      "sha": "249970729cb0ef3589644e2896645e5dc5ba9c38"
+    }
+  }
+}

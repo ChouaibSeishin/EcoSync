@@ -37,3 +37,13 @@ PASS: controlled real-stack checks verified runtime DB restrictions, non-null mi
 The permission review found overly broad inherited DML on Flyway/bootstrap control metadata. V2 applies a versioned correction to the existing volume, retaining only identity/workspace SELECT access for the runtime; real privilege assertions now reject UPDATE/DELETE on controls and app_user. V1 was not rewritten. Native backend verify after V2 passed all fourteen tests and packaging.
 
 Screenshot review found an offscreen mobile sidebar could remain keyboard-accessible and an in-transition capture obscured content. Closed mobile navigation now uses visibility hiding, explicit expanded/controls semantics, Escape/focus handling and stable screenshots; strengthened real-browser assertions passed, including Escape, expanded state, hidden closed navigation and renewed desktop/mobile screenshot review. A one-off source-edit helper had a quoting error before any write; checked replacements corrected it. No failed feature test was skipped.
+
+## Actual local commands and evidence
+
+Backend: backend/mvnw.cmd -B -ntp -Dmaven.repo.local=.verification/m2 -f backend/pom.xml verify, using the verified portable JAVA_HOME (local cache option only). Frontend: npm ci; npm run lint; npm run typecheck; npm test -- --run; npm run build. Browser: node scripts/run-e2e.mjs. Integration: docker compose -f infra/docker/compose.yaml config --quiet; build backend frontend; up -d --wait --wait-timeout 180; node scripts/verify-local-stack.mjs. Review: node scripts/verify-foundation.mjs; node scripts/review-repository.mjs; git diff --check and staged diff review.
+
+[Toolchain/action checksum evidence](evidence/phase-1-toolchain.json) and [sanitized runtime results](evidence/phase-1-runtime-local.json) are retained. Screenshots and full logs stay locally ignored; password-bearing browser failure snapshots are never uploaded or committed.
+
+## CI and Git
+
+Actual CI execution is pending the verified implementation branch push. Workflow: .github/workflows/ci.yml, verified official checkout v6/setup-java v5/setup-node v6 commit SHAs, contents: read only, no publish/deployment secrets. It runs backend PostgreSQL tests, strict frontend checks, real Compose/browser and persistence/outage checks. Final run URL/result and commit list will be recorded after inspection.
