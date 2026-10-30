@@ -4,7 +4,7 @@ Updated: 2026-10-30 UTC. Authorized scope: **Phase 1 only**.
 
 ## Current delivery state
 
-Phase 0 is accepted and preserved at 6a1749f40d394933c0e4b421048eab96818da436. Phase 1 P1-01 through P1-07 have passed local acceptance. The actual GitHub Actions workflow is implemented; P1-08 remote execution and P1-09 final handoff remain pending until CI is inspected. Phase 1 is not being marked complete before that evidence exists.
+Phase 0 is accepted and preserved at 6a1749f40d394933c0e4b421048eab96818da436. **Phase 1 is complete.** All nine work packages have passed their scoped acceptance criteria locally and in actual CI. See [the acceptance record](docs/development/PHASE_1_ACCEPTANCE.md).
 
 Work branch: codex/phase-1-foundation, based on verified local/remote Phase 0. GitHub's repository API reports **public** visibility; this work did not change visibility. No unrelated starting user changes were present.
 
@@ -26,4 +26,4 @@ The frontend container is a development Vite server. Sessions and bounded login 
 
 Only platform metadata PostgreSQL is included. There are no demo source systems, MCP/gateway/native server integrations, external customer DB/API connectors, model calls, chat orchestration, mapping UI, benchmark results, Kubernetes/Argo resources or GHCR publishing. The accepted MCP compatibility gap remains a Phase 3 gate.
 
-After actual CI and final review pass, Phase 1 can be reported complete. Phase 2 still requires explicit authorization.
+Actual CI passed: [run 41047054438](https://github.com/ChouaibSeishin/EcoSync/actions/runs/41047054438), code commit de83c20e94c90c42475133217fe6d06b5afc7c9b. Final documentation/evidence commits do not change application code. Phase 2 requires explicit authorization; its next task is P2-01, independent synthetic source systems and ground truth.

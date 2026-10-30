@@ -1,0 +1,97 @@
+{
+  "checkedOn": "2026-10-30T11:21:51.767Z",
+  "runId": 41047054438,
+  "head": "de83c20e94c90c42475133217fe6d06b5afc7c9b",
+  "url": "https://github.com/ChouaibSeishin/EcoSync/actions/runs/41047054438",
+  "status": "completed",
+  "conclusion": "success",
+  "jobs": [
+    {
+      "name": "verify",
+      "status": "completed",
+      "conclusion": "success",
+      "steps": [
+        {
+          "name": "Set up job",
+          "status": "completed",
+          "conclusion": "success"
+        },
+        {
+          "name": "Checkout source",
+          "status": "completed",
+          "conclusion": "success"
+        },
+        {
+          "name": "Set up maintained Java 21",
+          "status": "completed",
+          "conclusion": "success"
+        },
+        {
+          "name": "Set up pinned Node",
+          "status": "completed",
+          "conclusion": "success"
+        },
+        {
+          "name": "Verify toolchain and foundation",
+          "status": "completed",
+          "conclusion": "success"
+        },
+        {
+          "name": "Backend build, unit tests and PostgreSQL integration tests",
+          "status": "completed",
+          "conclusion": "success"
+        },
+        {
+          "name": "Frontend clean install, lint, types, tests, build and audit",
+          "status": "completed",
+          "conclusion": "success"
+        },
+        {
+          "name": "Install pinned browser",
+          "status": "completed",
+          "conclusion": "success"
+        },
+        {
+          "name": "Validate and start real local stack",
+          "status": "completed",
+          "conclusion": "success"
+        },
+        {
+          "name": "Browser smoke and security verification",
+          "status": "completed",
+          "conclusion": "success"
+        },
+        {
+          "name": "Persistence, outage and recovery verification",
+          "status": "completed",
+          "conclusion": "success"
+        },
+        {
+          "name": "Stop only this job's stack",
+          "status": "completed",
+          "conclusion": "success"
+        },
+        {
+          "name": "Post Set up pinned Node",
+          "status": "completed",
+          "conclusion": "success"
+        },
+        {
+          "name": "Post Set up maintained Java 21",
+          "status": "completed",
+          "conclusion": "success"
+        },
+        {
+          "name": "Post Checkout source",
+          "status": "completed",
+          "conclusion": "success"
+        },
+        {
+          "name": "Complete job",
+          "status": "completed",
+          "conclusion": "success"
+        }
+      ]
+    }
+  ]
+}

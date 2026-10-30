@@ -1,6 +1,6 @@
 {
   "verifiedOn": "2026-10-30",
-  "status": "phase-1-implementation",
+  "status": "phase-1-verified-baseline",
   "toolchain": {
     "javaRelease": "21",
     "jdkDistribution": "Eclipse Temurin",

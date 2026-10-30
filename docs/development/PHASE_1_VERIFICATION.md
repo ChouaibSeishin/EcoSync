@@ -47,3 +47,13 @@ Backend: backend/mvnw.cmd -B -ntp -Dmaven.repo.local=.verification/m2 -f backend
 ## CI and Git
 
 Actual CI execution is pending the verified implementation branch push. Workflow: .github/workflows/ci.yml, verified official checkout v6/setup-java v5/setup-node v6 commit SHAs, contents: read only, no publish/deployment secrets. It runs backend PostgreSQL tests, strict frontend checks, real Compose/browser and persistence/outage checks. Final run URL/result and commit list will be recorded after inspection.
+
+## Final actual CI result and acceptance
+
+**PASS**: [GitHub Actions run 41047054438](https://github.com/ChouaibSeishin/EcoSync/actions/runs/41047054438), code commit de83c20e94c90c42475133217fe6d06b5afc7c9b. Every job/step completed successfully, including Ubuntu Java/PostgreSQL tests, frontend installation/lint/type/test/build/audit, Compose startup, browser security smoke, persistence and DB outage/recovery. [Sanitized run/step evidence](evidence/phase-1-ci.json) is committed. No CI success was inferred from local results.
+
+[All nine acceptance criteria](PHASE_1_ACCEPTANCE.md) are complete within Phase 1 scope. Local final results: four unit and ten PostgreSQL integration tests; ten frontend tests; one comprehensive Playwright smoke; separate real-stack persistence/fault/privilege assertions. Production backend jar and frontend assets built. No skips or live/paid-model dependency. Targeted source/known-secret/pin review and documentation/whitespace checks passed.
+
+Incremental application commits: a54f3b2 (toolchain/wrapper/lock), 6c4e7ba (backend/DB foundation), 81cf755 (session/tenant security), c26e1b6 (runtime least privilege), 3094a97 (responsive UI/local integration), de83c20 (actual CI and verified setup). Final documentation/evidence commit follows; its exact hash is in Git history. Only codex/phase-1-foundation is pushed; Phase 0 stays unchanged. Repository visibility is public, verified through GitHub API, and was not modified.
+
+Known limits: localhost-only Vite development container; in-memory single-instance sessions/throttle; no general identity/role administration UI or persistent audit browsing yet; optional host-mode startup documented but Compose is the exercised end-to-end acceptance path; no comprehensive backend/container vulnerability scan. No production deployment or later-phase integration/AI/research result is claimed. Phase 2 has not started and requires explicit authorization.

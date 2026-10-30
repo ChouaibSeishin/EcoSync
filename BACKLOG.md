@@ -1,6 +1,6 @@
 # Backlog
 
-Phase 1 P1-01 through P1-07 have passed local acceptance; P1-08 is implemented with actual CI execution pending, and P1-09 is undergoing final documentation/review. Later phases remain unimplemented. See PROJECT_STATUS.md and the Phase 1 verification report for evidence. P0 = foundation-critical priority, P1 = required phase scope, P2 = later extension. IDs remain stable between phases.
+Phase 1 P1-01 through P1-09 are complete with local and actual GitHub Actions acceptance evidence. Later phases remain unimplemented. See PROJECT_STATUS.md and the Phase 1 verification report for evidence. P0 = foundation-critical priority, P1 = required phase scope, P2 = later extension. IDs remain stable between phases.
 
 ## Phase 1: ordered implementation plan
 
