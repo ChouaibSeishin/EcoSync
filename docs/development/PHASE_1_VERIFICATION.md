@@ -19,3 +19,9 @@ Backend/PostgreSQL, authentication, frontend/Compose, tests/CI and final documen
 Backend source and test compilation and production packaging passed. Architecture and database-failure unit tests passed. The real PostgreSQL migration test passed after correcting Testcontainers image compatibility metadata for the verified official digest: fresh migration, idempotent rerun, validation and cross-organization composite foreign-key rejection. Compose config validated; the new platform DB container is healthy with a new named volume. No existing volume was deleted.
 
 The initial migration test failed before connection because the tag+digest was rejected by Testcontainers image-name compatibility checks. The same official digest is retained and explicitly marked PostgreSQL-compatible. The first security-context test then exposed PER_CLASS startup ordering; that separate Checkpoint C test is being repaired and rerun.
+
+## Checkpoint C
+
+PASS: complete Maven verify on Temurin 21.0.13/Maven 3.9.16: four unit tests and ten PostgreSQL-backed integration tests, zero failures/errors/skips. Tests cover generic auth errors, input limits, actual login throttling, CSRF, session rotation, logout invalidation, role/tenant denials, bootstrap idempotency, password hashing, safe errors and public health. Production jar packaged successfully.
+
+Failures corrected before acceptance: PER_CLASS test lifecycle attempted dynamic DB properties before container start; explicit startup now precedes property access. The next run caught a login-path check using servletPath (empty in MockMvc) and an unrealistic session-rotation test request; the filter uses context-qualified request URI and the test now marks its existing client session valid. The final full suite passed. Real-browser rotation/logout checks remain part of D/E.
