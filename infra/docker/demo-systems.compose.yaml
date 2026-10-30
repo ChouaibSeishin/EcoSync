@@ -25,8 +25,33 @@ services:
       timeout: 5s
       retries: 40
       start_period: 15s
+  inventory:
+    image: mysql:8.4.13@sha256:5cf1e1293ea42e077e6a22114e6773b9aae3bb8f9933a2acd5a9721518ff8f5b
+    platform: linux/amd64
+    environment:
+      MYSQL_DATABASE: inventory
+      MYSQL_ROOT_PASSWORD: ${INVENTORY_ROOT_PASSWORD:?Required}
+      INVENTORY_MIGRATION_PASSWORD: ${INVENTORY_MIGRATION_PASSWORD:?Required}
+      INVENTORY_READER_PASSWORD: ${INVENTORY_READER_PASSWORD:?Required}
+      TZ: UTC
+    command: ["--default-time-zone=+00:00", "--mysqlx=0", "--local-infile=0"]
+    ports: ["127.0.0.1:${INVENTORY_PORT:-53307}:3306"]
+    volumes:
+      - inventory-data:/var/lib/mysql
+      - ../../demo-systems/inventory-mysql/init.sh:/docker-entrypoint-initdb.d/10-inventory.sh:ro
+      - ../../demo-systems/inventory-mysql/migrations:/migrations:ro
+    networks: [sources]
+    mem_limit: 768m
+    cpus: 1.0
+    healthcheck:
+      test: ["CMD-SHELL", "MYSQL_PWD=$INVENTORY_READER_PASSWORD mysql --protocol=TCP -h 127.0.0.1 -u inventory_reader -D inventory -Nse 'SELECT count(*)=90 FROM stock_levels' | grep -qx 1"]
+      interval: 5s
+      timeout: 5s
+      retries: 50
+      start_period: 30s
 volumes:
   sales-data:
+  inventory-data:
 networks:
   sources:
-    internal: true
+    driver: bridge

@@ -1,0 +1,1078 @@
+{
+  "fixture_version": "inventory-v1",
+  "seed": 20261030,
+  "items": [
+    {
+      "sku": "WH-700",
+      "product_label": "Dock USB-C Standard",
+      "category": "Office",
+      "unit_code": "EA",
+      "supplier_catalog_ref": "CAT-0810",
+      "active": true
+    },
+    {
+      "sku": "WH-717",
+      "product_label": "Dock USB-C Plus",
+      "category": "Electronics",
+      "unit_code": "EA",
+      "supplier_catalog_ref": "CAT-0823",
+      "active": true
+    },
+    {
+      "sku": "WH-734",
+      "product_label": "Display 27",
+      "category": "Electronics",
+      "unit_code": "EA",
+      "supplier_catalog_ref": "CAT-0836",
+      "active": true
+    },
+    {
+      "sku": "WH-704",
+      "product_label": "Keyboard Mechanical",
+      "category": "Office",
+      "unit_code": "EA",
+      "supplier_catalog_ref": "CAT-0849",
+      "active": true
+    },
+    {
+      "sku": "WH-721",
+      "product_label": "Mouse Wireless",
+      "category": "Electronics",
+      "unit_code": "EA",
+      "supplier_catalog_ref": "CAT-0862",
+      "active": true
+    },
+    {
+      "sku": "WH-738",
+      "product_label": "Camera HD",
+      "category": "Electronics",
+      "unit_code": "EA",
+      "supplier_catalog_ref": "CAT-0875",
+      "active": true
+    },
+    {
+      "sku": "WH-708",
+      "product_label": "USB Headset",
+      "category": "Office",
+      "unit_code": "EA",
+      "supplier_catalog_ref": "CAT-0888",
+      "active": true
+    },
+    {
+      "sku": "WH-725",
+      "product_label": "LAN Adapter",
+      "category": "Electronics",
+      "unit_code": "EA",
+      "supplier_catalog_ref": "CAT-0901",
+      "active": true
+    },
+    {
+      "sku": "WH-742",
+      "product_label": "Notebook Riser",
+      "category": "Electronics",
+      "unit_code": "EA",
+      "supplier_catalog_ref": "CAT-0914",
+      "active": true
+    },
+    {
+      "sku": "WH-712",
+      "product_label": "HDMI Lead",
+      "category": "Office",
+      "unit_code": "EA",
+      "supplier_catalog_ref": "CAT-0927",
+      "active": true
+    },
+    {
+      "sku": "WH-729",
+      "product_label": "A4 Paper Box",
+      "category": "Electronics",
+      "unit_code": "BOX",
+      "supplier_catalog_ref": "CAT-0940",
+      "active": true
+    },
+    {
+      "sku": "WH-746",
+      "product_label": "Black Toner",
+      "category": "Electronics",
+      "unit_code": "EA",
+      "supplier_catalog_ref": "CAT-0953",
+      "active": true
+    },
+    {
+      "sku": "WH-716",
+      "product_label": "LED Desk Light",
+      "category": "Office",
+      "unit_code": "EA",
+      "supplier_catalog_ref": "CAT-0966",
+      "active": true
+    },
+    {
+      "sku": "WH-733",
+      "product_label": "Power Strip",
+      "category": "Electronics",
+      "unit_code": "EA",
+      "supplier_catalog_ref": "CAT-0979",
+      "active": true
+    },
+    {
+      "sku": "WH-703",
+      "product_label": "SSD Portable",
+      "category": "Electronics",
+      "unit_code": "EA",
+      "supplier_catalog_ref": "CAT-0992",
+      "active": true
+    },
+    {
+      "sku": "WH-720",
+      "product_label": "Flash Storage",
+      "category": "Office",
+      "unit_code": "EA",
+      "supplier_catalog_ref": "CAT-1005",
+      "active": true
+    },
+    {
+      "sku": "WH-737",
+      "product_label": "Slide Remote",
+      "category": "Electronics",
+      "unit_code": "EA",
+      "supplier_catalog_ref": "CAT-1018",
+      "active": true
+    },
+    {
+      "sku": "WH-707",
+      "product_label": "Meeting Speaker",
+      "category": "Electronics",
+      "unit_code": "EA",
+      "supplier_catalog_ref": "CAT-1031",
+      "active": true
+    },
+    {
+      "sku": "WH-724",
+      "product_label": "Label Maker",
+      "category": "Office",
+      "unit_code": "EA",
+      "supplier_catalog_ref": "CAT-1044",
+      "active": true
+    },
+    {
+      "sku": "WH-741",
+      "product_label": "Labels Box",
+      "category": "Electronics",
+      "unit_code": "BOX",
+      "supplier_catalog_ref": "CAT-1057",
+      "active": true
+    },
+    {
+      "sku": "WH-711",
+      "product_label": "Cable Ties",
+      "category": "Electronics",
+      "unit_code": "EA",
+      "supplier_catalog_ref": "CAT-1070",
+      "active": true
+    },
+    {
+      "sku": "WH-728",
+      "product_label": "Switch 8-Port",
+      "category": "Office",
+      "unit_code": "EA",
+      "supplier_catalog_ref": "CAT-1083",
+      "active": true
+    },
+    {
+      "sku": "WH-745",
+      "product_label": "USB-C Dock",
+      "category": "Electronics",
+      "unit_code": "EA",
+      "supplier_catalog_ref": "CAT-1096",
+      "active": true
+    },
+    {
+      "sku": "WH-715",
+      "product_label": "USB-C Dock",
+      "category": "Electronics",
+      "unit_code": "EA",
+      "supplier_catalog_ref": "CAT-1109",
+      "active": true
+    },
+    {
+      "sku": "WH-732",
+      "product_label": "USB-C Dock",
+      "category": "Office",
+      "unit_code": "EA",
+      "supplier_catalog_ref": "CAT-1122",
+      "active": true
+    },
+    {
+      "sku": "WH-702",
+      "product_label": "Paper Pack",
+      "category": "Electronics",
+      "unit_code": "BOX",
+      "supplier_catalog_ref": "CAT-1135",
+      "active": true
+    },
+    {
+      "sku": "WH-719",
+      "product_label": "Cable Meter",
+      "category": "Electronics",
+      "unit_code": "M",
+      "supplier_catalog_ref": "CAT-1148",
+      "active": true
+    },
+    {
+      "sku": "WH-736",
+      "product_label": "USB Hub Spare",
+      "category": "Office",
+      "unit_code": "EA",
+      "supplier_catalog_ref": "CAT-1161",
+      "active": true
+    },
+    {
+      "sku": "WH-706",
+      "product_label": "Ergonomic Footrest",
+      "category": "Electronics",
+      "unit_code": "EA",
+      "supplier_catalog_ref": "CAT-1174",
+      "active": false
+    },
+    {
+      "sku": "WH-723",
+      "product_label": "Cleaning Kit",
+      "category": "Electronics",
+      "unit_code": "EA",
+      "supplier_catalog_ref": null,
+      "active": true
+    }
+  ],
+  "warehouses": [
+    {
+      "warehouse_id": "N1",
+      "warehouse_name": "North Distribution",
+      "region": "NORTH",
+      "warehouse_status": "OPEN"
+    },
+    {
+      "warehouse_id": "S2",
+      "warehouse_name": "South Crossdock",
+      "region": "SOUTH",
+      "warehouse_status": "OPEN"
+    },
+    {
+      "warehouse_id": "W3",
+      "warehouse_name": "West Reserve",
+      "region": "WEST",
+      "warehouse_status": "MAINTENANCE"
+    }
+  ],
+  "stock_levels": [
+    {
+      "stock_id": 3001,
+      "sku": "WH-700",
+      "warehouse_id": "N1",
+      "quantity_on_hand": 4,
+      "quantity_reserved": 3,
+      "reorder_threshold": 10,
+      "last_updated_at": "2026-10-15T12:00:00Z"
+    },
+    {
+      "stock_id": 3002,
+      "sku": "WH-700",
+      "warehouse_id": "S2",
+      "quantity_on_hand": 0,
+      "quantity_reserved": 0,
+      "reorder_threshold": 15,
+      "last_updated_at": "2026-10-15T12:00:00Z"
+    },
+    {
+      "stock_id": 3003,
+      "sku": "WH-700",
+      "warehouse_id": "W3",
+      "quantity_on_hand": 3,
+      "quantity_reserved": 2,
+      "reorder_threshold": 20,
+      "last_updated_at": "2026-10-15T12:00:00Z"
+    },
+    {
+      "stock_id": 3004,
+      "sku": "WH-717",
+      "warehouse_id": "N1",
+      "quantity_on_hand": 400,
+      "quantity_reserved": 3,
+      "reorder_threshold": 15,
+      "last_updated_at": "2026-10-15T12:00:00Z"
+    },
+    {
+      "stock_id": 3005,
+      "sku": "WH-717",
+      "warehouse_id": "S2",
+      "quantity_on_hand": 450,
+      "quantity_reserved": 6,
+      "reorder_threshold": 20,
+      "last_updated_at": "2026-10-15T12:00:00Z"
+    },
+    {
+      "stock_id": 3006,
+      "sku": "WH-717",
+      "warehouse_id": "W3",
+      "quantity_on_hand": 500,
+      "quantity_reserved": 9,
+      "reorder_threshold": 25,
+      "last_updated_at": "2026-10-15T12:00:00Z"
+    },
+    {
+      "stock_id": 3007,
+      "sku": "WH-734",
+      "warehouse_id": "N1",
+      "quantity_on_hand": 108,
+      "quantity_reserved": 6,
+      "reorder_threshold": 20,
+      "last_updated_at": "2026-10-15T12:00:00Z"
+    },
+    {
+      "stock_id": 3008,
+      "sku": "WH-734",
+      "warehouse_id": "S2",
+      "quantity_on_hand": 139,
+      "quantity_reserved": 9,
+      "reorder_threshold": 25,
+      "last_updated_at": "2026-10-15T12:00:00Z"
+    },
+    {
+      "stock_id": 3009,
+      "sku": "WH-734",
+      "warehouse_id": "W3",
+      "quantity_on_hand": 10,
+      "quantity_reserved": 10,
+      "reorder_threshold": 10,
+      "last_updated_at": "2026-10-15T12:00:00Z"
+    },
+    {
+      "stock_id": 3010,
+      "sku": "WH-704",
+      "warehouse_id": "N1",
+      "quantity_on_hand": 127,
+      "quantity_reserved": 9,
+      "reorder_threshold": 25,
+      "last_updated_at": "2026-10-15T12:00:00Z"
+    },
+    {
+      "stock_id": 3011,
+      "sku": "WH-704",
+      "warehouse_id": "S2",
+      "quantity_on_hand": 158,
+      "quantity_reserved": 12,
+      "reorder_threshold": 10,
+      "last_updated_at": "2026-10-15T12:00:00Z"
+    },
+    {
+      "stock_id": 3012,
+      "sku": "WH-704",
+      "warehouse_id": "W3",
+      "quantity_on_hand": 29,
+      "quantity_reserved": 15,
+      "reorder_threshold": 15,
+      "last_updated_at": "2026-10-15T12:00:00Z"
+    },
+    {
+      "stock_id": 3013,
+      "sku": "WH-721",
+      "warehouse_id": "N1",
+      "quantity_on_hand": 146,
+      "quantity_reserved": 12,
+      "reorder_threshold": 10,
+      "last_updated_at": "2026-10-15T12:00:00Z"
+    },
+    {
+      "stock_id": 3014,
+      "sku": "WH-721",
+      "warehouse_id": "S2",
+      "quantity_on_hand": 17,
+      "quantity_reserved": 15,
+      "reorder_threshold": 15,
+      "last_updated_at": "2026-10-15T12:00:00Z"
+    },
+    {
+      "stock_id": 3015,
+      "sku": "WH-721",
+      "warehouse_id": "W3",
+      "quantity_on_hand": 48,
+      "quantity_reserved": 18,
+      "reorder_threshold": 20,
+      "last_updated_at": "2026-10-15T12:00:00Z"
+    },
+    {
+      "stock_id": 3016,
+      "sku": "WH-738",
+      "warehouse_id": "N1",
+      "quantity_on_hand": 5,
+      "quantity_reserved": 5,
+      "reorder_threshold": 15,
+      "last_updated_at": "2026-10-15T12:00:00Z"
+    },
+    {
+      "stock_id": 3017,
+      "sku": "WH-738",
+      "warehouse_id": "S2",
+      "quantity_on_hand": 36,
+      "quantity_reserved": 18,
+      "reorder_threshold": 20,
+      "last_updated_at": "2026-10-15T12:00:00Z"
+    },
+    {
+      "stock_id": 3018,
+      "sku": "WH-738",
+      "warehouse_id": "W3",
+      "quantity_on_hand": 67,
+      "quantity_reserved": 21,
+      "reorder_threshold": 25,
+      "last_updated_at": "2026-10-15T12:00:00Z"
+    },
+    {
+      "stock_id": 3019,
+      "sku": "WH-708",
+      "warehouse_id": "N1",
+      "quantity_on_hand": 24,
+      "quantity_reserved": 18,
+      "reorder_threshold": 20,
+      "last_updated_at": "2026-10-15T12:00:00Z"
+    },
+    {
+      "stock_id": 3020,
+      "sku": "WH-708",
+      "warehouse_id": "S2",
+      "quantity_on_hand": 55,
+      "quantity_reserved": 21,
+      "reorder_threshold": 25,
+      "last_updated_at": "2026-10-15T12:00:00Z"
+    },
+    {
+      "stock_id": 3021,
+      "sku": "WH-708",
+      "warehouse_id": "W3",
+      "quantity_on_hand": 86,
+      "quantity_reserved": 24,
+      "reorder_threshold": 10,
+      "last_updated_at": "2026-10-15T12:00:00Z"
+    },
+    {
+      "stock_id": 3022,
+      "sku": "WH-725",
+      "warehouse_id": "N1",
+      "quantity_on_hand": 43,
+      "quantity_reserved": 21,
+      "reorder_threshold": 25,
+      "last_updated_at": "2026-10-15T12:00:00Z"
+    },
+    {
+      "stock_id": 3023,
+      "sku": "WH-725",
+      "warehouse_id": "S2",
+      "quantity_on_hand": 74,
+      "quantity_reserved": 24,
+      "reorder_threshold": 10,
+      "last_updated_at": "2026-10-15T12:00:00Z"
+    },
+    {
+      "stock_id": 3024,
+      "sku": "WH-725",
+      "warehouse_id": "W3",
+      "quantity_on_hand": 105,
+      "quantity_reserved": 0,
+      "reorder_threshold": 15,
+      "last_updated_at": "2026-10-15T12:00:00Z"
+    },
+    {
+      "stock_id": 3025,
+      "sku": "WH-742",
+      "warehouse_id": "N1",
+      "quantity_on_hand": 62,
+      "quantity_reserved": 24,
+      "reorder_threshold": 10,
+      "last_updated_at": "2026-10-15T12:00:00Z"
+    },
+    {
+      "stock_id": 3026,
+      "sku": "WH-742",
+      "warehouse_id": "S2",
+      "quantity_on_hand": 93,
+      "quantity_reserved": 0,
+      "reorder_threshold": 15,
+      "last_updated_at": "2026-10-15T12:00:00Z"
+    },
+    {
+      "stock_id": 3027,
+      "sku": "WH-742",
+      "warehouse_id": "W3",
+      "quantity_on_hand": 124,
+      "quantity_reserved": 3,
+      "reorder_threshold": 20,
+      "last_updated_at": "2026-10-15T12:00:00Z"
+    },
+    {
+      "stock_id": 3028,
+      "sku": "WH-712",
+      "warehouse_id": "N1",
+      "quantity_on_hand": 81,
+      "quantity_reserved": 0,
+      "reorder_threshold": 15,
+      "last_updated_at": "2026-10-15T12:00:00Z"
+    },
+    {
+      "stock_id": 3029,
+      "sku": "WH-712",
+      "warehouse_id": "S2",
+      "quantity_on_hand": 112,
+      "quantity_reserved": 3,
+      "reorder_threshold": 20,
+      "last_updated_at": "2026-10-15T12:00:00Z"
+    },
+    {
+      "stock_id": 3030,
+      "sku": "WH-712",
+      "warehouse_id": "W3",
+      "quantity_on_hand": 143,
+      "quantity_reserved": 6,
+      "reorder_threshold": 25,
+      "last_updated_at": "2026-10-15T12:00:00Z"
+    },
+    {
+      "stock_id": 3031,
+      "sku": "WH-729",
+      "warehouse_id": "N1",
+      "quantity_on_hand": 100,
+      "quantity_reserved": 3,
+      "reorder_threshold": 20,
+      "last_updated_at": "2026-10-15T12:00:00Z"
+    },
+    {
+      "stock_id": 3032,
+      "sku": "WH-729",
+      "warehouse_id": "S2",
+      "quantity_on_hand": 131,
+      "quantity_reserved": 6,
+      "reorder_threshold": 25,
+      "last_updated_at": "2026-10-15T12:00:00Z"
+    },
+    {
+      "stock_id": 3033,
+      "sku": "WH-729",
+      "warehouse_id": "W3",
+      "quantity_on_hand": 2,
+      "quantity_reserved": 2,
+      "reorder_threshold": 10,
+      "last_updated_at": "2026-10-15T12:00:00Z"
+    },
+    {
+      "stock_id": 3034,
+      "sku": "WH-746",
+      "warehouse_id": "N1",
+      "quantity_on_hand": 119,
+      "quantity_reserved": 6,
+      "reorder_threshold": 25,
+      "last_updated_at": "2026-10-15T12:00:00Z"
+    },
+    {
+      "stock_id": 3035,
+      "sku": "WH-746",
+      "warehouse_id": "S2",
+      "quantity_on_hand": 150,
+      "quantity_reserved": 9,
+      "reorder_threshold": 10,
+      "last_updated_at": "2026-10-15T12:00:00Z"
+    },
+    {
+      "stock_id": 3036,
+      "sku": "WH-746",
+      "warehouse_id": "W3",
+      "quantity_on_hand": 21,
+      "quantity_reserved": 12,
+      "reorder_threshold": 15,
+      "last_updated_at": "2026-10-15T12:00:00Z"
+    },
+    {
+      "stock_id": 3037,
+      "sku": "WH-716",
+      "warehouse_id": "N1",
+      "quantity_on_hand": 138,
+      "quantity_reserved": 9,
+      "reorder_threshold": 10,
+      "last_updated_at": "2026-10-15T12:00:00Z"
+    },
+    {
+      "stock_id": 3038,
+      "sku": "WH-716",
+      "warehouse_id": "S2",
+      "quantity_on_hand": 9,
+      "quantity_reserved": 9,
+      "reorder_threshold": 15,
+      "last_updated_at": "2026-10-15T12:00:00Z"
+    },
+    {
+      "stock_id": 3039,
+      "sku": "WH-716",
+      "warehouse_id": "W3",
+      "quantity_on_hand": 40,
+      "quantity_reserved": 15,
+      "reorder_threshold": 20,
+      "last_updated_at": "2026-10-15T12:00:00Z"
+    },
+    {
+      "stock_id": 3040,
+      "sku": "WH-733",
+      "warehouse_id": "N1",
+      "quantity_on_hand": 157,
+      "quantity_reserved": 12,
+      "reorder_threshold": 15,
+      "last_updated_at": "2026-10-15T12:00:00Z"
+    },
+    {
+      "stock_id": 3041,
+      "sku": "WH-733",
+      "warehouse_id": "S2",
+      "quantity_on_hand": 28,
+      "quantity_reserved": 15,
+      "reorder_threshold": 20,
+      "last_updated_at": "2026-10-15T12:00:00Z"
+    },
+    {
+      "stock_id": 3042,
+      "sku": "WH-733",
+      "warehouse_id": "W3",
+      "quantity_on_hand": 59,
+      "quantity_reserved": 18,
+      "reorder_threshold": 25,
+      "last_updated_at": "2026-10-15T12:00:00Z"
+    },
+    {
+      "stock_id": 3043,
+      "sku": "WH-703",
+      "warehouse_id": "N1",
+      "quantity_on_hand": 16,
+      "quantity_reserved": 15,
+      "reorder_threshold": 20,
+      "last_updated_at": "2026-10-15T12:00:00Z"
+    },
+    {
+      "stock_id": 3044,
+      "sku": "WH-703",
+      "warehouse_id": "S2",
+      "quantity_on_hand": 47,
+      "quantity_reserved": 18,
+      "reorder_threshold": 25,
+      "last_updated_at": "2026-10-15T12:00:00Z"
+    },
+    {
+      "stock_id": 3045,
+      "sku": "WH-703",
+      "warehouse_id": "W3",
+      "quantity_on_hand": 78,
+      "quantity_reserved": 21,
+      "reorder_threshold": 10,
+      "last_updated_at": "2026-10-15T12:00:00Z"
+    },
+    {
+      "stock_id": 3046,
+      "sku": "WH-720",
+      "warehouse_id": "N1",
+      "quantity_on_hand": 35,
+      "quantity_reserved": 18,
+      "reorder_threshold": 25,
+      "last_updated_at": "2026-10-15T12:00:00Z"
+    },
+    {
+      "stock_id": 3047,
+      "sku": "WH-720",
+      "warehouse_id": "S2",
+      "quantity_on_hand": 66,
+      "quantity_reserved": 21,
+      "reorder_threshold": 10,
+      "last_updated_at": "2026-10-15T12:00:00Z"
+    },
+    {
+      "stock_id": 3048,
+      "sku": "WH-720",
+      "warehouse_id": "W3",
+      "quantity_on_hand": 97,
+      "quantity_reserved": 24,
+      "reorder_threshold": 15,
+      "last_updated_at": "2026-10-15T12:00:00Z"
+    },
+    {
+      "stock_id": 3049,
+      "sku": "WH-737",
+      "warehouse_id": "N1",
+      "quantity_on_hand": 54,
+      "quantity_reserved": 21,
+      "reorder_threshold": 10,
+      "last_updated_at": "2026-10-15T12:00:00Z"
+    },
+    {
+      "stock_id": 3050,
+      "sku": "WH-737",
+      "warehouse_id": "S2",
+      "quantity_on_hand": 85,
+      "quantity_reserved": 24,
+      "reorder_threshold": 15,
+      "last_updated_at": "2026-10-15T12:00:00Z"
+    },
+    {
+      "stock_id": 3051,
+      "sku": "WH-737",
+      "warehouse_id": "W3",
+      "quantity_on_hand": 116,
+      "quantity_reserved": 0,
+      "reorder_threshold": 20,
+      "last_updated_at": "2026-10-15T12:00:00Z"
+    },
+    {
+      "stock_id": 3052,
+      "sku": "WH-707",
+      "warehouse_id": "N1",
+      "quantity_on_hand": 73,
+      "quantity_reserved": 24,
+      "reorder_threshold": 15,
+      "last_updated_at": "2026-10-15T12:00:00Z"
+    },
+    {
+      "stock_id": 3053,
+      "sku": "WH-707",
+      "warehouse_id": "S2",
+      "quantity_on_hand": 104,
+      "quantity_reserved": 0,
+      "reorder_threshold": 20,
+      "last_updated_at": "2026-10-15T12:00:00Z"
+    },
+    {
+      "stock_id": 3054,
+      "sku": "WH-707",
+      "warehouse_id": "W3",
+      "quantity_on_hand": 135,
+      "quantity_reserved": 3,
+      "reorder_threshold": 25,
+      "last_updated_at": "2026-10-15T12:00:00Z"
+    },
+    {
+      "stock_id": 3055,
+      "sku": "WH-724",
+      "warehouse_id": "N1",
+      "quantity_on_hand": 92,
+      "quantity_reserved": 0,
+      "reorder_threshold": 20,
+      "last_updated_at": "2026-10-15T12:00:00Z"
+    },
+    {
+      "stock_id": 3056,
+      "sku": "WH-724",
+      "warehouse_id": "S2",
+      "quantity_on_hand": 123,
+      "quantity_reserved": 3,
+      "reorder_threshold": 25,
+      "last_updated_at": "2026-10-15T12:00:00Z"
+    },
+    {
+      "stock_id": 3057,
+      "sku": "WH-724",
+      "warehouse_id": "W3",
+      "quantity_on_hand": 154,
+      "quantity_reserved": 6,
+      "reorder_threshold": 10,
+      "last_updated_at": "2026-10-15T12:00:00Z"
+    },
+    {
+      "stock_id": 3058,
+      "sku": "WH-741",
+      "warehouse_id": "N1",
+      "quantity_on_hand": 111,
+      "quantity_reserved": 3,
+      "reorder_threshold": 25,
+      "last_updated_at": "2026-10-15T12:00:00Z"
+    },
+    {
+      "stock_id": 3059,
+      "sku": "WH-741",
+      "warehouse_id": "S2",
+      "quantity_on_hand": 142,
+      "quantity_reserved": 6,
+      "reorder_threshold": 10,
+      "last_updated_at": "2026-10-15T12:00:00Z"
+    },
+    {
+      "stock_id": 3060,
+      "sku": "WH-741",
+      "warehouse_id": "W3",
+      "quantity_on_hand": 13,
+      "quantity_reserved": 9,
+      "reorder_threshold": 15,
+      "last_updated_at": "2026-10-15T12:00:00Z"
+    },
+    {
+      "stock_id": 3061,
+      "sku": "WH-711",
+      "warehouse_id": "N1",
+      "quantity_on_hand": 130,
+      "quantity_reserved": 6,
+      "reorder_threshold": 10,
+      "last_updated_at": "2026-10-15T12:00:00Z"
+    },
+    {
+      "stock_id": 3062,
+      "sku": "WH-711",
+      "warehouse_id": "S2",
+      "quantity_on_hand": 1,
+      "quantity_reserved": 1,
+      "reorder_threshold": 15,
+      "last_updated_at": "2026-10-15T12:00:00Z"
+    },
+    {
+      "stock_id": 3063,
+      "sku": "WH-711",
+      "warehouse_id": "W3",
+      "quantity_on_hand": 32,
+      "quantity_reserved": 12,
+      "reorder_threshold": 20,
+      "last_updated_at": "2026-10-15T12:00:00Z"
+    },
+    {
+      "stock_id": 3064,
+      "sku": "WH-728",
+      "warehouse_id": "N1",
+      "quantity_on_hand": 149,
+      "quantity_reserved": 9,
+      "reorder_threshold": 15,
+      "last_updated_at": "2026-10-15T12:00:00Z"
+    },
+    {
+      "stock_id": 3065,
+      "sku": "WH-728",
+      "warehouse_id": "S2",
+      "quantity_on_hand": 20,
+      "quantity_reserved": 12,
+      "reorder_threshold": 20,
+      "last_updated_at": "2026-10-15T12:00:00Z"
+    },
+    {
+      "stock_id": 3066,
+      "sku": "WH-728",
+      "warehouse_id": "W3",
+      "quantity_on_hand": 51,
+      "quantity_reserved": 15,
+      "reorder_threshold": 25,
+      "last_updated_at": "2026-10-15T12:00:00Z"
+    },
+    {
+      "stock_id": 3067,
+      "sku": "WH-745",
+      "warehouse_id": "N1",
+      "quantity_on_hand": 8,
+      "quantity_reserved": 8,
+      "reorder_threshold": 20,
+      "last_updated_at": "2026-10-15T12:00:00Z"
+    },
+    {
+      "stock_id": 3068,
+      "sku": "WH-745",
+      "warehouse_id": "S2",
+      "quantity_on_hand": 39,
+      "quantity_reserved": 15,
+      "reorder_threshold": 25,
+      "last_updated_at": "2026-10-15T12:00:00Z"
+    },
+    {
+      "stock_id": 3069,
+      "sku": "WH-745",
+      "warehouse_id": "W3",
+      "quantity_on_hand": 70,
+      "quantity_reserved": 18,
+      "reorder_threshold": 10,
+      "last_updated_at": "2026-10-15T12:00:00Z"
+    },
+    {
+      "stock_id": 3070,
+      "sku": "WH-715",
+      "warehouse_id": "N1",
+      "quantity_on_hand": 27,
+      "quantity_reserved": 15,
+      "reorder_threshold": 25,
+      "last_updated_at": "2026-10-15T12:00:00Z"
+    },
+    {
+      "stock_id": 3071,
+      "sku": "WH-715",
+      "warehouse_id": "S2",
+      "quantity_on_hand": 58,
+      "quantity_reserved": 18,
+      "reorder_threshold": 10,
+      "last_updated_at": "2026-10-15T12:00:00Z"
+    },
+    {
+      "stock_id": 3072,
+      "sku": "WH-715",
+      "warehouse_id": "W3",
+      "quantity_on_hand": 89,
+      "quantity_reserved": 21,
+      "reorder_threshold": 15,
+      "last_updated_at": "2026-10-15T12:00:00Z"
+    },
+    {
+      "stock_id": 3073,
+      "sku": "WH-732",
+      "warehouse_id": "N1",
+      "quantity_on_hand": 46,
+      "quantity_reserved": 18,
+      "reorder_threshold": 10,
+      "last_updated_at": "2026-10-15T12:00:00Z"
+    },
+    {
+      "stock_id": 3074,
+      "sku": "WH-732",
+      "warehouse_id": "S2",
+      "quantity_on_hand": 77,
+      "quantity_reserved": 21,
+      "reorder_threshold": 15,
+      "last_updated_at": "2026-10-15T12:00:00Z"
+    },
+    {
+      "stock_id": 3075,
+      "sku": "WH-732",
+      "warehouse_id": "W3",
+      "quantity_on_hand": 108,
+      "quantity_reserved": 24,
+      "reorder_threshold": 20,
+      "last_updated_at": "2026-10-15T12:00:00Z"
+    },
+    {
+      "stock_id": 3076,
+      "sku": "WH-702",
+      "warehouse_id": "N1",
+      "quantity_on_hand": 65,
+      "quantity_reserved": 21,
+      "reorder_threshold": 15,
+      "last_updated_at": "2026-10-15T12:00:00Z"
+    },
+    {
+      "stock_id": 3077,
+      "sku": "WH-702",
+      "warehouse_id": "S2",
+      "quantity_on_hand": 96,
+      "quantity_reserved": 24,
+      "reorder_threshold": 20,
+      "last_updated_at": "2026-10-15T12:00:00Z"
+    },
+    {
+      "stock_id": 3078,
+      "sku": "WH-702",
+      "warehouse_id": "W3",
+      "quantity_on_hand": 127,
+      "quantity_reserved": 0,
+      "reorder_threshold": 25,
+      "last_updated_at": "2026-10-15T12:00:00Z"
+    },
+    {
+      "stock_id": 3079,
+      "sku": "WH-719",
+      "warehouse_id": "N1",
+      "quantity_on_hand": 84,
+      "quantity_reserved": 24,
+      "reorder_threshold": 20,
+      "last_updated_at": "2026-10-15T12:00:00Z"
+    },
+    {
+      "stock_id": 3080,
+      "sku": "WH-719",
+      "warehouse_id": "S2",
+      "quantity_on_hand": 115,
+      "quantity_reserved": 0,
+      "reorder_threshold": 25,
+      "last_updated_at": "2026-10-15T12:00:00Z"
+    },
+    {
+      "stock_id": 3081,
+      "sku": "WH-719",
+      "warehouse_id": "W3",
+      "quantity_on_hand": 146,
+      "quantity_reserved": 3,
+      "reorder_threshold": 10,
+      "last_updated_at": "2026-10-15T12:00:00Z"
+    },
+    {
+      "stock_id": 3082,
+      "sku": "WH-736",
+      "warehouse_id": "N1",
+      "quantity_on_hand": 103,
+      "quantity_reserved": 0,
+      "reorder_threshold": 25,
+      "last_updated_at": "2026-10-15T12:00:00Z"
+    },
+    {
+      "stock_id": 3083,
+      "sku": "WH-736",
+      "warehouse_id": "S2",
+      "quantity_on_hand": 134,
+      "quantity_reserved": 3,
+      "reorder_threshold": 10,
+      "last_updated_at": "2026-10-15T12:00:00Z"
+    },
+    {
+      "stock_id": 3084,
+      "sku": "WH-736",
+      "warehouse_id": "W3",
+      "quantity_on_hand": 5,
+      "quantity_reserved": 5,
+      "reorder_threshold": 15,
+      "last_updated_at": "2026-10-15T12:00:00Z"
+    },
+    {
+      "stock_id": 3085,
+      "sku": "WH-706",
+      "warehouse_id": "N1",
+      "quantity_on_hand": 122,
+      "quantity_reserved": 3,
+      "reorder_threshold": 10,
+      "last_updated_at": "2026-10-15T12:00:00Z"
+    },
+    {
+      "stock_id": 3086,
+      "sku": "WH-706",
+      "warehouse_id": "S2",
+      "quantity_on_hand": 153,
+      "quantity_reserved": 6,
+      "reorder_threshold": 15,
+      "last_updated_at": "2026-10-15T12:00:00Z"
+    },
+    {
+      "stock_id": 3087,
+      "sku": "WH-706",
+      "warehouse_id": "W3",
+      "quantity_on_hand": 24,
+      "quantity_reserved": 9,
+      "reorder_threshold": 20,
+      "last_updated_at": "2026-10-15T12:00:00Z"
+    },
+    {
+      "stock_id": 3088,
+      "sku": "WH-723",
+      "warehouse_id": "N1",
+      "quantity_on_hand": 141,
+      "quantity_reserved": 6,
+      "reorder_threshold": 15,
+      "last_updated_at": "2026-10-15T12:00:00Z"
+    },
+    {
+      "stock_id": 3089,
+      "sku": "WH-723",
+      "warehouse_id": "S2",
+      "quantity_on_hand": 12,
+      "quantity_reserved": 9,
+      "reorder_threshold": 20,
+      "last_updated_at": "2026-10-15T12:00:00Z"
+    },
+    {
+      "stock_id": 3090,
+      "sku": "WH-723",
+      "warehouse_id": "W3",
+      "quantity_on_hand": 43,
+      "quantity_reserved": 12,
+      "reorder_threshold": 25,
+      "last_updated_at": "2026-10-15T12:00:00Z"
+    }
+  ]
+}
