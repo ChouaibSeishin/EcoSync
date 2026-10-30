@@ -1,0 +1,32 @@
+name: ecosync-demo-v1
+services:
+  sales:
+    image: postgres:17.11-bookworm@sha256:2cd2c0f809604aaeff6f0ec8f40aecbd025613107561015c69369a1a7f1d3416
+    platform: linux/amd64
+    environment:
+      POSTGRES_INITDB_ARGS: --auth-host=scram-sha-256 --auth-local=trust
+      POSTGRES_DB: sales
+      POSTGRES_USER: sales_owner
+      POSTGRES_PASSWORD: ${SALES_OWNER_PASSWORD:?Run node scripts/init-demo.mjs}
+      SALES_MIGRATION_PASSWORD: ${SALES_MIGRATION_PASSWORD:?Required}
+      SALES_READER_PASSWORD: ${SALES_READER_PASSWORD:?Required}
+      TZ: UTC
+    ports: ["127.0.0.1:${SALES_PORT:-55433}:5432"]
+    volumes:
+      - sales-data:/var/lib/postgresql/data
+      - ../../demo-systems/sales-postgres/init.sh:/docker-entrypoint-initdb.d/10-sales.sh:ro
+      - ../../demo-systems/sales-postgres/migrations:/migrations:ro
+    networks: [sources]
+    mem_limit: 512m
+    cpus: 1.0
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U sales_owner -d sales && PGPASSWORD=$$SALES_READER_PASSWORD psql -h 127.0.0.1 -U sales_reader -d sales -Atc 'SELECT count(*)=432 FROM sales.order_lines' | grep -qx t"]
+      interval: 5s
+      timeout: 5s
+      retries: 40
+      start_period: 15s
+volumes:
+  sales-data:
+networks:
+  sources:
+    internal: true

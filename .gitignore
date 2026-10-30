@@ -24,3 +24,4 @@ test-results/
 .vscode/
 .DS_Store
 Thumbs.db
+infra/docker/demo.env
