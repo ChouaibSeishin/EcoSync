@@ -1,6 +1,6 @@
 # Backlog
 
-Phase 1 P1-01 through P1-09 are complete with local and actual GitHub Actions acceptance evidence. Phase 2 checkpoints A-F are locally verified; P2-G final regression/CI/handoff is in progress. Phases 3-11 remain unimplemented. See PROJECT_STATUS.md and the Phase 1 verification report for evidence. P0 = foundation-critical priority, P1 = required phase scope, P2 = later extension. IDs remain stable between phases.
+Phase 1 P1-01 through P1-09 are complete with local and actual GitHub Actions acceptance evidence. Phase 2 checkpoints A-G are complete with local and actual GitHub Actions evidence; see docs/development/PHASE_2_ACCEPTANCE.md. Phases 3-11 remain unimplemented. See PROJECT_STATUS.md and the Phase 1 verification report for evidence. P0 = foundation-critical priority, P1 = required phase scope, P2 = later extension. IDs remain stable between phases.
 
 ## Phase 1: ordered implementation plan
 
@@ -18,11 +18,11 @@ Phase 1 P1-01 through P1-09 are complete with local and actual GitHub Actions ac
 
 Phase 1 deliberately includes minimum identity security because exposing a skeleton with protected data endpoints must not depend on the Phase 8 hardening milestone. It does not include dynamic integrations or LLM orchestration.
 
-## Later phase work packages and risks
+## Cross-phase work packages and remaining risks
 
 | ID | Phase | Scope / gate |
 | --- | --- | --- |
-| P2-01 / P1 | 2 | Delivered independent schemas/fixtures/mappings/36 expected cases; final Phase 2 CI gate in progress |
+| P2-01 / P1 | 2 | Delivered independent schemas/fixtures/mappings/36 expected cases; complete Phase 2 CI passed |
 | P3-01 / P0 | 3 | Prove protocol negotiation against SDK 2.1.0 and remote servers; assess 2026 specification support; update ADR if a supported stable SDK is required; deny unsupported revisions rather than inventing compatibility |
 | P3-02 / P0 | 3 | Runtime client registry keyed by org/integration/config version; disable built-in global tool export; stale schema approval revocation; disconnect/cancel/close tests |
 | P3-03 / P0 | 3 | Secure native servers and host authorization; first independent real discovery/invocation test; capabilities are untrusted |
@@ -43,7 +43,7 @@ Phase 1 deliberately includes minimum identity security because exposing a skele
 
 The implementing developer owns each decision unless the user must supply external access. Exact later-phase infrastructure, observability, model and image-digest pins are selected before their first implementation, not guessed now. P1-01 owns advisory checks and runtime tool upgrades. P3-01 owns the current-spec interoperability gap. P6-01 owns model choice after resource measurement. P10-01 owns a project-specific development deployment destination and GitOps repository provisioning with the owner. None blocks writing the Phase 1 skeleton once its toolchain prerequisites are met.
 
-## Phase 2 ordered work packages (A-F locally verified; G in progress)
+## Phase 2 ordered work packages (A-G complete)
 
 | ID | Checkpoint | Required verification |
 | --- | --- | --- |

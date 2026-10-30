@@ -1,9 +1,9 @@
 # Phase 2 verification
-Updated 2026-10-30. Phase 2 only. Checkpoints A-F passed locally; full regression and actual CI checkpoint G are in progress. Chronological notes below retain corrected failures.
+Updated 2026-10-30. Phase 2 only. **Checkpoints A-G complete**: local checks and both jobs in [run 41061522829](https://github.com/ChouaibSeishin/EcoSync/actions/runs/41061522829) succeeded at 002cdd6348dd1f39481255ae4472d66a967ce559. Chronological notes below retain corrected failures.
 
 Inspection found a clean Phase 1 working tree at 603cfb993566f465d0c3328f175d71b27f6a4942; origin matches ChouaibSeishin/EcoSync. Both phase branch refs and ancestry verified. GitHub API reports intentional public visibility and both accepted CI runs completed successfully. New branch codex/phase-2-demo-ecosystem is based on the exact Phase 1 final commit.
 
-Checkpoint A: historical Phase 1 addendum, source/data/API design, external mapping/oracle format, ADR and ordered backlog. Documentation/pin checks will be recorded before advancing. Database/API/fixture/CI acceptance remains pending.
+Checkpoint A: historical Phase 1 addendum, source/data/API design, external mapping/oracle format, ADR and ordered backlog. This initial checkpoint was design-only; later entries below record the actual database/API/fixture/CI acceptance.
 
 Checkpoint B passed locally: all 628 sales business rows exactly match the committed fixture; seven reader write/DDL/control-table denials, invalid TCP password rejection and five CHECK/FK violations were exercised. Monthly realized revenue (UTC October window) is EUR 32033.59, GBP 29495.75, USD 145444.58. An initial wrong-password test exposed PostgreSQL localhost trust defaults; explicit scram-sha-256 host initialization and a non-destructive test-volume authentication correction resolved it. Fresh-volume reproduction remains checkpoint F.
 
@@ -25,10 +25,47 @@ Final supplier typecheck/build/OpenAPI validation and all 14 test groups passed.
 
 The workflow retains the exact accepted Phase 1 job (enforced against Git history or a committed snapshot for shallow CI checkouts) and adds an independent demo job: supplier build/contract/tests/audit; fixture/mapping/case/hash checks; real DB migrations and reader denials; HTTP and independent SQL ground truth; outage/restart persistence; two fresh random-credential initializations. Actions remain SHA-pinned, permissions remain contents:read, and there is no publishing/deployment credential or blanket skip.
 
-Final local checks include both Compose configs, parsed workflow YAML, 32 required deliverables, 30 Markdown files/77 local links, platform/supplier pins, source/known-secret review and whitespace. Git diff against 603cfb9 shows no changes under backend/, frontend/, platform compose.yaml or init-db.sh. Only the new Phase 2 branch will be pushed; actual run evidence is pending and is not represented as success.
+Final local checks include both Compose configs, parsed workflow YAML, 32 required deliverables, 30 Markdown files/77 local links, platform/supplier pins, source/known-secret review and whitespace. Git diff against 603cfb9 shows no changes under backend/, frontend/, platform compose.yaml or init-db.sh. At the first code push, actual run evidence was pending and was not represented as success. Subsequent results and corrections are recorded below.
 
 ## First GitHub Actions result and portability correction
 
 [Run 41060229162](https://github.com/ChouaibSeishin/EcoSync/actions/runs/41060229162), head 3cb3e5212696b8632334aecc68f29f9273f0219f: the complete unchanged Phase 1 verify job succeeded. The demo job passed supplier clean install/type/build/OpenAPI/14 test groups/audit and all fixture/mapping/case/oracle/hash checks, then failed at MySQL container initialization. Later demo runtime steps were correctly not run; this was not a successful Phase 2 run.
 
 Inspection of the pinned official MySQL entrypoint showed that Git's non-executable 100644 init script is sourced on Linux; Windows bind mounts had executed it. A safe local sourced-mode reproduction with mocked SQL clients raised MYSQL_ONETIME_PASSWORD: unbound variable after the script enabled nounset in the parent shell. Both new source init scripts now isolate shell options in subshells and have executable Git modes. Source-mode regression checks verify that parent options do not change without issuing SQL. Bounded failure-only container diagnostics were added to the demo job; they do not print environment configuration. Both corrected fresh projects (ecosync-demo-repro-b419eeae9a75-a/b) passed all row/permission/constraint/HTTP/SQL/checksum checks and retained the same actual business fingerprint 596536dcd9fdbbd1f9334e9e2e92c23cf29ca07bb225a587bf604e3758332725. The updated sourced-mode and independent lifecycle suite also passed before the correction push. The first run and corrected failure remain part of this record.
+
+## Final Phase 2 handoff
+
+Accepted code head: **002cdd6348dd1f39481255ae4472d66a967ce559** on **codex/phase-2-demo-ecosystem**. [GitHub Actions run 41061522829](https://github.com/ChouaibSeishin/EcoSync/actions/runs/41061522829) completed successfully: **verify = success** and **Independent demo sources and dataset = success**. Required checks were not bypassed. Its two fresh Linux projects (ecosync-demo-repro-4e47e98e0ade-a/b) produced the same 596536dcd9fdbbd1f9334e9e2e92c23cf29ca07bb225a587bf604e3758332725 business fingerprint as both Windows verification pairs. Final source review and tracked-file diff checks passed in CI.
+
+| System | Technology / contract | Delivered snapshot |
+| --- | --- | --- |
+| Sales | PostgreSQL 17.11, independent database/schema/volume, integer product IDs, TIMESTAMPTZ, exact NUMERIC and FKs/CHECKs/indexes | sales-v1: 34 products, 18 anonymous customers, 144 orders, 432 lines |
+| Inventory | MySQL 8.4.13 LTS, independent InnoDB database/volume, case-sensitive SKU/warehouse IDs, UTC DATETIME and stock constraints | inventory-v1: 30 SKUs, 3 warehouses, 90 stock rows |
+| Supplier | Node 24.22.2 / TypeScript 6.0.3 / Fastify 5.12.7 / AJV 8.20.0, own immutable JSON, non-root read-only container | supplier-v1: 10 suppliers, 40 offers; OpenAPI 3.0.3 contract version 1.0.0 |
+
+Contracts: [sales DDL](../../demo-systems/sales-postgres/migrations/V001__schema.sql), [inventory DDL](../../demo-systems/inventory-mysql/migrations/V001__schema.sql), [OpenAPI](../../demo-systems/supplier-api/openapi.json), [data dictionary](../architecture/DEMO_DATA_DICTIONARY.md) and [API behavior](../architecture/DEMO_API_CONTRACT.md). API GET operations are /health/live, /health/ready, /openapi.json, /v1/suppliers, /v1/suppliers/{supplierId}, /v1/offers and /v1/offers/{offerId}; data requires a generated bearer credential. Lists use stable IDs, bounded pagination and explicit filters. No write operations exist.
+
+[Startup and verification commands](DEMO_SYSTEMS_SETUP.md) use a separate demo Compose lifecycle with sales, inventory and supplier services, loopback ports 55433/53307/18081, separate DB volumes, unique source credentials and a dedicated bridge. The platform's own Compose, backend and frontend are unchanged and remain independently startable. Every source can run without the others, evaluation artifacts or a model.
+
+Database results: seven sales and eight inventory reader denials, invalid-password tests for both, and five actual CHECK/FK violations per database passed on the main setup and fresh instances. All 751 relational business rows and 50 REST rows match source fixtures. Revenue is FULFILLED-only, line-total discounts are exact, currency totals stay separate and UTC windows are half-open. Available inventory/low-stock calculations respect units and warehouse scope. Supplier eligibility considers active supplier, validity, minimum/available quantity, currency and unit; there is no cheapest-supplier inference.
+
+Dataset v1.0.0: [manifest](../../evaluation/datasets/v1/manifest.json), [mapping records](../../evaluation/datasets/v1/mappings/relationships.json), [case specification](../research/DATASET_SPECIFICATION.md), [independent method](../research/GROUND_TRUTH_METHOD.md). There are 65 external mapping records, with 22 approved sales identities and 27 catalog memberships; ambiguity/conflict/missing/null/unit rejection remains explicit. Thirty development cases have three examples per each of ten required categories; six additional held-out cases are stored separately. Twenty-six expectations are fixture-derived, nine are declared future policy, and one mixes preserved inventory facts with an outage policy. Expected artifacts have exact values/provenance and 27 SHA-256 hashes. No model generated them; no benchmark, accuracy, latency or hypothesis result is claimed.
+
+Incremental Git checkpoints:
+
+| Commit | Purpose |
+| --- | --- |
+| 3120db6 | Phase 1 final-run reconciliation and source/data/API design |
+| 93c9fe4 | Constrained, deterministic sales PostgreSQL and actual reader tests |
+| 040703d | Independent inventory MySQL and permissions/stock tests |
+| ab7fc92 | Supplier process/authentication/OpenAPI/tests/container |
+| 594ad81 | Independent lifecycle, persistence and platform separation |
+| ea247e7 | Reference mappings, 36 cases, independent oracle/hashes/two-fresh proof |
+| 3cb3e52 | Full CI extension, final local regression, bounded router errors and docs |
+| 002cdd6 | Linux initializer portability correction and regression/diagnostic coverage |
+
+The Phase 0 ref remains 6a1749f40d394933c0e4b421048eab96818da436, Phase 1 remains 603cfb993566f465d0c3328f175d71b27f6a4942, and intentional public visibility/default branch are unchanged. No force push or merge occurred. This final evidence update changes documentation only; its branch-head workflow must also pass, and the actual follow-up run is reported in the chat handoff.
+
+Known limitations: this is a localhost synthetic ecosystem with small fixed snapshots, not a production source platform. Initializers target empty fixture volumes; verification detects drift, but live upgrade/seed replacement is not automatic. Supplier persistence is immutable JSON. HTTP/SQL transport and locally stored demo configuration are development choices. Point-in-time audits/source reviews do not establish comprehensive production security. Test volumes and ignored credential files remain for inspection; no existing volume was deleted. Source policy cases do not implement a tool host.
+
+**Next starting point is P3-01 only after explicit user authorization:** refresh official MCP/Java SDK/Spring AI compatibility, resolve the accepted protocol-version gap, and design/prove real native server discovery/invocation, authentication, bounds and lifecycle behavior. No MCP server/client/gateway, platform connector, integration registry UI, LLM/chat, mapping management UI, benchmark executor, Kubernetes/Argo or publishing capability was implemented. Phase 3 has not started.

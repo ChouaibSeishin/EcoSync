@@ -4,7 +4,7 @@ Updated: 2026-10-30 UTC. Authorized scope: **Phase 2 only**.
 
 ## Current delivery state
 
-Phase 0 remains accepted at 6a1749f40d394933c0e4b421048eab96818da436. Phase 1 is complete at 603cfb993566f465d0c3328f175d71b27f6a4942 with both accepted CI runs preserved. Phase 2 checkpoints A-F passed locally; checkpoint G full regression/actual CI verification is in progress. See [Phase 2 verification](docs/development/PHASE_2_VERIFICATION.md) and [acceptance](docs/development/PHASE_2_ACCEPTANCE.md).
+Phase 0 remains accepted at 6a1749f40d394933c0e4b421048eab96818da436. Phase 1 is complete at 603cfb993566f465d0c3328f175d71b27f6a4942 with both accepted CI runs preserved. **Phase 2 is complete.** Checkpoints A-G passed locally and in actual [GitHub Actions run 41061522829](https://github.com/ChouaibSeishin/EcoSync/actions/runs/41061522829) at code commit 002cdd6348dd1f39481255ae4472d66a967ce559; both the unchanged Phase 1 verify job and the independent demo job succeeded. See [Phase 2 verification](docs/development/PHASE_2_VERIFICATION.md) and [acceptance](docs/development/PHASE_2_ACCEPTANCE.md).
 
 Work branch: codex/phase-2-demo-ecosystem, based on the exact verified Phase 1 final commit. Both prior branches remain unchanged. Repository visibility is intentionally public and has not been changed. No unrelated starting changes existed.
 

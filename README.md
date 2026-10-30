@@ -63,7 +63,7 @@ docker compose --env-file infra/docker/demo.env -f infra/docker/demo-systems.com
 
 All ports are localhost-only: sales 55433, inventory 53307 and supplier API 18081. Unique local reader passwords/token stay in ignored configuration. [Demo setup and verification commands](docs/development/DEMO_SYSTEMS_SETUP.md), [data dictionary](docs/architecture/DEMO_DATA_DICTIONARY.md) and [API contract](docs/architecture/DEMO_API_CONTRACT.md) explain access and semantics.
 
-[Dataset v1](docs/research/DATASET_SPECIFICATION.md) has 30 development cases (three per ten categories), six separate held-out cases, external reviewed synthetic mappings and independently computed expected facts with immutable hashes. [Phase 2 verification](docs/development/PHASE_2_VERIFICATION.md) and [acceptance](docs/development/PHASE_2_ACCEPTANCE.md) distinguish completed local evidence from the final CI gate. No benchmark or model evaluation has run.
+[Dataset v1](docs/research/DATASET_SPECIFICATION.md) has 30 development cases (three per ten categories), six separate held-out cases, external reviewed synthetic mappings and independently computed expected facts with immutable hashes. [Phase 2 verification](docs/development/PHASE_2_VERIFICATION.md) and [acceptance](docs/development/PHASE_2_ACCEPTANCE.md) record passed local verification and both successful jobs in [actual CI run 41061522829](https://github.com/ChouaibSeishin/EcoSync/actions/runs/41061522829). No benchmark or model evaluation has run.
 
 ## Architecture and next work
 
