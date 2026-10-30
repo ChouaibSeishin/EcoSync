@@ -3,6 +3,7 @@ import assert from 'node:assert/strict';
 import {pathToFileURL} from 'node:url';
 import {pg,docker,denied} from './runtime.mjs';
 export async function verifySales(){
+ const actual={};
  const data=JSON.parse(await readFile('demo-systems/sales-postgres/fixtures/v1.json','utf8'));
  for(const table of ['products','customers','orders','order_lines']){
   const rows=JSON.parse(pg('SELECT coalesce(json_agg(t),\'[]\') FROM (SELECT * FROM sales.'+table+' ORDER BY '+Object.keys(data[table][0])[0]+') t;').stdout);
@@ -10,6 +11,7 @@ export async function verifySales(){
    for(const key of ['created_at','ordered_at'])if(row[key])row[key]=new Date(row[key]).toISOString().replace('.000Z','Z');
    for(const key of ['unit_price','discount_amount'])if(key in row)row[key]=Number(row[key]).toFixed(2);
   }
+  actual[table]=rows;
   assert.deepEqual(rows,data[table],table+' exact initialized rows');
  }
  for(const sql of [
@@ -32,5 +34,6 @@ export async function verifySales(){
  const summary=pg("SELECT currency_code||':'||sum(quantity*unit_price-discount_amount)::text FROM sales.order_lines l JOIN sales.orders o USING(order_id) WHERE order_status='FULFILLED' AND ordered_at>='2026-10-01T00:00:00Z' AND ordered_at<'2026-11-01T00:00:00Z' GROUP BY currency_code ORDER BY currency_code;").stdout.trim();
  assert.equal(summary.split('\n').length,3);
  console.log('PASS: sales exact rows, 7 reader denials, invalid password, 5 enforced constraints; UTC revenue by currency: '+summary.replaceAll('\n',', '));
+ return actual;
 }
 if(import.meta.url===pathToFileURL(process.argv[1]).href)await verifySales();

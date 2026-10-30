@@ -1,0 +1,765 @@
+[
+  {
+    "caseId": "D01",
+    "split": "development",
+    "category": "single-source",
+    "question": "What was product 1001 realized USD revenue during October 2026 UTC?",
+    "operation": "revenue",
+    "parameters": {
+      "productId": 1001,
+      "currency": "USD"
+    },
+    "requiredSources": [
+      "sales"
+    ],
+    "permissions": {
+      "sales": "sales_reader"
+    },
+    "datasetVersion": "1.0.0",
+    "mappingVersion": "1.0.0",
+    "sourceVersions": {
+      "sales": "sales-v1",
+      "inventory": "inventory-v1",
+      "supplier": "supplier-v1"
+    },
+    "expectedRef": "development/expected.json#D01"
+  },
+  {
+    "caseId": "D02",
+    "split": "development",
+    "category": "single-source",
+    "question": "How much WH-700 stock is available per warehouse and in total EA?",
+    "operation": "stock",
+    "parameters": {
+      "sku": "WH-700"
+    },
+    "requiredSources": [
+      "inventory"
+    ],
+    "permissions": {
+      "inventory": "inventory_reader"
+    },
+    "datasetVersion": "1.0.0",
+    "mappingVersion": "1.0.0",
+    "sourceVersions": {
+      "sales": "sales-v1",
+      "inventory": "inventory-v1",
+      "supplier": "supplier-v1"
+    },
+    "expectedRef": "development/expected.json#D02"
+  },
+  {
+    "caseId": "D03",
+    "split": "development",
+    "category": "single-source",
+    "question": "Which active suppliers operate in NORTH?",
+    "operation": "suppliers",
+    "parameters": {
+      "region": "NORTH",
+      "active": true
+    },
+    "requiredSources": [
+      "supplier"
+    ],
+    "permissions": {
+      "supplier": "bearer-read"
+    },
+    "datasetVersion": "1.0.0",
+    "mappingVersion": "1.0.0",
+    "sourceVersions": {
+      "sales": "sales-v1",
+      "inventory": "inventory-v1",
+      "supplier": "supplier-v1"
+    },
+    "expectedRef": "development/expected.json#D03"
+  },
+  {
+    "caseId": "D04",
+    "split": "development",
+    "category": "two-source",
+    "question": "Compare October revenue and stock for product 1001 using reviewed mappings.",
+    "operation": "bundle",
+    "parameters": {
+      "productId": 1001
+    },
+    "requiredSources": [
+      "sales",
+      "inventory"
+    ],
+    "permissions": {
+      "sales": "sales_reader",
+      "inventory": "inventory_reader"
+    },
+    "datasetVersion": "1.0.0",
+    "mappingVersion": "1.0.0",
+    "sourceVersions": {
+      "sales": "sales-v1",
+      "inventory": "inventory-v1",
+      "supplier": "supplier-v1"
+    },
+    "expectedRef": "development/expected.json#D04"
+  },
+  {
+    "caseId": "D05",
+    "split": "development",
+    "category": "two-source",
+    "question": "Compare October revenue and stock for product 1002 using reviewed mappings.",
+    "operation": "bundle",
+    "parameters": {
+      "productId": 1002
+    },
+    "requiredSources": [
+      "sales",
+      "inventory"
+    ],
+    "permissions": {
+      "sales": "sales_reader",
+      "inventory": "inventory_reader"
+    },
+    "datasetVersion": "1.0.0",
+    "mappingVersion": "1.0.0",
+    "sourceVersions": {
+      "sales": "sales-v1",
+      "inventory": "inventory-v1",
+      "supplier": "supplier-v1"
+    },
+    "expectedRef": "development/expected.json#D05"
+  },
+  {
+    "caseId": "D06",
+    "split": "development",
+    "category": "two-source",
+    "question": "Give October revenue and stock for sales-only product 1034; explain missing stock.",
+    "operation": "bundle",
+    "parameters": {
+      "productId": 1034
+    },
+    "requiredSources": [
+      "sales",
+      "inventory"
+    ],
+    "permissions": {
+      "sales": "sales_reader",
+      "inventory": "inventory_reader"
+    },
+    "datasetVersion": "1.0.0",
+    "mappingVersion": "1.0.0",
+    "sourceVersions": {
+      "sales": "sales-v1",
+      "inventory": "inventory-v1",
+      "supplier": "supplier-v1"
+    },
+    "expectedRef": "development/expected.json#D06"
+  },
+  {
+    "caseId": "D07",
+    "split": "development",
+    "category": "three-source",
+    "question": "Show October USD sales, stock and all eligible offers for product 1001, order quantity 10, at the fixed snapshot.",
+    "operation": "bundle",
+    "parameters": {
+      "productId": 1001,
+      "currency": "USD",
+      "quantity": 10,
+      "withOffers": true
+    },
+    "requiredSources": [
+      "sales",
+      "inventory",
+      "supplier"
+    ],
+    "permissions": {
+      "sales": "sales_reader",
+      "inventory": "inventory_reader",
+      "supplier": "bearer-read"
+    },
+    "datasetVersion": "1.0.0",
+    "mappingVersion": "1.0.0",
+    "sourceVersions": {
+      "sales": "sales-v1",
+      "inventory": "inventory-v1",
+      "supplier": "supplier-v1"
+    },
+    "expectedRef": "development/expected.json#D07"
+  },
+  {
+    "caseId": "D08",
+    "split": "development",
+    "category": "three-source",
+    "question": "Show October GBP sales, stock and eligible offers for product 1003, order quantity 20, at the fixed snapshot.",
+    "operation": "bundle",
+    "parameters": {
+      "productId": 1003,
+      "currency": "GBP",
+      "quantity": 20,
+      "withOffers": true
+    },
+    "requiredSources": [
+      "sales",
+      "inventory",
+      "supplier"
+    ],
+    "permissions": {
+      "sales": "sales_reader",
+      "inventory": "inventory_reader",
+      "supplier": "bearer-read"
+    },
+    "datasetVersion": "1.0.0",
+    "mappingVersion": "1.0.0",
+    "sourceVersions": {
+      "sales": "sales-v1",
+      "inventory": "inventory-v1",
+      "supplier": "supplier-v1"
+    },
+    "expectedRef": "development/expected.json#D08"
+  },
+  {
+    "caseId": "D09",
+    "split": "development",
+    "category": "three-source",
+    "question": "Show October GBP sales, stock and offers for product 1009, including why no offer is eligible at the snapshot.",
+    "operation": "bundle",
+    "parameters": {
+      "productId": 1009,
+      "currency": "GBP",
+      "quantity": 30,
+      "withOffers": true
+    },
+    "requiredSources": [
+      "sales",
+      "inventory",
+      "supplier"
+    ],
+    "permissions": {
+      "sales": "sales_reader",
+      "inventory": "inventory_reader",
+      "supplier": "bearer-read"
+    },
+    "datasetVersion": "1.0.0",
+    "mappingVersion": "1.0.0",
+    "sourceVersions": {
+      "sales": "sales-v1",
+      "inventory": "inventory-v1",
+      "supplier": "supplier-v1"
+    },
+    "expectedRef": "development/expected.json#D09"
+  },
+  {
+    "caseId": "D10",
+    "split": "development",
+    "category": "identifier-matching",
+    "question": "What reviewed inventory identity represents sales product 1007?",
+    "operation": "match",
+    "parameters": {
+      "productId": 1007
+    },
+    "requiredSources": [
+      "sales",
+      "inventory"
+    ],
+    "permissions": {
+      "sales": "sales_reader",
+      "inventory": "inventory_reader"
+    },
+    "datasetVersion": "1.0.0",
+    "mappingVersion": "1.0.0",
+    "sourceVersions": {
+      "sales": "sales-v1",
+      "inventory": "inventory-v1",
+      "supplier": "supplier-v1"
+    },
+    "expectedRef": "development/expected.json#D10"
+  },
+  {
+    "caseId": "D11",
+    "split": "development",
+    "category": "identifier-matching",
+    "question": "Can sales product 1034 be resolved to a stock SKU?",
+    "operation": "match",
+    "parameters": {
+      "productId": 1034
+    },
+    "requiredSources": [
+      "sales",
+      "inventory"
+    ],
+    "permissions": {
+      "sales": "sales_reader",
+      "inventory": "inventory_reader"
+    },
+    "datasetVersion": "1.0.0",
+    "mappingVersion": "1.0.0",
+    "sourceVersions": {
+      "sales": "sales-v1",
+      "inventory": "inventory-v1",
+      "supplier": "supplier-v1"
+    },
+    "expectedRef": "development/expected.json#D11"
+  },
+  {
+    "caseId": "D12",
+    "split": "development",
+    "category": "identifier-matching",
+    "question": "Resolve competing references for sales product 1024 without choosing arbitrarily.",
+    "operation": "match",
+    "parameters": {
+      "productId": 1024
+    },
+    "requiredSources": [
+      "sales",
+      "inventory"
+    ],
+    "permissions": {
+      "sales": "sales_reader",
+      "inventory": "inventory_reader"
+    },
+    "datasetVersion": "1.0.0",
+    "mappingVersion": "1.0.0",
+    "sourceVersions": {
+      "sales": "sales-v1",
+      "inventory": "inventory-v1",
+      "supplier": "supplier-v1"
+    },
+    "expectedRef": "development/expected.json#D12"
+  },
+  {
+    "caseId": "D13",
+    "split": "development",
+    "category": "ambiguous",
+    "question": "What are this month sales? No current date or timezone was supplied.",
+    "operation": "clarify",
+    "parameters": {
+      "kind": "date"
+    },
+    "requiredSources": [
+      "sales"
+    ],
+    "permissions": {
+      "sales": "sales_reader"
+    },
+    "datasetVersion": "1.0.0",
+    "mappingVersion": "1.0.0",
+    "sourceVersions": {
+      "sales": "sales-v1",
+      "inventory": "inventory-v1",
+      "supplier": "supplier-v1"
+    },
+    "expectedRef": "development/expected.json#D13"
+  },
+  {
+    "caseId": "D14",
+    "split": "development",
+    "category": "ambiguous",
+    "question": "Which exact sales product does USB-C Dock identify?",
+    "operation": "clarify",
+    "parameters": {
+      "kind": "label",
+      "label": "USB-C Dock"
+    },
+    "requiredSources": [
+      "sales"
+    ],
+    "permissions": {
+      "sales": "sales_reader"
+    },
+    "datasetVersion": "1.0.0",
+    "mappingVersion": "1.0.0",
+    "sourceVersions": {
+      "sales": "sales-v1",
+      "inventory": "inventory-v1",
+      "supplier": "supplier-v1"
+    },
+    "expectedRef": "development/expected.json#D14"
+  },
+  {
+    "caseId": "D15",
+    "split": "development",
+    "category": "ambiguous",
+    "question": "How much inventory is there overall when units differ?",
+    "operation": "clarify",
+    "parameters": {
+      "kind": "units"
+    },
+    "requiredSources": [
+      "inventory"
+    ],
+    "permissions": {
+      "inventory": "inventory_reader"
+    },
+    "datasetVersion": "1.0.0",
+    "mappingVersion": "1.0.0",
+    "sourceVersions": {
+      "sales": "sales-v1",
+      "inventory": "inventory-v1",
+      "supplier": "supplier-v1"
+    },
+    "expectedRef": "development/expected.json#D15"
+  },
+  {
+    "caseId": "D16",
+    "split": "development",
+    "category": "unauthorized",
+    "question": "List offers with no bearer credential.",
+    "operation": "policy",
+    "parameters": {
+      "policy": "missing-bearer"
+    },
+    "requiredSources": [
+      "supplier"
+    ],
+    "permissions": {
+      "supplier": "unauthenticated"
+    },
+    "datasetVersion": "1.0.0",
+    "mappingVersion": "1.0.0",
+    "sourceVersions": {
+      "sales": "sales-v1",
+      "inventory": "inventory-v1",
+      "supplier": "supplier-v1"
+    },
+    "expectedRef": "development/expected.json#D16"
+  },
+  {
+    "caseId": "D17",
+    "split": "development",
+    "category": "unauthorized",
+    "question": "Update a sales product using sales_reader.",
+    "operation": "policy",
+    "parameters": {
+      "policy": "sales-write"
+    },
+    "requiredSources": [
+      "sales"
+    ],
+    "permissions": {
+      "sales": "sales_reader"
+    },
+    "datasetVersion": "1.0.0",
+    "mappingVersion": "1.0.0",
+    "sourceVersions": {
+      "sales": "sales-v1",
+      "inventory": "inventory-v1",
+      "supplier": "supplier-v1"
+    },
+    "expectedRef": "development/expected.json#D17"
+  },
+  {
+    "caseId": "D18",
+    "split": "development",
+    "category": "unauthorized",
+    "question": "Create an inventory table using inventory_reader.",
+    "operation": "policy",
+    "parameters": {
+      "policy": "inventory-ddl"
+    },
+    "requiredSources": [
+      "inventory"
+    ],
+    "permissions": {
+      "inventory": "inventory_reader"
+    },
+    "datasetVersion": "1.0.0",
+    "mappingVersion": "1.0.0",
+    "sourceVersions": {
+      "sales": "sales-v1",
+      "inventory": "inventory-v1",
+      "supplier": "supplier-v1"
+    },
+    "expectedRef": "development/expected.json#D18"
+  },
+  {
+    "caseId": "D19",
+    "split": "development",
+    "category": "unavailable-invalid-credentials",
+    "question": "Return known WH-700 stock when the supplier source is offline.",
+    "operation": "policy",
+    "parameters": {
+      "policy": "supplier-offline",
+      "sku": "WH-700"
+    },
+    "requiredSources": [
+      "inventory",
+      "supplier"
+    ],
+    "permissions": {
+      "inventory": "inventory_reader",
+      "supplier": "bearer-read"
+    },
+    "datasetVersion": "1.0.0",
+    "mappingVersion": "1.0.0",
+    "sourceVersions": {
+      "sales": "sales-v1",
+      "inventory": "inventory-v1",
+      "supplier": "supplier-v1"
+    },
+    "expectedRef": "development/expected.json#D19"
+  },
+  {
+    "caseId": "D20",
+    "split": "development",
+    "category": "unavailable-invalid-credentials",
+    "question": "Query sales using an invalid database password.",
+    "operation": "policy",
+    "parameters": {
+      "policy": "invalid-db-password"
+    },
+    "requiredSources": [
+      "sales"
+    ],
+    "permissions": {
+      "sales": "invalid-password"
+    },
+    "datasetVersion": "1.0.0",
+    "mappingVersion": "1.0.0",
+    "sourceVersions": {
+      "sales": "sales-v1",
+      "inventory": "inventory-v1",
+      "supplier": "supplier-v1"
+    },
+    "expectedRef": "development/expected.json#D20"
+  },
+  {
+    "caseId": "D21",
+    "split": "development",
+    "category": "unavailable-invalid-credentials",
+    "question": "List offers with an invalid bearer token.",
+    "operation": "policy",
+    "parameters": {
+      "policy": "invalid-bearer"
+    },
+    "requiredSources": [
+      "supplier"
+    ],
+    "permissions": {
+      "supplier": "invalid-bearer"
+    },
+    "datasetVersion": "1.0.0",
+    "mappingVersion": "1.0.0",
+    "sourceVersions": {
+      "sales": "sales-v1",
+      "inventory": "inventory-v1",
+      "supplier": "supplier-v1"
+    },
+    "expectedRef": "development/expected.json#D21"
+  },
+  {
+    "caseId": "D22",
+    "split": "development",
+    "category": "malformed-oversized",
+    "question": "Handle a hypothetical tool response exceeding this case limit of 65536 UTF-8 bytes.",
+    "operation": "fault",
+    "parameters": {
+      "kind": "oversized",
+      "byteLimit": 65536
+    },
+    "requiredSources": [
+      "supplier"
+    ],
+    "permissions": {
+      "supplier": "bearer-read"
+    },
+    "datasetVersion": "1.0.0",
+    "mappingVersion": "1.0.0",
+    "sourceVersions": {
+      "sales": "sales-v1",
+      "inventory": "inventory-v1",
+      "supplier": "supplier-v1"
+    },
+    "expectedRef": "development/expected.json#D22"
+  },
+  {
+    "caseId": "D23",
+    "split": "development",
+    "category": "malformed-oversized",
+    "question": "Handle a response with a malformed monetary decimal string.",
+    "operation": "fault",
+    "parameters": {
+      "kind": "money"
+    },
+    "requiredSources": [
+      "supplier"
+    ],
+    "permissions": {
+      "supplier": "bearer-read"
+    },
+    "datasetVersion": "1.0.0",
+    "mappingVersion": "1.0.0",
+    "sourceVersions": {
+      "sales": "sales-v1",
+      "inventory": "inventory-v1",
+      "supplier": "supplier-v1"
+    },
+    "expectedRef": "development/expected.json#D23"
+  },
+  {
+    "caseId": "D24",
+    "split": "development",
+    "category": "malformed-oversized",
+    "question": "Handle a truncated JSON source response.",
+    "operation": "fault",
+    "parameters": {
+      "kind": "json"
+    },
+    "requiredSources": [
+      "supplier"
+    ],
+    "permissions": {
+      "supplier": "bearer-read"
+    },
+    "datasetVersion": "1.0.0",
+    "mappingVersion": "1.0.0",
+    "sourceVersions": {
+      "sales": "sales-v1",
+      "inventory": "inventory-v1",
+      "supplier": "supplier-v1"
+    },
+    "expectedRef": "development/expected.json#D24"
+  },
+  {
+    "caseId": "D25",
+    "split": "development",
+    "category": "partial-results",
+    "question": "Return sales facts for ambiguous product 1023 and explain unresolved inventory candidates.",
+    "operation": "bundle",
+    "parameters": {
+      "productId": 1023
+    },
+    "requiredSources": [
+      "sales",
+      "inventory"
+    ],
+    "permissions": {
+      "sales": "sales_reader",
+      "inventory": "inventory_reader"
+    },
+    "datasetVersion": "1.0.0",
+    "mappingVersion": "1.0.0",
+    "sourceVersions": {
+      "sales": "sales-v1",
+      "inventory": "inventory-v1",
+      "supplier": "supplier-v1"
+    },
+    "expectedRef": "development/expected.json#D25"
+  },
+  {
+    "caseId": "D26",
+    "split": "development",
+    "category": "partial-results",
+    "question": "Return sales for 1034 even though no reviewed inventory relationship exists.",
+    "operation": "bundle",
+    "parameters": {
+      "productId": 1034
+    },
+    "requiredSources": [
+      "sales",
+      "inventory"
+    ],
+    "permissions": {
+      "sales": "sales_reader",
+      "inventory": "inventory_reader"
+    },
+    "datasetVersion": "1.0.0",
+    "mappingVersion": "1.0.0",
+    "sourceVersions": {
+      "sales": "sales-v1",
+      "inventory": "inventory-v1",
+      "supplier": "supplier-v1"
+    },
+    "expectedRef": "development/expected.json#D26"
+  },
+  {
+    "caseId": "D27",
+    "split": "development",
+    "category": "partial-results",
+    "question": "Show stock for inventory-only cleaning SKU with no catalog reference and explain unavailable offers.",
+    "operation": "inventory-offers",
+    "parameters": {
+      "sku": "WH-723"
+    },
+    "requiredSources": [
+      "inventory",
+      "supplier"
+    ],
+    "permissions": {
+      "inventory": "inventory_reader",
+      "supplier": "bearer-read"
+    },
+    "datasetVersion": "1.0.0",
+    "mappingVersion": "1.0.0",
+    "sourceVersions": {
+      "sales": "sales-v1",
+      "inventory": "inventory-v1",
+      "supplier": "supplier-v1"
+    },
+    "expectedRef": "development/expected.json#D27"
+  },
+  {
+    "caseId": "D28",
+    "split": "development",
+    "category": "complexity-result-size",
+    "question": "Return the first five stable offer IDs and total result count.",
+    "operation": "page",
+    "parameters": {
+      "page": 1,
+      "pageSize": 5
+    },
+    "requiredSources": [
+      "supplier"
+    ],
+    "permissions": {
+      "supplier": "bearer-read"
+    },
+    "datasetVersion": "1.0.0",
+    "mappingVersion": "1.0.0",
+    "sourceVersions": {
+      "sales": "sales-v1",
+      "inventory": "inventory-v1",
+      "supplier": "supplier-v1"
+    },
+    "expectedRef": "development/expected.json#D28"
+  },
+  {
+    "caseId": "D29",
+    "split": "development",
+    "category": "complexity-result-size",
+    "question": "List revenue-eligible order IDs in October UTC and classify the four timestamp boundary orders.",
+    "operation": "window",
+    "parameters": {},
+    "requiredSources": [
+      "sales"
+    ],
+    "permissions": {
+      "sales": "sales_reader"
+    },
+    "datasetVersion": "1.0.0",
+    "mappingVersion": "1.0.0",
+    "sourceVersions": {
+      "sales": "sales-v1",
+      "inventory": "inventory-v1",
+      "supplier": "supplier-v1"
+    },
+    "expectedRef": "development/expected.json#D29"
+  },
+  {
+    "caseId": "D30",
+    "split": "development",
+    "category": "complexity-result-size",
+    "question": "Compute total October realized revenue with each currency kept separate.",
+    "operation": "currency-totals",
+    "parameters": {},
+    "requiredSources": [
+      "sales"
+    ],
+    "permissions": {
+      "sales": "sales_reader"
+    },
+    "datasetVersion": "1.0.0",
+    "mappingVersion": "1.0.0",
+    "sourceVersions": {
+      "sales": "sales-v1",
+      "inventory": "inventory-v1",
+      "supplier": "supplier-v1"
+    },
+    "expectedRef": "development/expected.json#D30"
+  }
+]

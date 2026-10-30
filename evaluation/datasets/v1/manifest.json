@@ -1,0 +1,86 @@
+{
+  "datasetVersion": "1.0.0",
+  "mappingVersion": "1.0.0",
+  "scenario": "Meridian Office & Electronics (wholly synthetic)",
+  "sourceFixtures": {
+    "sales": "demo-systems/sales-postgres/fixtures/v1.json",
+    "inventory": "demo-systems/inventory-mysql/fixtures/v1.json",
+    "supplier": "demo-systems/supplier-api/fixtures/v1.json"
+  },
+  "fixedSeed": 20261030,
+  "asOf": "2026-10-15T12:00:00Z",
+  "sourceVersions": {
+    "sales": {
+      "schema": "V001",
+      "seedMigration": "V002",
+      "fixture": "sales-v1"
+    },
+    "inventory": {
+      "schema": "V001",
+      "seedMigration": "V002",
+      "fixture": "inventory-v1"
+    },
+    "supplier": {
+      "schema": "OpenAPI-1.0.0",
+      "fixture": "supplier-v1"
+    }
+  },
+  "counts": {
+    "salesProducts": 34,
+    "salesCustomers": 18,
+    "salesOrders": 144,
+    "salesOrderLines": 432,
+    "inventorySkus": 30,
+    "warehouses": 3,
+    "stockLevels": 90,
+    "suppliers": 10,
+    "offers": 40,
+    "developmentCases": 30,
+    "heldOutCases": 6
+  },
+  "developmentCategoryCounts": {
+    "single-source": 3,
+    "two-source": 3,
+    "three-source": 3,
+    "identifier-matching": 3,
+    "ambiguous": 3,
+    "unauthorized": 3,
+    "unavailable-invalid-credentials": 3,
+    "malformed-oversized": 3,
+    "partial-results": 3,
+    "complexity-result-size": 3
+  },
+  "expectedMethod": "Independent deterministic fixture oracle using BigInt minor units; no LLM and no benchmark execution.",
+  "heldOutPolicy": "Separate artifacts; exclude held-out cases and answers from future prompt/example development. This preparation does not execute scored experiments.",
+  "policyCases": "Authorization, outage and malformed-tool cases declare future host expectations; source enforcement is tested separately. A 65536-byte limit belongs only to the explicit fault case, not an implemented host policy.",
+  "hashAlgorithm": "SHA-256",
+  "hashes": {
+    "demo-systems/inventory-mysql/fixtures/v1.json": "0bc6ac48170df2da3be21f7e41541c86a87500dc262fe7ed81aa65f23e2b257f",
+    "demo-systems/inventory-mysql/migrations/V001__schema.sql": "f982b35eeb3a88d729db9b2e9af191657714d601632ab15c0d60a06393e46927",
+    "demo-systems/inventory-mysql/migrations/V002__seed.sql": "2e4a8bbeec609a50e7a6d0c512bf225e4dba77bd884ea73b2f3015e416d77c4c",
+    "demo-systems/sales-postgres/fixtures/v1.json": "fd37819729ad50e5d98d3d9b42cea0d8c9d40176f8190c52d0b69d8125e89bc9",
+    "demo-systems/sales-postgres/migrations/V001__schema.sql": "bc5a36bcba0bf46649e972704c8d21f856200195cbc7177d81275547684c594c",
+    "demo-systems/sales-postgres/migrations/V002__seed.sql": "25016840e5af07e75df09dd320d47cba500b7ff53c978ac2f40e31c5df225291",
+    "demo-systems/supplier-api/fixtures/v1.json": "d3667724b66fec6b677d6ec1f5cc3634ad35e9307b9a06ede73ff1a745c5245e",
+    "demo-systems/supplier-api/openapi.json": "8a7f4fe33264692f3385bf15d4deb8c1728d3b0dd5ecedf4d88814f1a3de535b",
+    "demo-systems/supplier-api/package-lock.json": "fbec519913c9c5c7b0dd5fecf4c43257356a66a8514770809b7c9d45d51924d1",
+    "evaluation/datasets/v1/development/cases.json": "7c2e82dfc243f38e48b0fe697e2617d9a8039c9378d004287d6f53e3fd1020d8",
+    "evaluation/datasets/v1/development/expected.json": "a0ad5cfa5ce32d84023187404bcd003298dc9a43de562cd52953522fbb0a45df",
+    "evaluation/datasets/v1/faults/invalid-money.json": "99d0f08defadd37333474fe48f42ddda110a2a956cf2a54c329b6b49790bdb37",
+    "evaluation/datasets/v1/faults/malformed.json.txt": "fbb64197b17c4ad6c4a1460e69c40ea71c9d0edbef15fae2d488a80affe81c32",
+    "evaluation/datasets/v1/faults/oversized-response.json": "904b63d7a8a6a368c1b72b9831b511c7e83a949e02c9a7693f45b0a0ed868542",
+    "evaluation/datasets/v1/held-out/cases.json": "74cb000ee283a1f2d5249a618721bd75728945775659b4b5a44741dd248a725b",
+    "evaluation/datasets/v1/held-out/expected.json": "a1080b0ca3c57750c00b05f078feb7f5ba10a91633b6c2ac42818dc416a891d5",
+    "evaluation/datasets/v1/mappings/relationships.json": "f82a4228758c55a851758875fa19fedf4710db0ce5a3996f20cf8acf83320f1c",
+    "evaluation/datasets/v1/schema/case.schema.json": "f339b38403da4198e9ecda0b32c2897d7db0049d8d25515cf3e48e6e45882b61",
+    "evaluation/datasets/v1/schema/expected.schema.json": "5247390c26583fe735db59c59736807b2821221ac3399259e4877b6084cca1dc",
+    "evaluation/datasets/v1/schema/mapping.schema.json": "21ecaae99a7c6b1b586a5467a60f4126b287ce6fceb69c1cc2be9f3a8cf9bc1e",
+    "evaluation/oracle/v1.mjs": "a7e86db2d81b6a28a5cb9c7668b77cde605adfb8ae3e860c20254adddc41fc51",
+    "scripts/demo/generate-api-contract.mjs": "6b50894c6ebbd3cf66ab20024933d1b34ecb5276b5df7c6c3abb9f199b0ac942",
+    "scripts/demo/generate-inventory.mjs": "bc318cdf06f5db3c2b56758fbb5103b52f0d3a2d4c2edf05789a2dcf6275845c",
+    "scripts/demo/generate-sales.mjs": "94a9edb40bb1c52d89833adda3118460edb98431a58fd38f4d152ed3c155989b",
+    "scripts/demo/generate-suppliers.mjs": "30368286edb026861dd5bfaa9db4153903e3315275590dfa8fe9bf3838866c92",
+    "scripts/demo/prepare-cases.mjs": "d0818c7486e259c9c108e1b2ea29964a93e063009cb12a71b0be9bf8533edd28",
+    "scripts/demo/prepare-mappings.mjs": "41ca0d5fb55389c3d466c670ea319ba7ff555041792aa019df6d37e3533a2fcb"
+  }
+}

@@ -1,0 +1,154 @@
+[
+  {
+    "caseId": "H01",
+    "split": "held-out",
+    "category": "single-source",
+    "question": "What is product 1011 realized EUR revenue from October 10 inclusive to October 20 exclusive UTC?",
+    "operation": "revenue",
+    "parameters": {
+      "productId": 1011,
+      "currency": "EUR",
+      "start": "2026-10-10T00:00:00Z",
+      "end": "2026-10-20T00:00:00Z"
+    },
+    "requiredSources": [
+      "sales"
+    ],
+    "permissions": {
+      "sales": "sales_reader"
+    },
+    "datasetVersion": "1.0.0",
+    "mappingVersion": "1.0.0",
+    "sourceVersions": {
+      "sales": "sales-v1",
+      "inventory": "inventory-v1",
+      "supplier": "supplier-v1"
+    },
+    "expectedRef": "held-out/expected.json#H01"
+  },
+  {
+    "caseId": "H02",
+    "split": "held-out",
+    "category": "single-source",
+    "question": "Show stock totals for the A4 paper carton in BOX without converting to EA.",
+    "operation": "stock",
+    "parameters": {
+      "sku": "WH-729"
+    },
+    "requiredSources": [
+      "inventory"
+    ],
+    "permissions": {
+      "inventory": "inventory_reader"
+    },
+    "datasetVersion": "1.0.0",
+    "mappingVersion": "1.0.0",
+    "sourceVersions": {
+      "sales": "sales-v1",
+      "inventory": "inventory-v1",
+      "supplier": "supplier-v1"
+    },
+    "expectedRef": "held-out/expected.json#H02"
+  },
+  {
+    "caseId": "H03",
+    "split": "held-out",
+    "category": "single-source",
+    "question": "List catalog CAT-0810 offers valid exactly at October 1 UTC, including zero availability.",
+    "operation": "offer-boundary",
+    "parameters": {
+      "catalog": "CAT-0810",
+      "at": "2026-10-01T00:00:00Z"
+    },
+    "requiredSources": [
+      "supplier"
+    ],
+    "permissions": {
+      "supplier": "bearer-read"
+    },
+    "datasetVersion": "1.0.0",
+    "mappingVersion": "1.0.0",
+    "sourceVersions": {
+      "sales": "sales-v1",
+      "inventory": "inventory-v1",
+      "supplier": "supplier-v1"
+    },
+    "expectedRef": "held-out/expected.json#H03"
+  },
+  {
+    "caseId": "H04",
+    "split": "held-out",
+    "category": "two-source",
+    "question": "Compare October sales and three-warehouse stock for approved product 1022.",
+    "operation": "bundle",
+    "parameters": {
+      "productId": 1022
+    },
+    "requiredSources": [
+      "sales",
+      "inventory"
+    ],
+    "permissions": {
+      "sales": "sales_reader",
+      "inventory": "inventory_reader"
+    },
+    "datasetVersion": "1.0.0",
+    "mappingVersion": "1.0.0",
+    "sourceVersions": {
+      "sales": "sales-v1",
+      "inventory": "inventory-v1",
+      "supplier": "supplier-v1"
+    },
+    "expectedRef": "held-out/expected.json#H04"
+  },
+  {
+    "caseId": "H05",
+    "split": "held-out",
+    "category": "partial-results",
+    "question": "Give sales for product 1024 while keeping competing stock candidates unresolved.",
+    "operation": "bundle",
+    "parameters": {
+      "productId": 1024
+    },
+    "requiredSources": [
+      "sales",
+      "inventory"
+    ],
+    "permissions": {
+      "sales": "sales_reader",
+      "inventory": "inventory_reader"
+    },
+    "datasetVersion": "1.0.0",
+    "mappingVersion": "1.0.0",
+    "sourceVersions": {
+      "sales": "sales-v1",
+      "inventory": "inventory-v1",
+      "supplier": "supplier-v1"
+    },
+    "expectedRef": "held-out/expected.json#H05"
+  },
+  {
+    "caseId": "H06",
+    "split": "held-out",
+    "category": "complexity-result-size",
+    "question": "Give the top three products by October revenue separately in each currency; break ties by product ID.",
+    "operation": "top-products",
+    "parameters": {
+      "limit": 3
+    },
+    "requiredSources": [
+      "sales"
+    ],
+    "permissions": {
+      "sales": "sales_reader"
+    },
+    "datasetVersion": "1.0.0",
+    "mappingVersion": "1.0.0",
+    "sourceVersions": {
+      "sales": "sales-v1",
+      "inventory": "inventory-v1",
+      "supplier": "supplier-v1"
+    },
+    "expectedRef": "held-out/expected.json#H06"
+  }
+]

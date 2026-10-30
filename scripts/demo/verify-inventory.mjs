@@ -3,6 +3,7 @@ import assert from 'node:assert/strict';
 import {pathToFileURL} from 'node:url';
 import {mysql,docker,denied} from './runtime.mjs';
 export async function verifyInventory(){
+ const actual={};
  const data=JSON.parse(await readFile('demo-systems/inventory-mysql/fixtures/v1.json','utf8'));
  for(const table of ['items','warehouses','stock_levels']){
   const keys=Object.keys(data[table][0]);
@@ -10,6 +11,7 @@ export async function verifyInventory(){
   const rows=mysql('SELECT JSON_OBJECT('+fields+') FROM '+table+' ORDER BY '+keys[0]+';').stdout.trim().split('\n').map(x=>JSON.parse(x));
   for(const r of rows)if('active'in r)r.active=Boolean(r.active);
   const order=(a,b)=>typeof a[keys[0]]==='number'?a[keys[0]]-b[keys[0]]:a[keys[0]].localeCompare(b[keys[0]],'en');
+  actual[table]=rows.sort(order);
   assert.deepEqual(rows.sort(order),[...data[table]].sort(order),table+' exact initialized rows');
  }
  for(const sql of [
@@ -28,5 +30,6 @@ export async function verifyInventory(){
  ])denied(mysql('START TRANSACTION;'+sql+'ROLLBACK;','migrator',true),/check constraint|foreign key constraint/i);
  assert.equal(mysql("SELECT SUM(quantity_on_hand-quantity_reserved) FROM stock_levels WHERE sku='WH-700';").stdout.trim(),'2');
  console.log('PASS: inventory 123 exact rows, 8 reader denials, invalid password, 5 enforced CHECK/FK constraints; dock stock 2 EA across 3 warehouses.');
+ return actual;
 }
 if(import.meta.url===pathToFileURL(process.argv[1]).href)await verifyInventory();

@@ -1,0 +1,176 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "caseId",
+    "datasetVersion",
+    "mappingVersion",
+    "sourceVersions",
+    "evidenceKind",
+    "expectedSourceFacts",
+    "expectedCalculations",
+    "expectedIdentifiers",
+    "expectedProvenance",
+    "expectedStatus",
+    "completeness",
+    "permissions",
+    "fault",
+    "unresolvedExplanation"
+  ],
+  "properties": {
+    "caseId": {
+      "type": "string",
+      "pattern": "^[DH][0-9]{2}$"
+    },
+    "datasetVersion": {
+      "const": "1.0.0"
+    },
+    "mappingVersion": {
+      "const": "1.0.0"
+    },
+    "sourceVersions": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "sales",
+        "inventory",
+        "supplier"
+      ],
+      "properties": {
+        "sales": {
+          "const": "sales-v1"
+        },
+        "inventory": {
+          "const": "inventory-v1"
+        },
+        "supplier": {
+          "const": "supplier-v1"
+        }
+      }
+    },
+    "evidenceKind": {
+      "enum": [
+        "fixture-derived",
+        "declared-policy",
+        "mixed"
+      ]
+    },
+    "expectedSourceFacts": {
+      "type": "object"
+    },
+    "expectedCalculations": {
+      "type": "array",
+      "items": {
+        "type": "object"
+      }
+    },
+    "expectedIdentifiers": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "mappingIds"
+      ],
+      "properties": {
+        "mappingIds": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "minLength": 1
+          },
+          "uniqueItems": true
+        }
+      }
+    },
+    "expectedProvenance": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "source",
+          "entity",
+          "identifiers"
+        ],
+        "properties": {
+          "source": {
+            "enum": [
+              "sales",
+              "inventory",
+              "supplier",
+              "reference-mappings"
+            ]
+          },
+          "entity": {
+            "type": "string",
+            "minLength": 1
+          },
+          "identifiers": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "minLength": 1
+            },
+            "uniqueItems": true
+          }
+        }
+      }
+    },
+    "expectedStatus": {
+      "enum": [
+        "COMPLETE",
+        "PARTIAL",
+        "NEEDS_CLARIFICATION",
+        "NEEDS_REVIEW",
+        "DENIED",
+        "UNAVAILABLE",
+        "REFUSED"
+      ]
+    },
+    "completeness": {
+      "enum": [
+        "complete",
+        "partial",
+        "unresolved",
+        "none"
+      ]
+    },
+    "permissions": {
+      "type": "object",
+      "additionalProperties": false,
+      "minProperties": 1,
+      "properties": {
+        "sales": {
+          "enum": [
+            "sales_reader",
+            "invalid-password"
+          ]
+        },
+        "inventory": {
+          "const": "inventory_reader"
+        },
+        "supplier": {
+          "enum": [
+            "bearer-read",
+            "unauthenticated",
+            "invalid-bearer"
+          ]
+        }
+      }
+    },
+    "fault": {
+      "type": [
+        "object",
+        "null"
+      ]
+    },
+    "unresolvedExplanation": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "minLength": 1
+      },
+      "uniqueItems": true
+    }
+  }
+}

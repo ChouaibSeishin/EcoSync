@@ -1,0 +1,89 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "mappingVersion",
+    "records"
+  ],
+  "properties": {
+    "mappingVersion": {
+      "const": "1.0.0"
+    },
+    "records": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "mappingId",
+          "mappingVersion",
+          "sourceSystem",
+          "sourceIdentifier",
+          "targetSystem",
+          "targetIdentifier",
+          "candidates",
+          "approvalStatus",
+          "reviewMethod",
+          "notes"
+        ],
+        "properties": {
+          "mappingId": {
+            "type": "string",
+            "minLength": 1
+          },
+          "mappingVersion": {
+            "const": "1.0.0"
+          },
+          "sourceSystem": {
+            "enum": [
+              "sales",
+              "inventory"
+            ]
+          },
+          "sourceIdentifier": {
+            "type": "string",
+            "minLength": 1
+          },
+          "targetSystem": {
+            "enum": [
+              "inventory",
+              "supplier"
+            ]
+          },
+          "targetIdentifier": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "candidates": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "minLength": 1
+            },
+            "uniqueItems": true
+          },
+          "approvalStatus": {
+            "enum": [
+              "APPROVED",
+              "MISSING",
+              "AMBIGUOUS",
+              "CONFLICT",
+              "REJECTED_UNIT"
+            ]
+          },
+          "reviewMethod": {
+            "type": "string",
+            "minLength": 1
+          },
+          "notes": {
+            "type": "string",
+            "minLength": 1
+          }
+        }
+      }
+    }
+  }
+}

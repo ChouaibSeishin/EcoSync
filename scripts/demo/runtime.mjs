@@ -1,8 +1,8 @@
 import {spawnSync} from 'node:child_process';
 import assert from 'node:assert/strict';
-export const composeArgs=['compose','--env-file','infra/docker/demo.env','-f','infra/docker/demo-systems.compose.yaml',...(process.env.DEMO_PROJECT?['-p',process.env.DEMO_PROJECT]:[])];
+export const composeArgs=()=>['compose','--env-file',process.env.DEMO_ENV_FILE??'infra/docker/demo.env','-f','infra/docker/demo-systems.compose.yaml',...(process.env.DEMO_PROJECT?['-p',process.env.DEMO_PROJECT]:[])];
 export function docker(args,input,allowFailure=false){
- const r=spawnSync('docker',[...composeArgs,...args],{input,encoding:'utf8',windowsHide:true,maxBuffer:16*1024*1024,env:process.env});
+ const r=spawnSync('docker',[...composeArgs(),...args],{input,encoding:'utf8',windowsHide:true,maxBuffer:16*1024*1024,timeout:300000,env:process.env});
  if(!allowFailure&&r.status!==0)throw Error('Docker operation failed: '+args[0]+' '+(r.stderr||r.error?.message||'').slice(0,1200));
  return r;
 }

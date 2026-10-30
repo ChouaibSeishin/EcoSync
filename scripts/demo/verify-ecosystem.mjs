@@ -19,7 +19,7 @@ for(const [name,service]of Object.entries(config.services)){
 assert.equal(config.services.supplier.user,'1000:1000');
 assert.equal(config.services.supplier.read_only,true);
 const secretKeys=['SALES_OWNER_PASSWORD','SALES_MIGRATION_PASSWORD','SALES_READER_PASSWORD','INVENTORY_ROOT_PASSWORD','INVENTORY_MIGRATION_PASSWORD','INVENTORY_READER_PASSWORD','SUPPLIER_API_TOKEN'];
-const env=Object.fromEntries((await readFile('infra/docker/demo.env','utf8')).trim().split(/\r?\n/).map(l=>{const i=l.indexOf('=');return[l.slice(0,i),l.slice(i+1)];}));
+const env=Object.fromEntries((await readFile(process.env.DEMO_ENV_FILE??'infra/docker/demo.env','utf8')).trim().split(/\r?\n/).map(l=>{const i=l.indexOf('=');return[l.slice(0,i),l.slice(i+1)];}));
 assert.equal(new Set(secretKeys.map(k=>env[k])).size,7,'Credentials are unique per owner/migrator/reader/API');
 assert.ok(secretKeys.every(k=>/^[A-Za-z0-9_-]{32,}$/.test(env[k]??'')));
 for(const [source,query]of [['sales',pg],['inventory',mysql]]){

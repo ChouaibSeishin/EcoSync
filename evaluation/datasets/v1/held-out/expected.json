@@ -1,0 +1,828 @@
+[
+  {
+    "caseId": "H01",
+    "datasetVersion": "1.0.0",
+    "mappingVersion": "1.0.0",
+    "sourceVersions": {
+      "sales": "sales-v1",
+      "inventory": "inventory-v1",
+      "supplier": "supplier-v1"
+    },
+    "evidenceKind": "fixture-derived",
+    "expectedSourceFacts": {
+      "productId": 1011,
+      "startInclusive": "2026-10-10T00:00:00Z",
+      "endExclusive": "2026-10-20T00:00:00Z",
+      "eligibleStatus": "FULFILLED",
+      "totals": [
+        {
+          "currencyCode": "EUR",
+          "revenue": "0.00",
+          "lineCount": 0,
+          "quantity": 0,
+          "unit": "BOX"
+        }
+      ]
+    },
+    "expectedCalculations": [
+      {
+        "rule": "sum(quantity * unit_price - line_total_discount), integer minor units; FULFILLED only",
+        "currencyCode": "EUR",
+        "result": "0.00",
+        "lineIds": []
+      }
+    ],
+    "expectedIdentifiers": {
+      "mappingIds": []
+    },
+    "expectedProvenance": [
+      {
+        "source": "sales",
+        "entity": "order_lines",
+        "identifiers": []
+      },
+      {
+        "source": "sales",
+        "entity": "orders",
+        "identifiers": []
+      },
+      {
+        "source": "sales",
+        "entity": "products",
+        "identifiers": []
+      }
+    ],
+    "expectedStatus": "COMPLETE",
+    "completeness": "complete",
+    "permissions": {
+      "sales": "sales_reader"
+    },
+    "fault": null,
+    "unresolvedExplanation": []
+  },
+  {
+    "caseId": "H02",
+    "datasetVersion": "1.0.0",
+    "mappingVersion": "1.0.0",
+    "sourceVersions": {
+      "sales": "sales-v1",
+      "inventory": "inventory-v1",
+      "supplier": "supplier-v1"
+    },
+    "evidenceKind": "fixture-derived",
+    "expectedSourceFacts": {
+      "item": {
+        "sku": "WH-729",
+        "product_label": "A4 Paper Box",
+        "category": "Electronics",
+        "unit_code": "BOX",
+        "supplier_catalog_ref": "CAT-0940",
+        "active": true
+      },
+      "warehouseScope": "all snapshot warehouses, including maintenance",
+      "stock": [
+        {
+          "stock_id": 3031,
+          "sku": "WH-729",
+          "warehouse_id": "N1",
+          "quantity_on_hand": 100,
+          "quantity_reserved": 3,
+          "reorder_threshold": 20,
+          "last_updated_at": "2026-10-15T12:00:00Z",
+          "available_quantity": 97,
+          "low_stock": false,
+          "warehouse_status": "OPEN"
+        },
+        {
+          "stock_id": 3032,
+          "sku": "WH-729",
+          "warehouse_id": "S2",
+          "quantity_on_hand": 131,
+          "quantity_reserved": 6,
+          "reorder_threshold": 25,
+          "last_updated_at": "2026-10-15T12:00:00Z",
+          "available_quantity": 125,
+          "low_stock": false,
+          "warehouse_status": "OPEN"
+        },
+        {
+          "stock_id": 3033,
+          "sku": "WH-729",
+          "warehouse_id": "W3",
+          "quantity_on_hand": 2,
+          "quantity_reserved": 2,
+          "reorder_threshold": 10,
+          "last_updated_at": "2026-10-15T12:00:00Z",
+          "available_quantity": 0,
+          "low_stock": true,
+          "warehouse_status": "MAINTENANCE"
+        }
+      ],
+      "totalAvailable": 222,
+      "unit": "BOX"
+    },
+    "expectedCalculations": [
+      {
+        "rule": "available = on_hand - reserved; low iff available <= per-warehouse threshold",
+        "availableByStockId": {
+          "3031": 97,
+          "3032": 125,
+          "3033": 0
+        }
+      }
+    ],
+    "expectedIdentifiers": {
+      "mappingIds": []
+    },
+    "expectedProvenance": [
+      {
+        "source": "inventory",
+        "entity": "items",
+        "identifiers": [
+          "WH-729"
+        ]
+      },
+      {
+        "source": "inventory",
+        "entity": "stock_levels",
+        "identifiers": [
+          "3031",
+          "3032",
+          "3033"
+        ]
+      },
+      {
+        "source": "inventory",
+        "entity": "warehouses",
+        "identifiers": [
+          "N1",
+          "S2",
+          "W3"
+        ]
+      }
+    ],
+    "expectedStatus": "COMPLETE",
+    "completeness": "complete",
+    "permissions": {
+      "inventory": "inventory_reader"
+    },
+    "fault": null,
+    "unresolvedExplanation": []
+  },
+  {
+    "caseId": "H03",
+    "datasetVersion": "1.0.0",
+    "mappingVersion": "1.0.0",
+    "sourceVersions": {
+      "sales": "sales-v1",
+      "inventory": "inventory-v1",
+      "supplier": "supplier-v1"
+    },
+    "evidenceKind": "fixture-derived",
+    "expectedSourceFacts": {
+      "catalogReference": "CAT-0810",
+      "asOf": "2026-10-01T00:00:00Z",
+      "offers": [
+        {
+          "offer_id": "OF-0001",
+          "catalog_reference": "CAT-0810",
+          "supplier_id": "SUP-001",
+          "supplier_sku": "VND-4000",
+          "unit_cost": "118.29",
+          "currency_code": "USD",
+          "unit_code": "EA",
+          "minimum_order_quantity": 1,
+          "available_quantity": 0,
+          "lead_time_days": 2,
+          "valid_from": "2026-10-01T00:00:00Z",
+          "valid_until": "2026-11-01T00:00:00Z"
+        }
+      ],
+      "scope": "Validity only; availability and supplier activity are not silently filtered."
+    },
+    "expectedCalculations": [],
+    "expectedIdentifiers": {
+      "mappingIds": []
+    },
+    "expectedProvenance": [
+      {
+        "source": "supplier",
+        "entity": "offers",
+        "identifiers": [
+          "OF-0001"
+        ]
+      }
+    ],
+    "expectedStatus": "COMPLETE",
+    "completeness": "complete",
+    "permissions": {
+      "supplier": "bearer-read"
+    },
+    "fault": null,
+    "unresolvedExplanation": []
+  },
+  {
+    "caseId": "H04",
+    "datasetVersion": "1.0.0",
+    "mappingVersion": "1.0.0",
+    "sourceVersions": {
+      "sales": "sales-v1",
+      "inventory": "inventory-v1",
+      "supplier": "supplier-v1"
+    },
+    "evidenceKind": "fixture-derived",
+    "expectedSourceFacts": {
+      "sales": {
+        "productId": 1022,
+        "startInclusive": "2026-10-01T00:00:00Z",
+        "endExclusive": "2026-11-01T00:00:00Z",
+        "eligibleStatus": "FULFILLED",
+        "totals": [
+          {
+            "currencyCode": "EUR",
+            "revenue": "384.96",
+            "lineCount": 4,
+            "quantity": 16,
+            "unit": "EA"
+          },
+          {
+            "currencyCode": "GBP",
+            "revenue": "264.66",
+            "lineCount": 3,
+            "quantity": 11,
+            "unit": "EA"
+          },
+          {
+            "currencyCode": "USD",
+            "revenue": "216.54",
+            "lineCount": 3,
+            "quantity": 9,
+            "unit": "EA"
+          }
+        ]
+      },
+      "identity": {
+        "productId": 1022,
+        "targetSku": "WH-728",
+        "mappingIds": [
+          "m-sales-1022"
+        ],
+        "candidates": [
+          "WH-728"
+        ],
+        "approvalStatuses": [
+          "APPROVED"
+        ]
+      },
+      "inventory": {
+        "item": {
+          "sku": "WH-728",
+          "product_label": "Switch 8-Port",
+          "category": "Office",
+          "unit_code": "EA",
+          "supplier_catalog_ref": "CAT-1083",
+          "active": true
+        },
+        "warehouseScope": "all snapshot warehouses, including maintenance",
+        "stock": [
+          {
+            "stock_id": 3064,
+            "sku": "WH-728",
+            "warehouse_id": "N1",
+            "quantity_on_hand": 149,
+            "quantity_reserved": 9,
+            "reorder_threshold": 15,
+            "last_updated_at": "2026-10-15T12:00:00Z",
+            "available_quantity": 140,
+            "low_stock": false,
+            "warehouse_status": "OPEN"
+          },
+          {
+            "stock_id": 3065,
+            "sku": "WH-728",
+            "warehouse_id": "S2",
+            "quantity_on_hand": 20,
+            "quantity_reserved": 12,
+            "reorder_threshold": 20,
+            "last_updated_at": "2026-10-15T12:00:00Z",
+            "available_quantity": 8,
+            "low_stock": true,
+            "warehouse_status": "OPEN"
+          },
+          {
+            "stock_id": 3066,
+            "sku": "WH-728",
+            "warehouse_id": "W3",
+            "quantity_on_hand": 51,
+            "quantity_reserved": 15,
+            "reorder_threshold": 25,
+            "last_updated_at": "2026-10-15T12:00:00Z",
+            "available_quantity": 36,
+            "low_stock": false,
+            "warehouse_status": "MAINTENANCE"
+          }
+        ],
+        "totalAvailable": 184,
+        "unit": "EA"
+      }
+    },
+    "expectedCalculations": [
+      {
+        "rule": "sum(quantity * unit_price - line_total_discount), integer minor units; FULFILLED only",
+        "currencyCode": "EUR",
+        "result": "384.96",
+        "lineIds": [
+          9110,
+          9238,
+          9288,
+          9416
+        ]
+      },
+      {
+        "rule": "sum(quantity * unit_price - line_total_discount), integer minor units; FULFILLED only",
+        "currencyCode": "GBP",
+        "result": "264.66",
+        "lineIds": [
+          9084,
+          9340,
+          9390
+        ]
+      },
+      {
+        "rule": "sum(quantity * unit_price - line_total_discount), integer minor units; FULFILLED only",
+        "currencyCode": "USD",
+        "result": "216.54",
+        "lineIds": [
+          9008,
+          9186,
+          9314
+        ]
+      },
+      {
+        "rule": "available = on_hand - reserved; low iff available <= per-warehouse threshold",
+        "availableByStockId": {
+          "3064": 140,
+          "3065": 8,
+          "3066": 36
+        }
+      }
+    ],
+    "expectedIdentifiers": {
+      "mappingIds": [
+        "m-sales-1022"
+      ]
+    },
+    "expectedProvenance": [
+      {
+        "source": "inventory",
+        "entity": "items",
+        "identifiers": [
+          "WH-728"
+        ]
+      },
+      {
+        "source": "inventory",
+        "entity": "stock_levels",
+        "identifiers": [
+          "3064",
+          "3065",
+          "3066"
+        ]
+      },
+      {
+        "source": "inventory",
+        "entity": "warehouses",
+        "identifiers": [
+          "N1",
+          "S2",
+          "W3"
+        ]
+      },
+      {
+        "source": "reference-mappings",
+        "entity": "relationships",
+        "identifiers": [
+          "m-sales-1022"
+        ]
+      },
+      {
+        "source": "sales",
+        "entity": "order_lines",
+        "identifiers": [
+          "9008",
+          "9084",
+          "9110",
+          "9186",
+          "9238",
+          "9288",
+          "9314",
+          "9340",
+          "9390",
+          "9416"
+        ]
+      },
+      {
+        "source": "sales",
+        "entity": "orders",
+        "identifiers": [
+          "5003",
+          "5028",
+          "5037",
+          "5062",
+          "5080",
+          "5096",
+          "5105",
+          "5114",
+          "5130",
+          "5139"
+        ]
+      },
+      {
+        "source": "sales",
+        "entity": "products",
+        "identifiers": [
+          "1022"
+        ]
+      }
+    ],
+    "expectedStatus": "COMPLETE",
+    "completeness": "complete",
+    "permissions": {
+      "sales": "sales_reader",
+      "inventory": "inventory_reader"
+    },
+    "fault": null,
+    "unresolvedExplanation": []
+  },
+  {
+    "caseId": "H05",
+    "datasetVersion": "1.0.0",
+    "mappingVersion": "1.0.0",
+    "sourceVersions": {
+      "sales": "sales-v1",
+      "inventory": "inventory-v1",
+      "supplier": "supplier-v1"
+    },
+    "evidenceKind": "fixture-derived",
+    "expectedSourceFacts": {
+      "sales": {
+        "productId": 1024,
+        "startInclusive": "2026-10-01T00:00:00Z",
+        "endExclusive": "2026-11-01T00:00:00Z",
+        "eligibleStatus": "FULFILLED",
+        "totals": [
+          {
+            "currencyCode": "EUR",
+            "revenue": "214.40",
+            "lineCount": 3,
+            "quantity": 8,
+            "unit": "EA"
+          },
+          {
+            "currencyCode": "GBP",
+            "revenue": "428.80",
+            "lineCount": 4,
+            "quantity": 16,
+            "unit": "EA"
+          },
+          {
+            "currencyCode": "USD",
+            "revenue": "107.20",
+            "lineCount": 2,
+            "quantity": 4,
+            "unit": "EA"
+          }
+        ]
+      },
+      "identity": {
+        "productId": 1024,
+        "targetSku": null,
+        "mappingIds": [
+          "m-sales-1024-23",
+          "m-sales-1024-24"
+        ],
+        "candidates": [
+          "WH-715",
+          "WH-732"
+        ],
+        "approvalStatuses": [
+          "CONFLICT"
+        ]
+      }
+    },
+    "expectedCalculations": [
+      {
+        "rule": "sum(quantity * unit_price - line_total_discount), integer minor units; FULFILLED only",
+        "currencyCode": "EUR",
+        "result": "214.40",
+        "lineIds": [
+          9076,
+          9126,
+          9382
+        ]
+      },
+      {
+        "rule": "sum(quantity * unit_price - line_total_discount), integer minor units; FULFILLED only",
+        "currencyCode": "GBP",
+        "result": "428.80",
+        "lineIds": [
+          9050,
+          9178,
+          9228,
+          9356
+        ]
+      },
+      {
+        "rule": "sum(quantity * unit_price - line_total_discount), integer minor units; FULFILLED only",
+        "currencyCode": "USD",
+        "result": "107.20",
+        "lineIds": [
+          9152,
+          9330
+        ]
+      }
+    ],
+    "expectedIdentifiers": {
+      "mappingIds": [
+        "m-sales-1024-23",
+        "m-sales-1024-24"
+      ]
+    },
+    "expectedProvenance": [
+      {
+        "source": "reference-mappings",
+        "entity": "relationships",
+        "identifiers": [
+          "m-sales-1024-23",
+          "m-sales-1024-24"
+        ]
+      },
+      {
+        "source": "sales",
+        "entity": "order_lines",
+        "identifiers": [
+          "9050",
+          "9076",
+          "9126",
+          "9152",
+          "9178",
+          "9228",
+          "9330",
+          "9356",
+          "9382"
+        ]
+      },
+      {
+        "source": "sales",
+        "entity": "orders",
+        "identifiers": [
+          "5017",
+          "5026",
+          "5042",
+          "5051",
+          "5060",
+          "5076",
+          "5110",
+          "5119",
+          "5128"
+        ]
+      },
+      {
+        "source": "sales",
+        "entity": "products",
+        "identifiers": [
+          "1024"
+        ]
+      }
+    ],
+    "expectedStatus": "PARTIAL",
+    "completeness": "partial",
+    "permissions": {
+      "sales": "sales_reader",
+      "inventory": "inventory_reader"
+    },
+    "fault": null,
+    "unresolvedExplanation": [
+      "No single approved inventory identity; retain sales facts and candidates without a guessed join."
+    ]
+  },
+  {
+    "caseId": "H06",
+    "datasetVersion": "1.0.0",
+    "mappingVersion": "1.0.0",
+    "sourceVersions": {
+      "sales": "sales-v1",
+      "inventory": "inventory-v1",
+      "supplier": "supplier-v1"
+    },
+    "evidenceKind": "fixture-derived",
+    "expectedSourceFacts": {
+      "byCurrency": {
+        "EUR": [
+          {
+            "productId": 1001,
+            "revenue": "12267.55"
+          },
+          {
+            "productId": 1006,
+            "revenue": "2887.82"
+          },
+          {
+            "productId": 1008,
+            "revenue": "2473.68"
+          }
+        ],
+        "GBP": [
+          {
+            "productId": 1001,
+            "revenue": "10329.94"
+          },
+          {
+            "productId": 1008,
+            "revenue": "2248.80"
+          },
+          {
+            "productId": 1007,
+            "revenue": "2231.12"
+          }
+        ],
+        "USD": [
+          {
+            "productId": 1001,
+            "revenue": "130659.14"
+          },
+          {
+            "productId": 1006,
+            "revenue": "2443.54"
+          },
+          {
+            "productId": 1004,
+            "revenue": "1974.60"
+          }
+        ]
+      },
+      "ranking": "Descending exact revenue, tie ascending product ID"
+    },
+    "expectedCalculations": [],
+    "expectedIdentifiers": {
+      "mappingIds": []
+    },
+    "expectedProvenance": [
+      {
+        "source": "sales",
+        "entity": "order_lines",
+        "identifiers": [
+          "9004",
+          "9019",
+          "9020",
+          "9025",
+          "9028",
+          "9037",
+          "9046",
+          "9051",
+          "9054",
+          "9055",
+          "9073",
+          "9075",
+          "9077",
+          "9080",
+          "9082",
+          "9091",
+          "9103",
+          "9109",
+          "9114",
+          "9118",
+          "9122",
+          "9136",
+          "9145",
+          "9153",
+          "9154",
+          "9163",
+          "9172",
+          "9179",
+          "9181",
+          "9182",
+          "9198",
+          "9203",
+          "9205",
+          "9208",
+          "9217",
+          "9226",
+          "9235",
+          "9242",
+          "9244",
+          "9250",
+          "9258",
+          "9262",
+          "9271",
+          "9280",
+          "9281",
+          "9289",
+          "9307",
+          "9310",
+          "9325",
+          "9326",
+          "9334",
+          "9343",
+          "9352",
+          "9357",
+          "9361",
+          "9370",
+          "9383",
+          "9386",
+          "9388",
+          "9406",
+          "9409",
+          "9415",
+          "9420",
+          "9424",
+          "9428"
+        ]
+      },
+      {
+        "source": "sales",
+        "entity": "orders",
+        "identifiers": [
+          "5002",
+          "5007",
+          "5009",
+          "5010",
+          "5013",
+          "5016",
+          "5017",
+          "5018",
+          "5019",
+          "5025",
+          "5026",
+          "5027",
+          "5028",
+          "5031",
+          "5035",
+          "5037",
+          "5038",
+          "5040",
+          "5041",
+          "5046",
+          "5049",
+          "5051",
+          "5052",
+          "5055",
+          "5058",
+          "5060",
+          "5061",
+          "5066",
+          "5068",
+          "5069",
+          "5070",
+          "5073",
+          "5076",
+          "5079",
+          "5081",
+          "5082",
+          "5084",
+          "5086",
+          "5088",
+          "5091",
+          "5094",
+          "5097",
+          "5103",
+          "5104",
+          "5109",
+          "5112",
+          "5115",
+          "5118",
+          "5119",
+          "5121",
+          "5124",
+          "5128",
+          "5129",
+          "5130",
+          "5136",
+          "5137",
+          "5139",
+          "5140",
+          "5142",
+          "5143"
+        ]
+      },
+      {
+        "source": "sales",
+        "entity": "products",
+        "identifiers": [
+          "1001",
+          "1004",
+          "1006",
+          "1007",
+          "1008"
+        ]
+      }
+    ],
+    "expectedStatus": "COMPLETE",
+    "completeness": "complete",
+    "permissions": {
+      "sales": "sales_reader"
+    },
+    "fault": null,
+    "unresolvedExplanation": []
+  }
+]
