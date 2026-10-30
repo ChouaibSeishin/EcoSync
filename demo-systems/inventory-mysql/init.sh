@@ -1,4 +1,6 @@
 #!/bin/bash
+# Keep shell options local even when an entrypoint sources this file.
+(
 set -euo pipefail
 for value in "$INVENTORY_MIGRATION_PASSWORD" "$INVENTORY_READER_PASSWORD"; do
  [[ "$value" =~ ^[A-Za-z0-9_-]{32,}$ ]] || { echo 'Invalid local credential format' >&2; exit 1; }
@@ -19,3 +21,4 @@ GRANT SELECT ON inventory.items TO 'inventory_reader'@'%';
 GRANT SELECT ON inventory.warehouses TO 'inventory_reader'@'%';
 GRANT SELECT ON inventory.stock_levels TO 'inventory_reader'@'%';
 SQL
+)

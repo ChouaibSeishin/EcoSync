@@ -1,4 +1,6 @@
 #!/bin/bash
+# Keep shell options local even when an entrypoint sources this file.
+(
 set -euo pipefail
 psql -v ON_ERROR_STOP=1 --username "$POSTGRES_USER" --dbname "$POSTGRES_DB" \
  --set=migration_password="$SALES_MIGRATION_PASSWORD" --set=reader_password="$SALES_READER_PASSWORD" <<'SQL'
@@ -26,3 +28,4 @@ psql -v ON_ERROR_STOP=1 --username "$POSTGRES_USER" --dbname "$POSTGRES_DB" <<'S
 GRANT USAGE ON SCHEMA sales TO sales_reader;
 GRANT SELECT ON sales.products,sales.customers,sales.orders,sales.order_lines TO sales_reader;
 SQL
+)

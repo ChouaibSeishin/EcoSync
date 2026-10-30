@@ -111,6 +111,12 @@ jobs:
           docker compose --env-file infra/docker/demo.env -f infra/docker/demo-systems.compose.yaml config --quiet
           docker compose --env-file infra/docker/demo.env -f infra/docker/demo-systems.compose.yaml build supplier
           docker compose --env-file infra/docker/demo.env -f infra/docker/demo-systems.compose.yaml up -d --wait --wait-timeout 240
+      - name: Demo startup diagnostics on failure
+        if: failure()
+        run: |
+          if [ -f infra/docker/demo.env ]; then
+            docker compose --env-file infra/docker/demo.env -f infra/docker/demo-systems.compose.yaml logs --no-color --tail 100 sales inventory supplier
+          fi
       - name: Exact source data, database denials and independent SQL ground truth
         run: |
           node scripts/demo/verify-sales.mjs

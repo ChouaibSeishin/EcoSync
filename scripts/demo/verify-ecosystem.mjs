@@ -22,6 +22,14 @@ const secretKeys=['SALES_OWNER_PASSWORD','SALES_MIGRATION_PASSWORD','SALES_READE
 const env=Object.fromEntries((await readFile(process.env.DEMO_ENV_FILE??'infra/docker/demo.env','utf8')).trim().split(/\r?\n/).map(l=>{const i=l.indexOf('=');return[l.slice(0,i),l.slice(i+1)];}));
 assert.equal(new Set(secretKeys.map(k=>env[k])).size,7,'Credentials are unique per owner/migrator/reader/API');
 assert.ok(secretKeys.every(k=>/^[A-Za-z0-9_-]{32,}$/.test(env[k]??'')));
+// ZIP/bind mounts can lose executable bits: sourcing must not change parent options.
+// Mock clients discard all SQL here; actual grants and data are tested separately.
+for(const [service,client,file]of [['inventory','mysql','10-inventory.sh'],['sales','psql','10-sales.sh']]){
+ const shell=client+'() { cat >/dev/null; }; set +u; source /docker-entrypoint-initdb.d/'+file+'; if [[ $- == *u* ]]; then exit 70; fi; if [ -n "$DELIBERATELY_UNSET_PARENT_OPTION" ]; then :; fi';
+ const probe=docker(['exec','-T',service,'bash','-c',shell],undefined,true);
+ assert.equal(probe.status,0,service+' sourced shell options must not leak: '+probe.stderr);
+}
+console.log('PASS: both initialization scripts preserve parent options when sourced (SQL clients mocked).');
 for(const [source,query]of [['sales',pg],['inventory',mysql]]){
  const history=query('SELECT version,sha256 FROM '+(source==='sales'?'sales.':'')+'schema_history ORDER BY version;','migrator').stdout.trim().split('\n').map(x=>x.split(source==='sales'?'|':'\t'));
  for(const [version,checksum]of history){
