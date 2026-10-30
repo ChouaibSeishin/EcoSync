@@ -1,33 +1,27 @@
 # Project status
 
-Updated: 2026-10-30 UTC. Authorized scope: **Phase 1 only**.
+Updated: 2026-10-30 UTC. Authorized scope: **Phase 2 only**.
 
 ## Current delivery state
 
-Phase 0 is accepted and preserved at 6a1749f40d394933c0e4b421048eab96818da436. **Phase 1 is complete.** All nine work packages have passed their scoped acceptance criteria locally and in actual CI. See [the acceptance record](docs/development/PHASE_1_ACCEPTANCE.md).
+Phase 0 remains accepted at 6a1749f40d394933c0e4b421048eab96818da436. Phase 1 is complete at 603cfb993566f465d0c3328f175d71b27f6a4942 with both accepted CI runs preserved. Phase 2 checkpoints A-F passed locally; checkpoint G full regression/actual CI verification is in progress. See [Phase 2 verification](docs/development/PHASE_2_VERIFICATION.md) and [acceptance](docs/development/PHASE_2_ACCEPTANCE.md).
 
-Work branch: codex/phase-1-foundation, based on verified local/remote Phase 0. GitHub's repository API reports **public** visibility; this work did not change visibility. No unrelated starting user changes were present.
+Work branch: codex/phase-2-demo-ecosystem, based on the exact verified Phase 1 final commit. Both prior branches remain unchanged. Repository visibility is intentionally public and has not been changed. No unrelated starting changes existed.
 
-## Implemented and locally verified
+## Delivered systems
 
-- Temurin Java 21.0.13+9, checksum-pinned Maven Wrapper 3.9.16, verified Node 24.22.2/npm 11.19.1 and a real application lockfile/strict clean install.
-- Spring MVC platform with sanitized REST errors, correlation IDs, status-only public liveness/readiness and authenticated live DB status.
-- PostgreSQL/Flyway organization/user/membership/role schema, tenant composite constraints and one-time bootstrap marker. Separate non-superuser migrator and read-only runtime credentials; a versioned permission correction protects control metadata on the existing volume.
-- Actual session authentication, adaptive password hashing, login throttle, CSRF, session rotation/logout, role and tenant enforcement; controlled random initial administrator credentials.
-- Responsive React dashboard, navigation, login/session state, empty integrations, error/loading/retry states, system status and explicitly unavailable AI. No fake operational metrics or AI answers.
-- Digest-pinned localhost Compose stack with one-shot setup; metadata survives backend restart. Real database outage behavior is visible in health/API/UI and recovers after restart.
-- Four backend unit tests, ten PostgreSQL-backed integration tests, ten frontend component tests and a real Playwright smoke journey passed. Source/link/pin/whitespace checks and screenshot review passed after correcting mobile navigation accessibility.
+The Phase 1 Spring MVC/PostgreSQL identity/workspace application and React UI remain unchanged. Local workspace: http://127.0.0.1:5173, platform API: localhost:18080, metadata PostgreSQL: localhost:55432. [Phase 1 evidence](docs/development/PHASE_1_VERIFICATION.md) documents security, persistence, browser checks and historical corrections.
 
-Detailed commands, results, corrected failures and limitations: [Phase 1 verification](docs/development/PHASE_1_VERIFICATION.md). Runtime evidence and toolchain hashes are retained there. Local app: http://127.0.0.1:5173; API host port 18080, DB host port 55432. Initial credentials are only in the ignored local configuration; none are documented or committed.
+Phase 2 adds separately owned PostgreSQL sales (34 products, 18 anonymous customers, 144 orders, 432 lines), MySQL inventory (30 SKUs, three warehouses, 90 stock rows), and a Node 24/TypeScript/Fastify supplier API (10 suppliers, 40 offers). They have independent contracts, processes, credentials and lifecycle; the two databases have separate persistent volumes and restricted readers. [Demo setup](docs/development/DEMO_SYSTEMS_SETUP.md) gives reproducible commands and ports.
+
+Versioned external mappings preserve 22 approved sales identities, 27 catalog memberships and unresolved/conflicting/incompatible cases. Dataset v1.0.0 has 30 development and six separate held-out cases, explicit independent expected facts/provenance and 27 immutable SHA-256 artifact hashes. Two fresh projects with different random credentials produced identical actual business snapshots. Database permission/constraint tests and real HTTP contract tests passed. This is dataset preparation; no scientific performance result exists.
 
 ## Limits and next boundary
 
-The frontend container is a development Vite server. Sessions and bounded login throttling are single-instance/in-memory; a backend restart intentionally invalidates sessions. General identity/role administration, persistent audit browsing, multi-instance abuse controls and production deployment remain later work. No comprehensive backend/container vulnerability assessment or production-readiness claim is made.
+Local Compose/HTTP and the Vite frontend are development tooling. Source migrations initialize empty fixture volumes; checksum verification detects drift, with no automatic live fixture upgrade. Supplier storage is a small immutable JSON snapshot. Phase 1 sessions/throttling remain single-instance/in-memory. Point-in-time npm audits and source checks do not establish production readiness.
 
-Only platform metadata PostgreSQL is included. There are no demo source systems, MCP/gateway/native server integrations, external customer DB/API connectors, model calls, chat orchestration, mapping UI, benchmark results, Kubernetes/Argo resources or GHCR publishing. The accepted MCP compatibility gap remains a Phase 3 gate.
-
-Actual CI passed: [run 41047054438](https://github.com/ChouaibSeishin/EcoSync/actions/runs/41047054438), code commit de83c20e94c90c42475133217fe6d06b5afc7c9b. Final documentation/evidence commits do not change application code. Phase 2 requires explicit authorization; its next task is P2-01, independent synthetic source systems and ground truth.
+There are no MCP clients/servers/gateway, platform database/API connectors, integration onboarding, AI/model calls, chat, mapping management UI, benchmark execution, Kubernetes/Argo or GHCR publishing. The next authorized starting point, only after explicit permission, is P3-01: refresh official MCP/SDK compatibility and prove real protocol negotiation/security against independently deployed native servers. Phase 3 has not started.
 
 ## Final Phase 1 handoff addendum (reconciled on Phase 2 branch)
 
-Application implementation was fully verified at de83c20e94c90c42475133217fe6d06b5afc7c9b by [run 41047054438](https://github.com/ChouaibSeishin/EcoSync/actions/runs/41047054438). The later 603cfb993566f465d0c3328f175d71b27f6a4942 change clarified optional host-development documentation; it did not change application code. The final Phase 1 branch commit was itself fully verified by successful [run 41048264591](https://github.com/ChouaibSeishin/EcoSync/actions/runs/41048264591). Both actual run heads/statuses were rechecked through GitHub API. Phase 1 is complete, not CI-pending. Earlier failure/correction notes below are retained as chronological evidence; this addendum supersedes their intermediate progress wording. Phase 1 history/branch is not rewritten.
+Application implementation was fully verified at de83c20e94c90c42475133217fe6d06b5afc7c9b by [run 41047054438](https://github.com/ChouaibSeishin/EcoSync/actions/runs/41047054438). The later 603cfb993566f465d0c3328f175d71b27f6a4942 change clarified optional host-development documentation; it did not change application code. The final Phase 1 branch commit was itself fully verified by successful [run 41048264591](https://github.com/ChouaibSeishin/EcoSync/actions/runs/41048264591). Both actual run heads/statuses were rechecked through GitHub API. Phase 1 is complete. Historical failure/correction notes remain in its verification record; Phase 1 history/branch is not rewritten.

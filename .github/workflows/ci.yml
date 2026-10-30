@@ -1,4 +1,4 @@
-name: Phase 1 verification
+name: Ecosync verification
 on:
   push:
   pull_request:
@@ -6,7 +6,7 @@ on:
 permissions:
   contents: read
 concurrency:
-  group: phase1-${{ github.workflow }}-${{ github.ref }}
+  group: ecosync-${{ github.workflow }}-${{ github.ref }}
   cancel-in-progress: true
 jobs:
   verify:
@@ -68,4 +68,67 @@ jobs:
         run: |
           if [ -f infra/docker/.env ]; then
             docker compose -f infra/docker/compose.yaml stop
+          fi
+  demo:
+    name: Independent demo sources and dataset
+    runs-on: ubuntu-24.04
+    timeout-minutes: 25
+    steps:
+      - name: Checkout source
+        uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803 # v6, verified 2026-10-30
+        with:
+          persist-credentials: false
+      - name: Set up pinned Node
+        uses: actions/setup-node@249970729cb0ef3589644e2896645e5dc5ba9c38 # v6
+        with:
+          node-version: '24.22.2'
+          cache: npm
+          cache-dependency-path: demo-systems/supplier-api/package-lock.json
+      - name: Foundation and source review
+        run: |
+          node scripts/verify-foundation.mjs
+          node scripts/review-repository.mjs
+          git diff --check
+      - name: Supplier clean install, types, build, OpenAPI, HTTP tests and audit
+        working-directory: demo-systems/supplier-api
+        run: |
+          npm ci
+          npm run verify
+          npm audit --audit-level=high
+      - name: Reproduce fixtures, mappings, cases, expected facts and hashes
+        run: |
+          node scripts/demo/generate-sales.mjs --check
+          node scripts/demo/generate-inventory.mjs --check
+          node scripts/demo/generate-suppliers.mjs --check
+          node scripts/demo/generate-api-contract.mjs --check
+          node scripts/demo/prepare-mappings.mjs --check
+          node scripts/demo/prepare-cases.mjs --check
+          node scripts/demo/validate-dataset.mjs
+          node scripts/demo/prepare-ground-truth.mjs
+      - name: Build and initialize real independent sources
+        run: |
+          node scripts/init-demo.mjs
+          docker compose --env-file infra/docker/demo.env -f infra/docker/demo-systems.compose.yaml config --quiet
+          docker compose --env-file infra/docker/demo.env -f infra/docker/demo-systems.compose.yaml build supplier
+          docker compose --env-file infra/docker/demo.env -f infra/docker/demo-systems.compose.yaml up -d --wait --wait-timeout 240
+      - name: Exact source data, database denials and independent SQL ground truth
+        run: |
+          node scripts/demo/verify-sales.mjs
+          node scripts/demo/verify-inventory.mjs
+          node scripts/demo/verify-api.mjs
+          node scripts/demo/verify-ground-truth-live.mjs
+      - name: Independent outage/restart and persistence
+        run: node scripts/demo/verify-ecosystem.mjs
+      - name: Two fresh initializations with different random credentials
+        run: node scripts/demo/verify-reproducibility.mjs
+      - name: Final fixture and source review
+        run: |
+          node scripts/demo/prepare-ground-truth.mjs
+          node scripts/review-repository.mjs
+          git diff --exit-code
+      - name: Stop only this job's demo stack
+        if: always()
+        run: |
+          if [ -f infra/docker/demo.env ]; then
+            docker compose --env-file infra/docker/demo.env -f infra/docker/demo-systems.compose.yaml stop
           fi

@@ -51,3 +51,11 @@ Development demo network exceptions are operator-defined exact service names/por
 Authorized read data may itself be sensitive; require data minimization and documented provider disclosure/retention consent before real external-model use. A compromised approved source can still return incorrect facts; provenance and deterministic cross-checks reduce but do not eliminate that risk. Software process cancellation cannot undo a remote read already performed. Host compromise can expose encryption keys; protect runtime and backups. No generated dataset is evidence of real-world generalization.
 
 Before exposing any feature beyond localhost, verify its applicable controls and tests above, publish actual limitations, and recheck supported dependencies. No public deployment or cluster changes are part of Phase 0.
+
+## Implemented Phase 2 demo controls and limits
+
+The source Compose project has separate DB volumes/accounts and a dedicated bridge with no platform-network attachment. Published ports bind only 127.0.0.1. Setup generates seven distinct random owner/migrator/reader/token values in ignored local configuration. Source readers can SELECT only intended business tables; actual DML, DDL, control-table/admin access and invalid-password tests are required and passing. Migration histories are verified against committed SQL hashes.
+
+Supplier data requires a configurable bearer token checked without logging it; request logging is disabled, auth errors are bounded, pagination/body/URL/header resources are bounded, and invalid snapshots fail readiness. The API container uses a non-root user, read-only root filesystem, dropped capabilities and memory/CPU/PID limits. No database credentials are passed to this service.
+
+These are local synthetic-source accounts, not tenant-level platform integration authorization. No connector/host permission system is delivered by these fixtures. Plain loopback HTTP/SQL, local configuration, immutable fixture storage and point-in-time npm/source checks are development choices. Production TLS, operational rotation/secret stores, multi-instance governance and the future MCP/connector threat controls above remain future acceptance work. [Phase 2 verification](../development/PHASE_2_VERIFICATION.md) records actual source denials and known limitations.

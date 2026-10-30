@@ -1,12 +1,12 @@
 # Roadmap
 
-Each phase ends with a reviewable Git state, updated status/backlog, relevant tests, an integration check where applicable, and an honest verification report. Phase 1 is currently authorized; Phases 2-11 are not. Later rows describe acceptance criteria, not delivered functionality.
+Each phase ends with a reviewable Git state, updated status/backlog, relevant tests, an integration check where applicable, and an honest verification report. Phase 2 is currently authorized; Phases 3-11 are not. Later rows describe acceptance criteria, not delivered functionality.
 
 | Phase | Deliverable | Required exit evidence | State |
 | --- | --- | --- | --- |
 | 0 | Discovery and foundation | Architecture, module/data/security designs, sourced version pins, dependency compatibility assessment, local/deployment/research plans, prioritized Phase 1 backlog, documentation checks, Git commits | Complete (design scope) |
 | 1 | Working skeleton | Backend/frontend production builds; platform PostgreSQL and Flyway baseline; Compose startup; useful status/dashboard/empty integrations screens; guarded endpoints; positive/negative tests; actual GitHub Actions result; ordinary tests need no provider secrets | Complete (local + actual CI verified) |
-| 2 | Independent demo ecosystem | Separate sales PostgreSQL, inventory MySQL, supplier REST service; each runs independently; reproducible synthetic seed data and expected answers; identifiers and schema differences documented | Planned |
+| 2 | Independent demo ecosystem | Separate sales PostgreSQL, inventory MySQL, supplier REST service; each runs independently; reproducible synthetic seed data and expected answers; identifiers and schema differences documented | Local checkpoints A-F passed; final CI gate in progress |
 | 3 | Native MCP | Admin registration and real discovery/calls against separate servers; version/transport verification; namespace/schema checks; authorization denials; timeouts, disconnection, recovery, lifecycle tests | Planned |
 | 4 | Dynamic DB connectors | Add PostgreSQL/MySQL through UI without core recompilation; approved schema inspection; parameterized bounded reads through gateway MCP; credential isolation; disable/revoke and malicious-query tests | Planned |
 | 5 | Dynamic REST | Import/review supported OpenAPI operations; configure a second API without orchestrator changes; approved read operations through MCP; SSRF, redirect, external-ref, auth and payload limits tested | Planned |

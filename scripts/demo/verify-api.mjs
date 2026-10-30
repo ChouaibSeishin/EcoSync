@@ -31,6 +31,13 @@ export async function verifyApi(){
  }
  assert.equal((await request('/v1/offers?pageSize=51',{headers})).status,400);
  assert.equal((await request('/v1/offers/OF-9999',{headers})).status,404);
+ const oversized=await request('/v1/offers/'+'x'.repeat(65),{headers});
+ assert.equal(oversized.status,414);assert.equal((await oversized.json()).error.code,'URI_TOO_LONG');
+ const malformed=await request('/v1/offers/%world',{headers});
+ assert.equal(malformed.status,400);assert.equal((await malformed.json()).error.code,'INVALID_REQUEST');
+ assert.equal((await request('/v1/offers',{method:'POST',headers})).status,405);
+ const large=await request('/v1/offers',{method:'POST',headers:{...headers,'content-type':'application/json'},body:JSON.stringify({value:'x'.repeat(2000)})});
+ assert.equal(large.status,413);assert.equal((await large.json()).error.code,'PAYLOAD_TOO_LARGE');
  console.log('PASS: real supplier container health, exact OpenAPI, 50 exact paginated rows, 401/400/404 behavior and loopback binding.');
  return actual;
 }

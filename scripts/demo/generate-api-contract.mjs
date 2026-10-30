@@ -19,7 +19,7 @@ const supplierFilters={active:{type:'boolean'},region:{type:'string',enum:['NORT
 const offerFilters={supplierId:id('^SUP-[0-9]{3}$'),catalogReference:id('^CAT-[0-9]{4}$'),currency,unitCode:unit,supplierActive:{type:'boolean'},validAt:timestamp};
 const paths={};
 for(const [resource,name,filters,param,pattern] of [['suppliers','Supplier',supplierFilters,'supplierId','^SUP-[0-9]{3}$'],['offers','Offer',offerFilters,'offerId','^OF-[0-9]{4}$']]){
- const common={security:[{demoBearer:[]}],responses:{400:response('Error'),401:{...response('Error'),headers:{'WWW-Authenticate':{schema:{type:'string'}}}},503:response('Error'),405:response('Error')}};
+ const common={security:[{demoBearer:[]}],responses:{400:response('Error'),401:{...response('Error'),headers:{'WWW-Authenticate':{schema:{type:'string'}}}},503:response('Error'),405:response('Error'),413:response('Error'),414:response('Error')}};
  paths['/v1/'+resource]={get:{...common,operationId:'list'+name+'s',description:'Ascending stable ID. Unknown or duplicate query parameters are rejected. Beyond-end pages return an empty array.',parameters:params({...pagination,...filters}),responses:{...common.responses,200:response(name+'List')}}};
  paths['/v1/'+resource+'/{'+param+'}']={get:{...common,operationId:'get'+name,parameters:params({[param]:id(pattern)},true),responses:{...common.responses,200:response(name),404:response('Error')}}};
 }

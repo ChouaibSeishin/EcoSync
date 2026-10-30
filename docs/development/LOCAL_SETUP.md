@@ -1,6 +1,6 @@
 # Local setup
 
-Phase 1 application setup; updated 2026-10-30. The repository's default branch still contains Phase 0. Use `codex/phase-1-foundation` for the application. The repository API currently reports public visibility; no visibility changes were made.
+Platform application setup; updated 2026-10-30 for the Phase 2 branch. The repository's default branch still contains Phase 0. Use `codex/phase-2-demo-ecosystem` for the current checkout; the accepted Phase 1 branch remains preserved. Independent source setup is in [demo systems setup](DEMO_SYSTEMS_SETUP.md). The repository API currently reports public visibility; no visibility changes were made.
 
 ## Prerequisites
 

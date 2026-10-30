@@ -13,6 +13,7 @@ const required = [
   ...['0001-modular-platform', '0002-supported-dependencies', '0003-mcp-and-gateway',
     '0004-security-and-mappings', '0005-delivery-and-evaluation'].map(n => `docs/architecture/decisions/${n}.md`)
 ];
+required.push(...["docs/architecture/DEMO_ECOSYSTEM.md","docs/architecture/DEMO_DATA_DICTIONARY.md","docs/architecture/DEMO_API_CONTRACT.md","docs/research/DATASET_SPECIFICATION.md","docs/research/GROUND_TRUTH_METHOD.md","docs/development/DEMO_SYSTEMS_SETUP.md","docs/development/PHASE_2_VERIFICATION.md","docs/development/PHASE_2_ACCEPTANCE.md","docs/architecture/decisions/0006-phase1-identity-and-local-stack.md","docs/architecture/decisions/0007-independent-demo-ecosystem.md","config/demo-versions.json","config/phase1-ci-job.txt","demo-systems/supplier-api/openapi.json","evaluation/datasets/v1/manifest.json"]);
 const failures = [];
 for (const file of required) {
   try { await access(path.join(root, file)); }

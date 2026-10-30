@@ -52,6 +52,8 @@ test('unknown resources versus malformed identifiers',async()=>{
  error(await get('/v1/offers/OF-9999'),404,'NOT_FOUND');
  error(await get('/v1/suppliers/SUP-999'),404,'NOT_FOUND');
  error(await get('/v1/offers/invalid'),400,'INVALID_INPUT');
+ const oversized=await get('/v1/offers/'+'x'.repeat(65));error(oversized,414,'URI_TOO_LONG');assert.ok(!oversized.body.includes('x'.repeat(65)));
+ const badUrl=await get('/v1/offers/%world');error(badUrl,400,'INVALID_REQUEST');assert.ok(!badUrl.body.includes('%world'));
  error(await get('/unknown'),404,'NOT_FOUND');
 });
 test('strict query inputs reject unknown, duplicates, coercions and invalid dates',async()=>{

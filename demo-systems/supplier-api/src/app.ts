@@ -1,7 +1,8 @@
 import Fastify from 'fastify';
 import {Ajv} from 'ajv';
 import {readFileSync} from 'node:fs';
-import {createHash,timingSafeEqual} from 'node:crypto';
+import type {ServerResponse} from 'node:http';
+import {createHash,timingSafeEqual,randomUUID} from 'node:crypto';
 
 export interface Supplier {supplier_id:string;supplier_code:string;supplier_name:string;region:string;active:boolean}
 export interface Offer {offer_id:string;catalog_reference:string;supplier_id:string;supplier_sku:string;unit_cost:string;currency_code:string;unit_code:string;minimum_order_quantity:number;available_quantity:number;lead_time_days:number;valid_from:string;valid_until:string}
@@ -33,12 +34,13 @@ export function buildApp(options:{token:string;data?:Snapshot}){
  const tokenHash=hash(options.token);
  const data:Snapshot=structuredClone(options.data??snapshot);
  const ready=validateSnapshot(data);
- const app=Fastify({logger:false,bodyLimit:1024,routerOptions:{maxParamLength:64},requestTimeout:5000,connectionTimeout:5000,keepAliveTimeout:5000,genReqId:()=>crypto.randomUUID(),ajv:{customOptions:{coerceTypes:false,removeAdditional:false}}});
+ const routerReject=(response:ServerResponse,status:number,code:string)=>{response.writeHead(status,{'content-type':'application/json; charset=utf-8','cache-control':'no-store'});response.end(JSON.stringify({error:{code,message:'Request target is malformed or exceeds router limits.',requestId:randomUUID()}}));};
+ const app=Fastify({logger:false,bodyLimit:1024,routerOptions:{maxParamLength:64,onMaxParamLength:(_path,_request,response)=>routerReject(response,414,'URI_TOO_LONG'),onBadUrl:(_path,_request,response)=>routerReject(response,400,'INVALID_REQUEST')},requestTimeout:5000,connectionTimeout:5000,keepAliveTimeout:5000,genReqId:()=>randomUUID(),ajv:{customOptions:{coerceTypes:false,removeAdditional:false}}});
  for(const schema of schemas)app.addSchema(schema);
  const fail=(reply:import('fastify').FastifyReply,status:number,code:string,message:string,requestId:string)=>reply.code(status).send({error:{code,message,requestId}});
  app.setErrorHandler((error,request,reply)=>{
   const status=(error as {statusCode?:number}).statusCode;
-  return fail(reply,error instanceof InputError?400:status&&status>=400&&status<500?status:500,error instanceof InputError?'INVALID_INPUT':status===413?'PAYLOAD_TOO_LARGE':status&&status<500?'INVALID_REQUEST':'INTERNAL_ERROR',error instanceof InputError?'Request parameters do not match the documented contract.':'Request could not be completed.',request.id);
+  return fail(reply,error instanceof InputError?400:status&&status>=400&&status<500?status:500,error instanceof InputError?'INVALID_INPUT':status===413?'PAYLOAD_TOO_LARGE':status===414?'URI_TOO_LONG':status&&status<500?'INVALID_REQUEST':'INTERNAL_ERROR',error instanceof InputError?'Request parameters do not match the documented contract.':'Request could not be completed.',request.id);
  });
  app.addHook('onRequest',async(request,reply)=>{
   reply.header('Cache-Control','no-store');

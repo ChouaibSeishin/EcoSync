@@ -1,8 +1,26 @@
 # Architecture
 
-Status: target architecture established in Phase 0; updated 2026-10-30 for the Phase 1 implementation. The diagrams below include later-phase components. Phase 1 implements only identity, organizations, authorization, web and observability packages, platform PostgreSQL/Flyway and the React workspace. MCP/gateway/connectors/AI/mapping/evaluation remain unimplemented. See [ADR 0006](decisions/0006-phase1-identity-and-local-stack.md) for actual Phase 1 boundaries. Decisions: [0001](decisions/0001-modular-platform.md), [0002](decisions/0002-supported-dependencies.md), [0003](decisions/0003-mcp-and-gateway.md), [0004](decisions/0004-security-and-mappings.md), [0005](decisions/0005-delivery-and-evaluation.md).
+Status: target architecture established in Phase 0; updated 2026-10-30 for implemented Phases 1-2. The diagrams below include later-phase components. Phase 1 implements only identity, organizations, authorization, web and observability packages, platform PostgreSQL/Flyway and the React workspace. Phase 2 adds three independent demo sources and external mapping/oracle/case artifacts. MCP/gateway/connectors/AI, platform mapping management and benchmark execution remain unimplemented. See [ADR 0006](decisions/0006-phase1-identity-and-local-stack.md) for actual Phase 1 boundaries. Decisions: [0001](decisions/0001-modular-platform.md), [0002](decisions/0002-supported-dependencies.md), [0003](decisions/0003-mcp-and-gateway.md), [0004](decisions/0004-security-and-mappings.md), [0005](decisions/0005-delivery-and-evaluation.md).
 
-## Context and deployment boundaries
+## Implemented deployment boundaries (Phases 1-2)
+
+```mermaid
+flowchart LR
+  subgraph Platform["Phase 1 platform Compose project"]
+    Web[React workspace] --> Backend[Spring MVC identity and workspace API]
+    Backend --> Metadata[(Platform metadata PostgreSQL)]
+  end
+  subgraph Demo["Phase 2 demo Compose project / separate sources bridge"]
+    Sales[(Sales PostgreSQL / own persistent volume)]
+    Inventory[(Inventory MySQL / own persistent volume)]
+    Supplier[Supplier REST process] --> JSON[Own immutable supplier snapshot]
+  end
+  Reference[External mapping fixtures / oracle / 36 cases]
+```
+
+There is no runtime connection between the platform and these source systems. Each source runs without another source, the platform or evaluation files. Local verification scripts read their explicit test contracts; they are not platform connectors. [Demo architecture](DEMO_ECOSYSTEM.md) and [ADR 0007](decisions/0007-independent-demo-ecosystem.md) define ownership and future explicit network access.
+
+## Target context and deployment boundaries (later phases)
 
 ```mermaid
 flowchart LR

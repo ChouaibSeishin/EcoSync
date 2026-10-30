@@ -1,0 +1,14 @@
+{
+  "verifiedOn": "2026-10-30",
+  "supplier": {
+    "dependencies": {
+      "fastify": "5.12.7",
+      "ajv": "8.20.0"
+    },
+    "devDependencies": {
+      "@apidevtools/swagger-parser": "13.1.0",
+      "@types/node": "24.19.2",
+      "typescript": "6.0.3"
+    }
+  }
+}

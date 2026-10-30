@@ -6,9 +6,9 @@ Research: **AI-Driven Interoperability: Exploring the Role of Large Language Mod
 
 ## Current release
 
-Phase 1 implements a Spring MVC/PostgreSQL foundation, secure session login, tenant-scoped workspace access, and a responsive React interface. It includes a dashboard, empty integrations page, system status, and an explicitly unavailable AI workspace. No MCP, customer database/API connectors, AI orchestration, demo source systems or deployment automation are implemented yet.
+Phase 1 implements a Spring MVC/PostgreSQL foundation, secure session login, tenant-scoped workspace access, and a responsive React interface. It includes a dashboard, empty integrations page, system status, and an explicitly unavailable AI workspace. Phase 2 adds independently running sales PostgreSQL, inventory MySQL and a supplier REST API, with deterministic source data and external evaluation fixtures. No MCP, platform database/API connectors, AI orchestration or deployment automation is implemented.
 
-The repository is currently [public](https://github.com/ChouaibSeishin/EcoSync) (verified 2026-10-30); visibility was not changed by this work. Application work is on `codex/phase-1-foundation`. The default Phase 0 branch remains preserved.
+The repository is currently [public](https://github.com/ChouaibSeishin/EcoSync) (verified 2026-10-30); visibility was not changed by this work. Current work is on `codex/phase-2-demo-ecosystem`, based on the accepted Phase 1 commit. The default Phase 0 branch remains preserved.
 
 ## Run locally
 
@@ -16,7 +16,7 @@ Requires Java 21 (Temurin 21.0.13+9), Node 24.22.2/npm 11.19.1 and Docker with L
 
 ```powershell
 # The default branch still contains Phase 0; select the implementation branch.
-git clone --branch codex/phase-1-foundation https://github.com/ChouaibSeishin/EcoSync.git
+git clone --branch codex/phase-2-demo-ecosystem https://github.com/ChouaibSeishin/EcoSync.git
 Set-Location EcoSync
 Push-Location backend
 ./mvnw.cmd -B -ntp verify
@@ -51,6 +51,20 @@ The last script restarts **only this project's backend**, temporarily stops **on
 
 [Phase 1 results and CI evidence](docs/development/PHASE_1_VERIFICATION.md) distinguish passed tests, corrected failures and remaining checks. [Project status](PROJECT_STATUS.md) is the completion authority.
 
+## Independent demo sources
+
+The demo lifecycle is separate from the platform. Sales has 34 products/144 orders/432 lines; inventory has 30 SKUs/3 warehouses/90 stock rows; supplier has 10 suppliers/40 offers. No platform integration is registered.
+
+```powershell
+node scripts/init-demo.mjs
+docker compose --env-file infra/docker/demo.env -f infra/docker/demo-systems.compose.yaml config --quiet
+docker compose --env-file infra/docker/demo.env -f infra/docker/demo-systems.compose.yaml up --build -d --wait --wait-timeout 240
+```
+
+All ports are localhost-only: sales 55433, inventory 53307 and supplier API 18081. Unique local reader passwords/token stay in ignored configuration. [Demo setup and verification commands](docs/development/DEMO_SYSTEMS_SETUP.md), [data dictionary](docs/architecture/DEMO_DATA_DICTIONARY.md) and [API contract](docs/architecture/DEMO_API_CONTRACT.md) explain access and semantics.
+
+[Dataset v1](docs/research/DATASET_SPECIFICATION.md) has 30 development cases (three per ten categories), six separate held-out cases, external reviewed synthetic mappings and independently computed expected facts with immutable hashes. [Phase 2 verification](docs/development/PHASE_2_VERIFICATION.md) and [acceptance](docs/development/PHASE_2_ACCEPTANCE.md) distinguish completed local evidence from the final CI gate. No benchmark or model evaluation has run.
+
 ## Architecture and next work
 
 - `backend/`: Spring Boot 4.1.2, Spring Security, JPA, JDBC and Flyway; identity, organizations, authorization, web and observability modules. Spring AI 2.0.2 BOM only; no runtime AI/MCP dependencies.
@@ -60,4 +74,4 @@ The last script restarts **only this project's backend**, temporarily stops **on
 - [Version pins](config/versions.json), [image pins](config/container-images.json), [compatibility and official sources](docs/architecture/COMPATIBILITY.md), [architecture](docs/architecture/ARCHITECTURE.md), [security](docs/architecture/SECURITY.md), [data model](docs/architecture/DATA_MODEL.md).
 - [Roadmap](ROADMAP.md), [backlog](BACKLOG.md), [Phase 1 identity/runtime decision](docs/architecture/decisions/0006-phase1-identity-and-local-stack.md), [research methodology](docs/research/METHODOLOGY.md), [deployment design](docs/deployment/DEPLOYMENT.md), [historical Phase 0 report](docs/development/PHASE_0_VERIFICATION.md).
 
-Phase 2 requires separate authorization. Preserve unrelated work, use small commits, verify real behavior, and keep secrets/generated credentials out of Git.
+Phase 2 is the authorized scope. Phase 3 starts only after explicit authorization, beginning with the MCP/SDK compatibility gate. Preserve the existing phase branches and keep local credentials out of Git.

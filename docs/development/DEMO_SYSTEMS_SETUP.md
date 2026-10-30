@@ -43,3 +43,20 @@ npm ci
 npm run verify
 npm audit --audit-level=high
 ```
+
+## Full verification commands
+
+Install supplier dependencies first for the pinned schema/OpenAPI tools. With the main sources running:
+
+```sh
+node scripts/demo/verify-api.mjs
+node scripts/demo/validate-dataset.mjs
+node scripts/demo/prepare-ground-truth.mjs
+node scripts/demo/verify-ground-truth-live.mjs
+node scripts/demo/verify-ecosystem.mjs
+node scripts/demo/verify-reproducibility.mjs
+```
+
+The ecosystem verifier temporarily stops/restarts one demo service at a time and restores it in finally blocks. Append --with-platform only when the existing platform stack is running; it then also checks platform readiness with all demos stopped and restores demos afterward. The fresh-initialization verifier creates two uniquely named projects with newly randomized credentials and dynamic loopback ports, verifies every business row/privilege/constraint and SQL result, compares actual business fingerprints, and removes only their containers/networks. It retains test volumes and ignored .env.demo-repro-* files for inspection. A sanitized local proof is written under ignored .verification/phase2.
+
+Phase 1 commands remain in [platform setup](LOCAL_SETUP.md); its full CI job is preserved separately from the demo job. CI uses disposable runner storage and uploads no generated environment files or database dumps.

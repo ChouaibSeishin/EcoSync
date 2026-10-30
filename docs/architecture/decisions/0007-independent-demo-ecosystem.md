@@ -1,5 +1,5 @@
 # ADR 0007: Independent, deliberately heterogeneous demo sources
-Date: 2026-10-30. Status: accepted Phase 2 design; implementation evidence will follow.
+Date: 2026-10-30. Status: accepted and implemented for Phase 2; local evidence is in the [verification record](../../development/PHASE_2_VERIFICATION.md).
 
 Choose PostgreSQL sales, MySQL inventory and a Node 24/Fastify supplier REST service to exercise two SQL dialects plus an authenticated HTTP contract. Keep independent DBs, volumes, credentials, schema histories and runtime ownership. Keep the platform unchanged and independently startable.
 
@@ -7,6 +7,6 @@ Sales uses integer product IDs and exact NUMERIC revenue. Inventory uses case-se
 
 Supplier persistence is a versioned immutable JSON snapshot, sufficient for this read-only synthetic source; it avoids an unnecessary fourth database. Fastify is selected after current Node compatibility and dependency metadata checks. The OpenAPI artifact is versioned and validated independently. No source requires another source or the reference mappings to run.
 
-Use one deterministic fixture authoring process, independent expected-result derivation, explicit reviewed mapping statuses and immutable versioned hashes. Separate held-out cases from development examples. Source initialization is migration/seed-hash checked, idempotent and non-destructive. Actual reader write/schema denials and live snapshots are required acceptance evidence.
+Use deterministic source fixture generators, independent expected-result derivation, explicit reviewed mapping statuses and immutable versioned hashes. Separate held-out cases from development examples. Empty-volume initialization records migration/seed hashes; repeated starts preserve data and the verifier rejects drift. No automatic live fixture upgrade is provided. Actual reader write/schema denials and live snapshots are required acceptance evidence.
 
 A dedicated localhost-only demo Compose lifecycle has no platform depends_on links. Future MCP servers/approved connector tests can explicitly join the private source network and use reader/API credentials; this phase implements none of those integrations. Revisit larger supplier persistence, schema evolution or additional protocols only when evidence justifies them.
