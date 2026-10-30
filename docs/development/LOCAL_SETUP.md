@@ -91,10 +91,11 @@ First initialize the database and run setup via Compose. Stop only this project'
 | DB_URL | jdbc:postgresql://127.0.0.1:55432/ecosync (adjust selected port) |
 | DB_USERNAME | ecosync_runtime |
 | DB_PASSWORD | Your ignored local DB_RUNTIME_PASSWORD value |
+| SERVER_PORT | 18080 (match the selected host API port) |
 | COOKIE_SECURE | false for localhost HTTP only |
 | MIGRATIONS_ENABLED | false after the one-shot setup |
 
-Then run `./mvnw spring-boot:run` from backend (Windows: `./mvnw.cmd spring-boot:run`) and `npm run dev` from frontend. The Vite proxy defaults to host 127.0.0.1:18080; override `API_PROXY_TARGET` if needed. Primary end-to-end acceptance uses the actual Compose stack; this optional host invocation is a development convenience, not separate verified deployment evidence.
+Then run `./mvnw spring-boot:run` from backend (Windows: `./mvnw.cmd spring-boot:run`) and `npx --no-install vite --host 127.0.0.1` from frontend. The Vite proxy defaults to host 127.0.0.1:18080; override `API_PROXY_TARGET` if needed. Primary end-to-end acceptance uses the actual Compose stack; this optional host invocation is a development convenience, not separate verified deployment evidence.
 
 ## Health, sessions and stopping
 
