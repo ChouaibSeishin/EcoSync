@@ -13,3 +13,9 @@ Additional ArchUnit core 1.5.1 selected from official Maven metadata/user guide 
 ## Remaining checkpoints
 
 Backend/PostgreSQL, authentication, frontend/Compose, tests/CI and final documentation remain in progress. Failures and actual final outcomes will be recorded here.
+
+## Checkpoint B
+
+Backend source and test compilation and production packaging passed. Architecture and database-failure unit tests passed. The real PostgreSQL migration test passed after correcting Testcontainers image compatibility metadata for the verified official digest: fresh migration, idempotent rerun, validation and cross-organization composite foreign-key rejection. Compose config validated; the new platform DB container is healthy with a new named volume. No existing volume was deleted.
+
+The initial migration test failed before connection because the tag+digest was rejected by Testcontainers image-name compatibility checks. The same official digest is retained and explicitly marked PostgreSQL-compatible. The first security-context test then exposed PER_CLASS startup ordering; that separate Checkpoint C test is being repaired and rerun.

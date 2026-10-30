@@ -1,0 +1,23 @@
+name: ecosync-phase1
+services:
+  db:
+    image: postgres:17.11-bookworm@sha256:2cd2c0f809604aaeff6f0ec8f40aecbd025613107561015c69369a1a7f1d3416
+    platform: linux/amd64
+    environment:
+      POSTGRES_DB: ecosync
+      POSTGRES_USER: ecosync_owner
+      POSTGRES_PASSWORD: ${DB_OWNER_PASSWORD:?Run node scripts/init-local.mjs first}
+      DB_MIGRATION_PASSWORD: ${DB_MIGRATION_PASSWORD:?Required}
+      DB_RUNTIME_PASSWORD: ${DB_RUNTIME_PASSWORD:?Required}
+    ports:
+      - "127.0.0.1:${DB_PORT:-55432}:5432"
+    volumes:
+      - platform-data:/var/lib/postgresql/data
+      - ./init-db.sh:/docker-entrypoint-initdb.d/10-roles.sh:ro
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ecosync_owner -d ecosync"]
+      interval: 3s
+      timeout: 3s
+      retries: 30
+volumes:
+  platform-data:

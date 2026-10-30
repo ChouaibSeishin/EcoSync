@@ -1,0 +1,67 @@
+spring:
+  application:
+    name: ecosync-platform
+  datasource:
+    url: ${DB_URL:jdbc:postgresql://localhost:5432/ecosync}
+    username: ${DB_USERNAME:ecosync_runtime}
+    password: ${DB_PASSWORD:}
+    hikari:
+      connection-timeout: 2000
+      validation-timeout: 1000
+      maximum-pool-size: 6
+  jpa:
+    open-in-view: false
+    hibernate:
+      ddl-auto: validate
+    properties:
+      hibernate:
+        default_schema: app
+  flyway:
+    enabled: ${MIGRATIONS_ENABLED:false}
+    schemas: app
+    default-schema: app
+    clean-disabled: true
+server:
+  port: 8080
+  error:
+    include-message: never
+    include-stacktrace: never
+    include-binding-errors: never
+  servlet:
+    session:
+      timeout: 30m
+      cookie:
+        name: ECOSYNC_SESSION
+        http-only: true
+        same-site: strict
+        secure: ${COOKIE_SECURE:true}
+  forward-headers-strategy: none
+  tomcat:
+    max-http-form-post-size: 16KB
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health
+  endpoint:
+    health:
+      show-details: never
+      show-components: never
+      probes:
+        enabled: true
+      group:
+        liveness:
+          include: livenessState
+        readiness:
+          include: readinessState,db
+ecosync:
+  setup-only: ${SETUP_ONLY:false}
+  bootstrap:
+    enabled: ${BOOTSTRAP_ENABLED:false}
+    username: ${BOOTSTRAP_USERNAME:}
+    password: ${BOOTSTRAP_PASSWORD:}
+    organization: ${BOOTSTRAP_ORGANIZATION:Ecosync Workspace}
+logging:
+  level:
+    org.hibernate.orm.jdbc.bind: OFF
+    org.springframework.security: WARN
