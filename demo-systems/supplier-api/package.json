@@ -1,0 +1,27 @@
+{
+  "name": "ecosync-demo-supplier-api",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "engines": {
+    "node": "24.22.2",
+    "npm": "11.19.1"
+  },
+  "scripts": {
+    "build": "tsc --noEmitOnError",
+    "typecheck": "tsc --noEmit",
+    "test": "node --test test/*.test.mjs",
+    "contract": "node scripts/validate-contract.mjs",
+    "verify": "npm run typecheck && npm run build && npm run contract && npm test",
+    "start": "node dist/server.js"
+  },
+  "dependencies": {
+    "fastify": "5.12.7",
+    "ajv": "8.20.0"
+  },
+  "devDependencies": {
+    "@apidevtools/swagger-parser": "13.1.0",
+    "@types/node": "24.19.2",
+    "typescript": "6.0.3"
+  }
+}
