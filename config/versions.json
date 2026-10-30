@@ -1,6 +1,6 @@
 {
-  "verifiedOn": "2026-10-29",
-  "status": "phase-0-design-baseline",
+  "verifiedOn": "2026-10-30",
+  "status": "phase-1-implementation",
   "toolchain": {
     "javaRelease": "21",
     "jdkDistribution": "Eclipse Temurin",
@@ -13,7 +13,9 @@
     "springBoot": "4.1.2",
     "springAi": "2.0.2",
     "springdoc": "3.2.0",
-    "mavenDependencyPlugin": "3.8.1"
+    "mavenDependencyPlugin": "3.8.1",
+    "archunit": "1.5.1",
+    "mavenWrapperPlugin": "3.3.4"
   },
   "managedObservations": {
     "mcpJavaSdk": "2.1.0",

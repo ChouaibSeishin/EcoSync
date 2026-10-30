@@ -1,12 +1,12 @@
 # Project status
 
-Updated: 2026-10-29 UTC. Current authorized scope: **Phase 0 only**.
+Updated: 2026-10-30 UTC. Current authorized scope: **Phase 1 only**, in progress.
 
 ## Delivery state
 
-**Phase 0 is complete within its design/foundation scope.** Phases 1-11 are unimplemented. No application, source connector, MCP server, database schema, CI workflow, container image, benchmark result or deployment is being claimed.
+**Phase 0 is complete. Phase 1 Checkpoint A is verified; application implementation is in progress.** Phases 2-11 remain unimplemented. No application, source connector, MCP server, database schema, CI workflow, container image, benchmark result or deployment is being claimed.
 
-The private repository origin was verified as `https://github.com/ChouaibSeishin/EcoSync.git`. Inspection found a new local repository with no commits and no remote refs. No existing project files, history or user changes needed preservation. No applicable AGENTS.md was found in the inspected ancestor/workspace paths.
+The repository now reports public visibility via the authenticated GitHub API; visibility was not changed. The repository origin was verified as `https://github.com/ChouaibSeishin/EcoSync.git`. Inspection found a new local repository with no commits and no remote refs. No existing project files, history or user changes needed preservation. No applicable AGENTS.md was found in the inspected ancestor/workspace paths.
 
 ## Delivered foundation
 
@@ -33,4 +33,4 @@ Git work is on `codex/phase-0-foundation`. The initial design commit is `9c36648
 
 ## Next authorized-work boundary
 
-Await authorization for Phase 1 after Phase 0 reporting. Start with P1-01 toolchain/wrapper/lockfile, then P1-02 backend skeleton and P1-03 real PostgreSQL/Flyway baseline. Follow [BACKLOG.md](BACKLOG.md) through the real frontend/Compose/CI acceptance evidence. Do not begin those implementation tasks during Phase 0.
+Phase 1 is authorized; work follows docs/development/PHASE_1_PLAN.md. Start with P1-01 toolchain/wrapper/lockfile, then P1-02 backend skeleton and P1-03 real PostgreSQL/Flyway baseline. Follow [BACKLOG.md](BACKLOG.md) through the real frontend/Compose/CI acceptance evidence. No Phase 2 work is authorized.

@@ -1,0 +1,7 @@
+{
+  "verifiedOn": "2026-10-30",
+  "platform": "linux/amd64",
+  "postgres": "postgres:17.11-bookworm@sha256:2cd2c0f809604aaeff6f0ec8f40aecbd025613107561015c69369a1a7f1d3416",
+  "java": "eclipse-temurin:21.0.13_9-jdk-jammy@sha256:d378c0bb8ab3f2a09ce0a22a3876e7c64ef4fcfcefbd9b6d60638f5858ae8985",
+  "node": "node:24.22.2-bookworm-slim@sha256:a43f7fc3e52e87d12a905f46eea0275def84ca8f2981a5b53fed44d7fb398ee0"
+}
