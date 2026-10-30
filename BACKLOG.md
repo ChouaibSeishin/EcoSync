@@ -42,3 +42,15 @@ Phase 1 deliberately includes minimum identity security because exposing a skele
 ## Open decisions with owners and deadlines
 
 The implementing developer owns each decision unless the user must supply external access. Exact later-phase infrastructure, observability, model and image-digest pins are selected before their first implementation, not guessed now. P1-01 owns advisory checks and runtime tool upgrades. P3-01 owns the current-spec interoperability gap. P6-01 owns model choice after resource measurement. P10-01 owns a project-specific development deployment destination and GitOps repository provisioning with the owner. None blocks writing the Phase 1 skeleton once its toolchain prerequisites are met.
+
+## Phase 2 ordered work packages (authorized)
+
+| ID | Checkpoint | Required verification |
+| --- | --- | --- |
+| P2-A | Handoff reconciliation and data/API design | Exact Phase 1 head/run addendum; source boundaries, dictionaries, mapping/case schema and ADR; documentation checks |
+| P2-B | Sales PostgreSQL | Versioned constrained schema/seed; exact currency/time revenue; actual reader write/DDL denials and canonical rows |
+| P2-C | Inventory MySQL | InnoDB schema/seed, warehouse/reservation/unit rules, canonical rows and actual reader denials |
+| P2-D | Supplier REST | Pinned Node/Fastify service, strict auth/pagination/filter/errors, versioned validated OpenAPI, tests and container |
+| P2-E | Isolated demo lifecycle | Three healthy independent systems, private source network/localhost ports, persistent volumes, platform unchanged |
+| P2-F | Reference mappings and ground truth | 30 development plus 6 held-out cases, independent oracle/SQL comparisons, manifest hashes, two clean initializations |
+| P2-G | CI and handoff | Preserve complete Phase 1 job; add real demo checks; inspect actual run; update status/acceptance and push without merges |

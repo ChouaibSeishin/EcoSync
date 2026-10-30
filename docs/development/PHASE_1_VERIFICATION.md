@@ -1,6 +1,6 @@
 # Phase 1 verification
 
-In progress, 2026-10-30 UTC. Phase 1 only; base `6a1749f40d394933c0e4b421048eab96818da436` verified against origin. Repository API reports public visibility; it was not changed.
+Completed, 2026-10-30 UTC; chronological checkpoint notes retained. Phase 1 only; base `6a1749f40d394933c0e4b421048eab96818da436` verified against origin. Repository API reports public visibility; it was not changed.
 
 ## Checkpoint A
 
@@ -12,7 +12,7 @@ Additional ArchUnit core 1.5.1 selected from official Maven metadata/user guide 
 
 ## Remaining checkpoints
 
-Backend/PostgreSQL, authentication, frontend/Compose, tests/CI and final documentation remain in progress. Failures and actual final outcomes will be recorded here.
+Historical intermediate note: these checkpoints were then in progress; all were subsequently completed as documented below and in the final handoff addendum.
 
 ## Checkpoint B
 
@@ -46,7 +46,7 @@ Backend: backend/mvnw.cmd -B -ntp -Dmaven.repo.local=.verification/m2 -f backend
 
 ## CI and Git
 
-Actual CI execution is pending the verified implementation branch push. Workflow: .github/workflows/ci.yml, verified official checkout v6/setup-java v5/setup-node v6 commit SHAs, contents: read only, no publish/deployment secrets. It runs backend PostgreSQL tests, strict frontend checks, real Compose/browser and persistence/outage checks. Final run URL/result and commit list will be recorded after inspection.
+Historical intermediate state before push (subsequently resolved by both successful CI runs below). Workflow: .github/workflows/ci.yml, verified official checkout v6/setup-java v5/setup-node v6 commit SHAs, contents: read only, no publish/deployment secrets. It runs backend PostgreSQL tests, strict frontend checks, real Compose/browser and persistence/outage checks. Final run URL/result and commit list will be recorded after inspection.
 
 ## Final actual CI result and acceptance
 
@@ -57,3 +57,7 @@ Actual CI execution is pending the verified implementation branch push. Workflow
 Incremental application commits: a54f3b2 (toolchain/wrapper/lock), 6c4e7ba (backend/DB foundation), 81cf755 (session/tenant security), c26e1b6 (runtime least privilege), 3094a97 (responsive UI/local integration), de83c20 (actual CI and verified setup). Final documentation/evidence commit follows; its exact hash is in Git history. Only codex/phase-1-foundation is pushed; Phase 0 stays unchanged. Repository visibility is public, verified through GitHub API, and was not modified.
 
 Known limits: localhost-only Vite development container; in-memory single-instance sessions/throttle; no general identity/role administration UI or persistent audit browsing yet; optional host-mode startup documented but Compose is the exercised end-to-end acceptance path; no comprehensive backend/container vulnerability scan. No production deployment or later-phase integration/AI/research result is claimed. Phase 2 has not started and requires explicit authorization.
+
+## Final Phase 1 handoff addendum (reconciled on Phase 2 branch)
+
+Application implementation was fully verified at de83c20e94c90c42475133217fe6d06b5afc7c9b by [run 41047054438](https://github.com/ChouaibSeishin/EcoSync/actions/runs/41047054438). The later 603cfb993566f465d0c3328f175d71b27f6a4942 change clarified optional host-development documentation; it did not change application code. The final Phase 1 branch commit was itself fully verified by successful [run 41048264591](https://github.com/ChouaibSeishin/EcoSync/actions/runs/41048264591). Both actual run heads/statuses were rechecked through GitHub API. Phase 1 is complete, not CI-pending. Earlier failure/correction notes below are retained as chronological evidence; this addendum supersedes their intermediate progress wording. Phase 1 history/branch is not rewritten.
