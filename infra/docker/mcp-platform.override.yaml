@@ -1,0 +1,17 @@
+# Explicit opt-in. Existing platform/source Compose files are unchanged.
+services:
+  backend:
+    environment:
+      ECOSYNC_MCP_ENABLED: "true"
+      ECOSYNC_MCP_ENVIRONMENT: development
+      ECOSYNC_MCP_CLIENT_URL: http://mcp-client:8090
+      ECOSYNC_MCP_INTERNAL_TOKEN: ${MCP_INTERNAL_TOKEN:?Run init-mcp.mjs}
+      ECOSYNC_MCP_ALLOWED_ENDPOINTS: http://sales-mcp:8091/mcp,http://inventory-mcp:8092/mcp
+      ECOSYNC_MCP_KEYRING: /run/ecosync/keyring.json
+    volumes:
+      - ../../.verification/mcp/keyring.json:/run/ecosync/keyring.json:ro
+    networks: [default, mcp-control]
+networks:
+  mcp-control:
+    external: true
+    name: ecosync-mcp_control

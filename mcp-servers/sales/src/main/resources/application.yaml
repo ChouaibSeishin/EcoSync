@@ -1,0 +1,25 @@
+server:
+  port: 8091
+  max-http-request-header-size: 8KB
+  tomcat:
+    threads.max: 16
+    max-connections: 64
+spring:
+  application.name: ecosync-sales-mcp
+  datasource:
+    url: ${SALES_JDBC_URL:jdbc:postgresql://sales:5432/sales?connectTimeout=5&socketTimeout=5&ApplicationName=ecosync-sales-mcp}
+    username: sales_reader
+    password: ${SALES_READER_PASSWORD}
+    hikari:
+      maximum-pool-size: 4
+      minimum-idle: 0
+      connection-timeout: 5000
+      initialization-fail-timeout: -1
+      read-only: true
+  jdbc.template.query-timeout: 4s
+logging:
+  level:
+    root: WARN
+    io.modelcontextprotocol: OFF
+    org.springframework.jdbc: OFF
+    com.zaxxer.hikari: OFF

@@ -1,0 +1,59 @@
+{
+  "observedOn": "2026-10-31",
+  "result": "PASS",
+  "evidence": [
+    {
+      "source": "sales",
+      "protocol": "2025-11-25",
+      "server": {
+        "name": "ecosync-sales-native",
+        "version": "0.3.0"
+      },
+      "tools": [
+        "sales_get_revenue_summary",
+        "sales_get_top_products",
+        "sales_get_order_summary"
+      ],
+      "revenue": [
+        {
+          "currency": "EUR",
+          "revenue": "32033.59",
+          "orders": 110
+        },
+        {
+          "currency": "GBP",
+          "revenue": "29495.75",
+          "orders": 110
+        },
+        {
+          "currency": "USD",
+          "revenue": "145444.58",
+          "orders": 110
+        }
+      ],
+      "checks": [
+        "BigInt fixture totals equal SQL results",
+        "top-N explicit truncation",
+        "pending revenue zero"
+      ]
+    },
+    {
+      "source": "inventory",
+      "protocol": "2026-07-28",
+      "server": {
+        "name": "ecosync-inventory-native",
+        "version": "0.3.0"
+      },
+      "tools": [
+        "inventory_get_stock_by_sku",
+        "inventory_list_low_stock",
+        "inventory_get_warehouse_stock"
+      ],
+      "checks": [
+        "fixture quantities and thresholds equal SQL results",
+        "case-sensitive SKU",
+        "low stock and warehouse pagination"
+      ]
+    }
+  ]
+}
