@@ -12,7 +12,7 @@ class MigrationIT {
     @Test void migrationIsReproducibleAndTenantForeignKeyIsEnforced() throws Exception {
         var flyway = Flyway.configure().dataSource(postgres.getJdbcUrl(), postgres.getUsername(), postgres.getPassword())
             .schemas("app").defaultSchema("app").load();
-        assertThat(flyway.migrate().migrationsExecuted).isEqualTo(2);
+        assertThat(flyway.migrate().migrationsExecuted).isEqualTo(3);
         assertThat(flyway.migrate().migrationsExecuted).isZero();
         flyway.validate();
         try (var c = DriverManager.getConnection(postgres.getJdbcUrl(), postgres.getUsername(), postgres.getPassword());

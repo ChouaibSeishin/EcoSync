@@ -1,0 +1,15 @@
+# Native MCP security
+
+Phase 3 treats every description, annotation, schema and result as untrusted source data. It does not execute instructions in tool text, evaluate code, render HTML, select tools with a model, or create global callbacks. React renders metadata and JSON as text. Remote names are dispatched only after organization, integration revision, capability UUID, schema fingerprint and role grant checks.
+
+Organization membership is required for every API operation, including platform administrators. INTEGRATION_ADMIN creates/edits/tests/discovers/approves/activates/disables/removes. USER invokes only a capability with an explicit USER grant. AUDITOR can inspect metadata and bounded history but cannot execute. Approval is per current schema and revision. Disable/removal fences the database and retires the adapter lease; failing transport cleanup never authorizes a new operation. Already admitted work may finish or be cancelled during disable. Phase 3 operates a single backend replica; distributed admission is not claimed.
+
+Credentials use AES-256-GCM and external versioned keys, tenant-bound AAD, write-only input and fresh nonces. Normal integration JSON exposes only an opaque reference and configured flag. No arguments or result bodies are stored in audit. Backend exceptions and adapter errors use bounded fixed codes/messages. Adapter metadata/results redact configured upstream and service token literals. This is not a general personal-data redaction engine; authorized source data is returned to the authorized caller.
+
+Destination policy, DNS pinning, redirect denial, production TLS and isolated development exceptions are defined in ADR 0011. The platform backend joins its metadata network and MCP control network; it never joins the source database network. The bridge joins control only; native source servers join source and control. No MCP host ports are published by default. The original Phase 1 and Phase 2 Compose files are unchanged.
+
+Bounds: 5-second connect, 10-second tool, 30-second operation; four operations per integration; 64 adapter clients; idle retirement after five minutes; eight discovery pages and 100 tools; 32 KiB schema; 16 KiB arguments; 1 MiB per remote response; 2 MiB aggregate operation evidence. Streaming reads enforce byte limits before full buffering. Input schemas support a deliberately bounded JSON Schema subset; external references, regex, combinators and unbounded arrays are rejected. AJV 8.20.0 and NetworkNT 3.0.8 independently validate arguments and declared structured output. Unsupported tools remain visible and cannot be approved.
+
+No tool invocation is automatically retried. Recovery uses fresh discovery and approval fingerprint checks. Cancellation is scoped to the initiating actor or organization integration administrator. Health failures do not activate a disabled registration. Removing retains revision and audit history.
+
+Evidence and limitations are recorded in `../development/PHASE_3_VERIFICATION.md`; a completed acceptance claim requires final local and branch-head CI verification.
