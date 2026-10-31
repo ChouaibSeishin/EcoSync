@@ -20,3 +20,9 @@ Status 2026-10-30: **Phase 2 complete**. Checkpoints A-G passed locally and in [
 The initial run 41060229162 passed Phase 1 but failed demo initialization; the portability fix and successful rerun are retained in the verification history. A subsequent documentation-only acceptance commit is subject to the same full workflow; its exact run is reported in the task handoff.
 
 [Verification record](PHASE_2_VERIFICATION.md) contains actual commands, corrected failures, dataset fingerprint, Git checkpoints and final run evidence. [Setup](DEMO_SYSTEMS_SETUP.md), [architecture](../architecture/DEMO_ECOSYSTEM.md), [dictionary](../architecture/DEMO_DATA_DICTIONARY.md), [API contract](../architecture/DEMO_API_CONTRACT.md), [dataset](../research/DATASET_SPECIFICATION.md) and [ground-truth method](../research/GROUND_TRUTH_METHOD.md) define the shipped contracts and limitations.
+
+## Final Phase 2 branch-head handoff addendum (2026-10-31)
+
+Phase 2 application code was accepted at 002cdd6348dd1f39481255ae4472d66a967ce559 by successful [run 41061522829](https://github.com/ChouaibSeishin/EcoSync/actions/runs/41061522829). The subsequent a38682428457cca417cbac8f20bc14e7c0792f21 commit updated documentation only. Its own complete [branch-head run 41062443616](https://github.com/ChouaibSeishin/EcoSync/actions/runs/41062443616) passed both verify and Independent demo sources and dataset jobs. Exact head/status/job conclusions were rechecked through GitHub API on 2026-10-31. This addendum completes the previously separate final-head report; it does not replace the code acceptance evidence or remove the initial failed run 41060229162 and its initialization portability correction.
+
+Phase 3 work is based on the exact verified a386824 commit on codex/phase-3-native-mcp. Earlier phase branches, public visibility and default-branch settings are preserved.

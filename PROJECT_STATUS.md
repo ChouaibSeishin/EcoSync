@@ -25,3 +25,9 @@ There are no MCP clients/servers/gateway, platform database/API connectors, inte
 ## Final Phase 1 handoff addendum (reconciled on Phase 2 branch)
 
 Application implementation was fully verified at de83c20e94c90c42475133217fe6d06b5afc7c9b by [run 41047054438](https://github.com/ChouaibSeishin/EcoSync/actions/runs/41047054438). The later 603cfb993566f465d0c3328f175d71b27f6a4942 change clarified optional host-development documentation; it did not change application code. The final Phase 1 branch commit was itself fully verified by successful [run 41048264591](https://github.com/ChouaibSeishin/EcoSync/actions/runs/41048264591). Both actual run heads/statuses were rechecked through GitHub API. Phase 1 is complete. Historical failure/correction notes remain in its verification record; Phase 1 history/branch is not rewritten.
+
+## Final Phase 2 branch-head handoff addendum (2026-10-31)
+
+Phase 2 application code was accepted at 002cdd6348dd1f39481255ae4472d66a967ce559 by successful [run 41061522829](https://github.com/ChouaibSeishin/EcoSync/actions/runs/41061522829). The subsequent a38682428457cca417cbac8f20bc14e7c0792f21 commit updated documentation only. Its own complete [branch-head run 41062443616](https://github.com/ChouaibSeishin/EcoSync/actions/runs/41062443616) passed both verify and Independent demo sources and dataset jobs. Exact head/status/job conclusions were rechecked through GitHub API on 2026-10-31. This addendum completes the previously separate final-head report; it does not replace the code acceptance evidence or remove the initial failed run 41060229162 and its initialization portability correction.
+
+Phase 3 work is based on the exact verified a386824 commit on codex/phase-3-native-mcp. Earlier phase branches, public visibility and default-branch settings are preserved.
