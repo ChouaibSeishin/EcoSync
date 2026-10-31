@@ -54,3 +54,21 @@ The implementing developer owns each decision unless the user must supply extern
 | P2-E | Isolated demo lifecycle | Three healthy independent systems, private source network/localhost ports, persistent volumes, platform unchanged |
 | P2-F | Reference mappings and ground truth | 30 development plus 6 held-out cases, independent oracle/SQL comparisons, manifest hashes, two clean initializations |
 | P2-G | CI and handoff | Preserve complete Phase 1 job; add real demo checks; inspect actual run; update status/acceptance and push without merges |
+
+## Phase 3 prioritized work packages (authorized, 2026-10-31)
+
+| Priority / checkpoint | Work | Exit evidence |
+| --- | --- | --- |
+| P3-01 / A (passed) | Reconcile Phase 2 final head, inspect official specs/graphs, actual legacy/modern wire proof, ADR 0008 | Exact branch a386824; actual SDK matrix and failure limits, stable baseline preserved |
+| P3-04 / B (passed foundation checks) | Scoped official-SDK client adapter and clean Java port | Actual JSON/SSE discovery/calls, bounds, cancellation, typed failures, clean leases |
+| P3-02 / C | Independent Java Sales and TypeScript Inventory native servers | Restricted real source readers, fixed parameterized SQL, protocol/auth/origin tests, exact fixture facts |
+| P3-03 / D | Versioned PostgreSQL registry, AES-GCM credential references and lifecycle | Persistent revisions, CAS fencing, restart reconstruction, no plaintext credentials |
+| P3-05 / D-E | Capability identities, fingerprints, role approvals and revocation | Discovery never authorizes; changed schemas stale; opaque integration-aware aliases |
+| P3-06 / E | Existing Integrations UI, registration, explorer, manual playground | Actual API state, accessible/responsive controls, real results and cancellation |
+| P3-07 / F | Destination/credential/tenant/tool enforcement | Negative URL/DNS/redirect/secret/Origin/schema tests and zero unauthorized source operations |
+| P3-08 / F | Concurrency/deadline/cancellation/recovery | Disabled/revised clients retired; transport health cannot override governance |
+| P3-09 / G | Separate MCP Compose and explicit network overrides | Backend only reaches client/server control path; independent source lifecycles/data preserved |
+| P3-10 / D-G | Sanitized actor/org/revision/tool/protocol execution/audit metadata | Recent UI history, duration/correlation/denials without raw credentials/results |
+| P3-11 / H | Add real native MCP CI job; preserve Phase 1/2 jobs | Actual final-head jobs/test counts, docs/ADRs/security review, incremental Git push |
+
+Phases 4/5 dynamic DB/REST connectors, managed gateway, general joins/mapping UI, AI/chat, benchmark execution and deployment/publishing remain excluded.

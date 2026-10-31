@@ -1,12 +1,12 @@
 # Project status
 
-Updated: 2026-10-30 UTC. Authorized scope: **Phase 2 only**.
+Updated: 2026-10-31 UTC. Authorized scope: **Phase 3 only**, currently in progress.
 
 ## Current delivery state
 
 Phase 0 remains accepted at 6a1749f40d394933c0e4b421048eab96818da436. Phase 1 is complete at 603cfb993566f465d0c3328f175d71b27f6a4942 with both accepted CI runs preserved. **Phase 2 is complete.** Checkpoints A-G passed locally and in actual [GitHub Actions run 41061522829](https://github.com/ChouaibSeishin/EcoSync/actions/runs/41061522829) at code commit 002cdd6348dd1f39481255ae4472d66a967ce559; both the unchanged Phase 1 verify job and the independent demo job succeeded. See [Phase 2 verification](docs/development/PHASE_2_VERIFICATION.md) and [acceptance](docs/development/PHASE_2_ACCEPTANCE.md).
 
-Work branch: codex/phase-2-demo-ecosystem, based on the exact verified Phase 1 final commit. Both prior branches remain unchanged. Repository visibility is intentionally public and has not been changed. No unrelated starting changes existed.
+Work branch: codex/phase-3-native-mcp, based on exact final Phase 2 head a38682428457cca417cbac8f20bc14e7c0792f21. All previous phase branches remain unchanged. Repository visibility is intentionally public and has not been changed. No unrelated starting changes existed.
 
 ## Delivered systems
 
@@ -20,7 +20,7 @@ Versioned external mappings preserve 22 approved sales identities, 27 catalog me
 
 Local Compose/HTTP and the Vite frontend are development tooling. Source migrations initialize empty fixture volumes; checksum verification detects drift, with no automatic live fixture upgrade. Supplier storage is a small immutable JSON snapshot. Phase 1 sessions/throttling remain single-instance/in-memory. Point-in-time npm audits and source checks do not establish production readiness.
 
-There are no MCP clients/servers/gateway, platform database/API connectors, integration onboarding, AI/model calls, chat, mapping management UI, benchmark execution, Kubernetes/Argo or GHCR publishing. The next authorized starting point, only after explicit permission, is P3-01: refresh official MCP/SDK compatibility and prove real protocol negotiation/security against independently deployed native servers. Phase 3 has not started.
+Phase 3 compatibility gate A passed against real official Java/TypeScript peers. Client foundation B implements a scoped bounded official-SDK adapter and Java interface; native source servers, persistent registry, approvals and UI remain in progress and are not yet accepted. See docs/development/PHASE_3_VERIFICATION.md. No managed gateway, dynamic DB/REST connectors, AI/model calls, chat, mapping management UI, benchmark executor, Kubernetes/Argo or publishing is implemented.
 
 ## Final Phase 1 handoff addendum (reconciled on Phase 2 branch)
 

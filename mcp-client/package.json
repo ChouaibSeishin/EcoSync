@@ -1,0 +1,29 @@
+{
+  "name": "ecosync-native-mcp-client",
+  "version": "0.3.0",
+  "private": true,
+  "type": "module",
+  "engines": {
+    "node": "24.22.2",
+    "npm": "11.19.1"
+  },
+  "scripts": {
+    "build": "tsc --noEmitOnError",
+    "typecheck": "tsc --noEmit",
+    "test": "node --test test/*.test.mjs",
+    "verify": "npm run typecheck && npm run build && npm test",
+    "start": "node dist/server.js"
+  },
+  "dependencies": {
+    "@modelcontextprotocol/client": "2.4.0",
+    "@modelcontextprotocol/core": "2.4.0",
+    "ajv": "8.20.0"
+  },
+  "devDependencies": {
+    "@modelcontextprotocol/server": "2.4.0",
+    "@modelcontextprotocol/node": "2.1.2",
+    "zod": "4.6.7",
+    "typescript": "6.0.3",
+    "@types/node": "24.19.2"
+  }
+}

@@ -23,7 +23,7 @@ Official ledger: [modern spec](https://modelcontextprotocol.io/specification/202
 
 ## Actual disposable wire matrix
 
-[Sanitized evidence](../development/evidence/phase-3-compatibility.json) comes from verification/mcp-compatibility. Tests use real loopback HTTP and official SDK peers, authenticated with randomly generated process-local credentials. No source fixture or existing volume is changed.
+[Initial gate evidence](../development/evidence/phase-3-compatibility.json) and [selected-client evidence](../development/evidence/phase-3-client-foundation.json) comes from verification/mcp-compatibility. Tests use real loopback HTTP and official SDK peers, authenticated with randomly generated process-local credentials. No source fixture or existing volume is changed.
 
 | Client | Server | Revision | Actual result |
 | --- | --- | --- | --- |
@@ -31,8 +31,8 @@ Official ledger: [modern spec](https://modelcontextprotocol.io/specification/202
 | Official Java SDK 2.1.0 | Official TS 2.4.0 modern-only handler | 2026-07-28 | UNSUPPORTED during initialize; no modern-client claim |
 | Official TS client 2.4.0, auto negotiation | Java legacy peer | 2025-11-25 | PASS fallback, schemas/list/call, structured result, auth, timeout, disconnect |
 | Official TS client 2.4.0, auto negotiation | TS modern-only peer | 2026-07-28 | PASS server/discover, per-request matching metadata/headers, no session, schemas/list/call, auth, timeout, disconnect |
-| Selected Ecosync internal client service | Java legacy source MCP server | 2025-11-25 | Pending implementation-specific test at B/C |
-| Selected Ecosync internal client service | TS modern source MCP server | 2026-07-28 | Pending implementation-specific test at B/C |
+| Selected Ecosync client foundation | Java SDK legacy proof process | 2025-11-25 | PASS real discovery, structured invocation and retired lease at B |
+| Selected Ecosync client foundation | TS modern-only proof peer | 2026-07-28 | PASS real discovery, structured invocation and retired lease at B |
 
 Negative wire checks reject invalid bearer/Origin, inconsistent version header/body and modern GET. Java/Node builds use the exact pinned Linux runtime images. The first native Windows launch failed before protocol communication because the JDK could not create its NIO selector; the isolated Linux proof passed and its disposable container exited cleanly.
 

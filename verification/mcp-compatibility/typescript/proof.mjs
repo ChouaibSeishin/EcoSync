@@ -7,7 +7,7 @@ import {spawn} from 'node:child_process';
 import {randomBytes,timingSafeEqual} from 'node:crypto';
 import {once} from 'node:events';
 import {mkdir,writeFile} from 'node:fs/promises';
-import {fileURLToPath} from 'node:url';
+import {fileURLToPath,pathToFileURL} from 'node:url';
 import path from 'node:path';
 import assert from 'node:assert/strict';
 const root=fileURLToPath(new URL('../../../',import.meta.url)),out=path.join(root,'.verification/phase3');
@@ -92,6 +92,21 @@ try{
  const incompatible=await processRun(['-jar',jar,'--probe',modern]);assert.equal(incompatible.supported,false);assert.equal(incompatible.stage,'initialize');
  matrix.push({client:'official Java SDK 2.1.0',server:'TypeScript SDK 2.4.0 modern-only',revision:'2026-07-28',result:'UNSUPPORTED',failure:incompatible});
  await tsProof(legacy,'legacy');await tsProof(modern,'modern');
+ if(process.env.MCP_FOUNDATION_MODULE){
+  const {ClientManager}=await import(pathToFileURL(process.env.MCP_FOUNDATION_MODULE).href);
+  const {DestinationPolicy}=await import(pathToFileURL(path.join(path.dirname(process.env.MCP_FOUNDATION_MODULE),'network.js')).href);
+  const manager=new ClientManager(new DestinationPolicy([legacy+'/mcp',modern+'/mcp'],true),randomBytes(32).toString('base64url'));
+  try{
+   for(const [base,era,revision]of [[legacy,'legacy','2025-11-25'],[modern,'modern','2026-07-28']]){
+    const connected=await manager.connect({organizationId:crypto.randomUUID(),integrationId:crypto.randomUUID(),configurationVersion:1,configurationFingerprint:'a'.repeat(64),ownerId:crypto.randomUUID(),endpoint:base+'/mcp',credential:token,protocolPolicy:'AUTO_DUAL'});
+    const tool=connected.tools.find(t=>t.name==='proof_echo');assert.ok(tool.supported);assert.equal(connected.protocol,revision);
+    const call=await manager.invoke(connected.key,connected.leaseId,tool.name,tool.fingerprint,{value:'wire'});
+    assert.deepEqual(call.result.structuredContent,{value:'wire',amount:'12.34'});
+    await manager.close(connected.key,connected.leaseId,true);
+    matrix.push({client:'Selected Ecosync official-SDK client foundation',server:connected.serverInfo.name,revision,era,result:'PASS',authenticated:true,structuredContent:true,closedLease:true});
+   }
+  }finally{await manager.shutdown();}
+ }
  const headers={'authorization':'Bearer '+token,'content-type':'application/json','accept':'application/json, text/event-stream','mcp-protocol-version':'2026-07-28','mcp-method':'server/discover'};
  const envelope={jsonrpc:'2.0',id:'probe',method:'server/discover',params:{_meta:{'io.modelcontextprotocol/protocolVersion':'2026-07-28','io.modelcontextprotocol/clientInfo':{name:'raw-proof',version:'1.0.0'},'io.modelcontextprotocol/clientCapabilities':{}}}};
  const mismatch=await fetch(modern+'/mcp',{method:'POST',headers:{...headers,'mcp-protocol-version':'2025-11-25'},body:JSON.stringify(envelope)});assert.equal(mismatch.status,400);

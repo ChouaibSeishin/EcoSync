@@ -1,6 +1,6 @@
 # Roadmap
 
-Each phase ends with a reviewable Git state, updated status/backlog, relevant tests, an integration check where applicable, and an honest verification report. Phase 2 is currently authorized; Phases 3-11 are not. Later rows describe acceptance criteria, not delivered functionality.
+Each phase ends with a reviewable Git state, updated status/backlog, relevant tests, an integration check where applicable, and an honest verification report. Phase 3 is currently authorized; Phases 4-11 are not. Later rows describe acceptance criteria, not delivered functionality.
 
 | Phase | Deliverable | Required exit evidence | State |
 | --- | --- | --- | --- |

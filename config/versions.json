@@ -1,6 +1,6 @@
 {
-  "verifiedOn": "2026-10-30",
-  "status": "phase-1-verified-baseline",
+  "verifiedOn": "2026-10-31",
+  "status": "phase-3-in-progress",
   "toolchain": {
     "javaRelease": "21",
     "jdkDistribution": "Eclipse Temurin",
@@ -29,7 +29,18 @@
   "mcp": {
     "transport": "streamable-http",
     "initialProtocolTarget": "2025-11-25",
-    "currentSpecificationObserved": "2026-07-28"
+    "currentSpecificationObserved": "2026-07-28",
+    "hostClient": "official-typescript-internal-service",
+    "typescriptClient": "2.4.0",
+    "typescriptCore": "2.4.0",
+    "typescriptServer": "2.4.0",
+    "nodeAdapter": "2.1.2",
+    "zod": "4.6.7",
+    "ajv": "8.20.0",
+    "testedRevisions": [
+      "2025-11-25",
+      "2026-07-28"
+    ]
   },
   "frontend": {
     "dependencies": {
