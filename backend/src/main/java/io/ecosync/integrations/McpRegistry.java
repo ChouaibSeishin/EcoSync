@@ -50,7 +50,7 @@ public class McpRegistry {
  }
  private void validateRegistration(Registration input){
   if(input==null||input.displayName()==null||input.displayName().isBlank()||input.displayName().length()>100||input.displayName().chars().anyMatch(Character::isISOControl))throw new IllegalArgumentException();
-  if(!Set.of("AUTO_DUAL","LEGACY_2025","MODERN_2026").contains(input.protocolPolicy()))throw new IllegalArgumentException();
+  if(input.protocolPolicy()==null||!Set.of("AUTO_DUAL","LEGACY_2025","MODERN_2026").contains(input.protocolPolicy()))throw new IllegalArgumentException();
   try{
    URI url=URI.create(input.endpoint());
    if(input.endpoint().length()>512||!endpoints.contains(input.endpoint())||url.getHost()==null||url.getUserInfo()!=null||url.getQuery()!=null||url.getFragment()!=null||!url.normalize().toString().equals(input.endpoint())||!url.getScheme().equals("https")&&!(development&&url.getScheme().equals("http")))throw new IllegalArgumentException();
@@ -61,7 +61,15 @@ public class McpRegistry {
  }
  public Map<String,Object> list(UUID actor,UUID org){
   var roles=roles(actor,org);
-  var items=db.queryForList("SELECT i.id,i.display_name,i.state,i.health,i.configuration_version,i.updated_at,i.last_connected_at,i.last_discovered_at,c.endpoint,c.protocol_policy FROM app.mcp_integration i JOIN app.mcp_configuration c ON c.organization_id=i.organization_id AND c.integration_id=i.id AND c.version=i.configuration_version WHERE i.organization_id=? AND NOT removed ORDER BY i.created_at,i.id",org);
+  var items=db.queryForList("""
+   SELECT i.id,i.display_name,i.state,i.health,i.configuration_version,i.updated_at,i.last_connected_at,i.last_discovered_at,c.endpoint,c.protocol_policy,
+    (SELECT count(*) FROM app.mcp_capability t WHERE t.organization_id=i.organization_id AND t.integration_id=i.id AND t.version=i.configuration_version AND t.present) AS discovered_tools,
+    (SELECT count(DISTINCT t.id) FROM app.mcp_capability t JOIN app.mcp_approval a ON a.organization_id=t.organization_id AND a.capability_id=t.id WHERE t.organization_id=i.organization_id AND t.integration_id=i.id AND t.version=i.configuration_version AND t.present AND a.status='APPROVED') AS approved_tools,
+    (SELECT max(t.protocol) FROM app.mcp_capability t WHERE t.organization_id=i.organization_id AND t.integration_id=i.id AND t.version=i.configuration_version AND t.present) AS protocol,
+    (SELECT e.error_code FROM app.mcp_event e WHERE e.organization_id=i.organization_id AND e.integration_id=i.id AND e.error_code IS NOT NULL ORDER BY e.started_at DESC LIMIT 1) AS recent_error
+   FROM app.mcp_integration i JOIN app.mcp_configuration c ON c.organization_id=i.organization_id AND c.integration_id=i.id AND c.version=i.configuration_version
+   WHERE i.organization_id=? AND NOT removed ORDER BY i.created_at,i.id
+   """,org);
   return Map.of("items",items,"available",true,"canManage",roles.contains("INTEGRATION_ADMIN"));
  }
  public Map<String,Object> detail(UUID actor,UUID org,UUID id){roles(actor,org);return view(org,id);}
@@ -69,18 +77,19 @@ public class McpRegistry {
  private Map<String,Object> view(UUID org,UUID id){
   var rev=revision(org,id);
   Map<String,Object> result=new LinkedHashMap<>(db.queryForMap("SELECT id,display_name,state,health,configuration_version,created_by,created_at,updated_at,last_connected_at,last_discovered_at FROM app.mcp_integration WHERE organization_id=? AND id=?",org,id));
-  result.put("connectionType","NATIVE_MCP");result.put("endpoint",rev.endpoint);result.put("transport","STREAMABLE_HTTP");result.put("protocolPolicy",rev.policy);result.put("configurationFingerprint",rev.fingerprint);result.put("credentialConfigured",true);result.put("credentialReference",rev.credential);
+  result.put("organizationId",org);result.put("connectionType","NATIVE_MCP");result.put("endpoint",rev.endpoint);result.put("transport","STREAMABLE_HTTP");result.put("protocolPolicy",rev.policy);result.put("configurationFingerprint",rev.fingerprint);result.put("credentialConfigured",true);result.put("credentialReference",rev.credential);
   result.put("revisions",db.queryForList("SELECT version,endpoint,protocol_policy,fingerprint,created_by,created_at FROM app.mcp_configuration WHERE organization_id=? AND integration_id=? ORDER BY version DESC LIMIT 20",org,id));
   result.put("tools",capabilities(org,id,rev.version));
   result.put("events",db.queryForList("SELECT id,actor,version,capability_id,protocol,kind,status,authorization_outcome,error_code,started_at,ended_at,duration_ms FROM app.mcp_event WHERE organization_id=? AND integration_id=? ORDER BY started_at DESC,id LIMIT 30",org,id));
   return result;
  }
  private List<Map<String,Object>> capabilities(UUID org,UUID id,long version){
-  return db.query("SELECT * FROM app.mcp_capability WHERE organization_id=? AND integration_id=? AND version=? ORDER BY remote_name,discovered_at DESC",(rs,n)->{
+  return db.query("SELECT * FROM app.mcp_capability WHERE organization_id=? AND integration_id=? AND version=? ORDER BY present DESC,remote_name,discovered_at DESC LIMIT 200",(rs,n)->{
    UUID cap=rs.getObject("id",UUID.class);Map<String,Object> row=new LinkedHashMap<>();
    row.put("id",cap);row.put("alias","mcp_"+cap.toString().replace("-",""));row.put("tool",json.readValue(rs.getString("tool_json"),NativeMcpClient.Tool.class));
    row.put("protocol",rs.getString("protocol"));row.put("server",json.readValue(rs.getString("server_json"),Map.class));row.put("present",rs.getBoolean("present"));
-   row.put("approvals",db.queryForList("SELECT role,status,actor,created_at FROM app.mcp_approval WHERE organization_id=? AND capability_id=? ORDER BY created_at DESC",org,cap));return row;
+   row.put("integrationId",id);row.put("configurationVersion",version);row.put("discoveredAt",rs.getTimestamp("discovered_at").toInstant().toString());row.put("allowedAction","TOOLS_CALL");
+   row.put("approvals",db.queryForList("SELECT role,status,actor,created_at FROM app.mcp_approval WHERE organization_id=? AND capability_id=? ORDER BY (status='APPROVED') DESC,created_at DESC LIMIT 20",org,cap));return row;
   },org,id,version);
  }
  public Map<String,Object> register(UUID actor,UUID org,Registration input){
@@ -228,5 +237,10 @@ public class McpRegistry {
  @jakarta.annotation.PostConstruct public void recover(){
   db.update("UPDATE app.mcp_event SET status='INTERRUPTED',error_code='MCP_UNAVAILABLE',ended_at=CURRENT_TIMESTAMP,duration_ms=EXTRACT(EPOCH FROM (CURRENT_TIMESTAMP-started_at))*1000 WHERE status='RUNNING'");
  }
- @jakarta.annotation.PreDestroy public void shutdown(){for(var lease:leases.values())try{client.close(lease.handle,false);}catch(Exception ignored){}leases.clear();}
+ @jakarta.annotation.PreDestroy public void shutdown(){
+  try(var executor=java.util.concurrent.Executors.newVirtualThreadPerTaskExecutor()){
+   var tasks=leases.values().stream().<java.util.concurrent.Callable<Void>>map(lease->()->{try{client.close(lease.handle,false);}catch(Exception ignored){}return null;}).toList();
+   executor.invokeAll(tasks,2,java.util.concurrent.TimeUnit.SECONDS);
+  }catch(InterruptedException e){Thread.currentThread().interrupt();}finally{leases.clear();}
+ }
 }

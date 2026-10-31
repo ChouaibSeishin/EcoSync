@@ -27,6 +27,8 @@
     "src",
     "vite.config.ts",
     "playwright.config.ts",
-    "e2e"
+    "e2e",
+    "mcp-e2e",
+    "playwright.mcp.config.ts"
   ]
 }

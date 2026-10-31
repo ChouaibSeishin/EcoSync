@@ -10,7 +10,8 @@ import org.springframework.web.bind.annotation.*;
 public class WorkspaceController {
     private final TenantDirectory directory;
     private final JdbcTemplate jdbc;
-    public WorkspaceController(TenantDirectory directory, JdbcTemplate jdbc) { this.directory = directory; this.jdbc = jdbc; }
+    private final org.springframework.beans.factory.ObjectProvider<io.ecosync.integrations.McpRegistry> registry;
+    public WorkspaceController(TenantDirectory directory, JdbcTemplate jdbc,org.springframework.beans.factory.ObjectProvider<io.ecosync.integrations.McpRegistry> registry) { this.directory = directory; this.jdbc = jdbc;this.registry=registry; }
     @GetMapping("/api/csrf") public Map<String,String> csrf(CsrfToken token) {
         return Map.of("token", token.getToken(), "headerName", token.getHeaderName());
     }
@@ -21,12 +22,12 @@ public class WorkspaceController {
     @GetMapping("/api/organizations/{id}/overview")
     public Map<String,Object> overview(@PathVariable UUID id, @AuthenticationPrincipal AccountPrincipal account) {
         return Map.of("workspace", directory.requireMembership(account.id(), id),
-            "registeredIntegrations", 0, "integrationManagementAvailable", false, "aiAvailable", false);
+            "registeredIntegrations", registry.getIfAvailable()==null?0:registry.getObject().count(account.id(),id), "integrationManagementAvailable", registry.getIfAvailable()!=null, "aiAvailable", false);
     }
     @GetMapping("/api/organizations/{id}/integrations")
     public Map<String,Object> integrations(@PathVariable UUID id, @AuthenticationPrincipal AccountPrincipal account) {
         directory.requireMembership(account.id(), id);
-        return Map.of("items", List.of(), "available", false);
+        return registry.getIfAvailable()==null?Map.of("items", List.of(), "available", false):registry.getObject().list(account.id(),id);
     }
     @GetMapping("/api/admin/summary")
     public Map<String,Object> administration() {

@@ -1,5 +1,5 @@
 export class ApiError extends Error {
-  constructor(public status: number, message: string) { super(message); }
+  constructor(public status: number, message: string, public code?: string, public requestId?: string) { super(message); }
 }
 export async function request<T>(path: string, options: RequestInit = {}): Promise<T> {
   const headers = new Headers(options.headers);
@@ -13,8 +13,8 @@ export async function request<T>(path: string, options: RequestInit = {}): Promi
   try { response = await fetch(path, { ...options, headers, credentials: 'same-origin', cache: 'no-store' }); }
   catch { throw new ApiError(0, 'The service could not be reached. Check your connection and retry.'); }
   if (!response.ok) {
-    const body = await response.json().catch(() => ({})) as { message?: string };
-    throw new ApiError(response.status, body.message ?? 'The request could not be completed.');
+    const body = await response.json().catch(() => ({})) as { message?: string; code?: string; requestId?: string };
+    throw new ApiError(response.status, body.message ?? 'The request could not be completed.', body.code, body.requestId);
   }
   return response.status === 204 ? undefined as T : response.json() as Promise<T>;
 }
