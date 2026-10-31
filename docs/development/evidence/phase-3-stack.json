@@ -1,0 +1,148 @@
+{
+  "observedOn": "2026-10-31T13:11:46.682Z",
+  "results": [
+    {
+      "check": "Native endpoint authentication, Origin, Host and malformed JSON",
+      "result": "PASS",
+      "sourceSqlAdmissions": 0
+    },
+    {
+      "check": "CSRF required",
+      "result": "PASS",
+      "sourceSqlAdmissions": 0
+    },
+    {
+      "check": "Operator URL policy",
+      "result": "PASS",
+      "sourceSqlAdmissions": 0
+    },
+    {
+      "check": "Duplicate case-insensitive display name sales",
+      "result": "PASS",
+      "sourceSqlAdmissions": 0
+    },
+    {
+      "check": "Cross-organization sales",
+      "result": "PASS",
+      "sourceSqlAdmissions": 0
+    },
+    {
+      "check": "Discovery does not approve sales",
+      "result": "PASS",
+      "sourceSqlAdmissions": 0
+    },
+    {
+      "check": "Unapproved tool sales",
+      "result": "PASS",
+      "sourceSqlAdmissions": 0
+    },
+    {
+      "check": "Invalid typed arguments sales",
+      "result": "PASS",
+      "sourceSqlAdmissions": 0
+    },
+    {
+      "check": "Revoked approval sales",
+      "result": "PASS",
+      "sourceSqlAdmissions": 0
+    },
+    {
+      "check": "sales authenticated source invocation",
+      "result": "PASS",
+      "protocol": "2025-11-25"
+    },
+    {
+      "check": "Duplicate case-insensitive display name inventory",
+      "result": "PASS",
+      "sourceSqlAdmissions": 0
+    },
+    {
+      "check": "Cross-organization inventory",
+      "result": "PASS",
+      "sourceSqlAdmissions": 0
+    },
+    {
+      "check": "Discovery does not approve inventory",
+      "result": "PASS",
+      "sourceSqlAdmissions": 0
+    },
+    {
+      "check": "Unapproved tool inventory",
+      "result": "PASS",
+      "sourceSqlAdmissions": 0
+    },
+    {
+      "check": "Invalid typed arguments inventory",
+      "result": "PASS",
+      "sourceSqlAdmissions": 0
+    },
+    {
+      "check": "Revoked approval inventory",
+      "result": "PASS",
+      "sourceSqlAdmissions": 0
+    },
+    {
+      "check": "inventory authenticated source invocation",
+      "result": "PASS",
+      "protocol": "2026-07-28"
+    },
+    {
+      "check": "Capability identity cannot cross integrations",
+      "result": "PASS",
+      "sourceSqlAdmissions": 0
+    },
+    {
+      "check": "Oversized management body",
+      "result": "PASS",
+      "sourceSqlAdmissions": 0
+    },
+    {
+      "check": "wrong credential",
+      "result": "PASS",
+      "sourceSqlAdmissions": 0
+    },
+    {
+      "check": "protocol mismatch",
+      "result": "PASS",
+      "sourceSqlAdmissions": 0
+    },
+    {
+      "check": "Registry and approved-schema recovery after backend restart",
+      "result": "PASS"
+    },
+    {
+      "check": "sales real server disconnect and explicit recovery",
+      "result": "PASS"
+    },
+    {
+      "check": "inventory real server disconnect and explicit recovery",
+      "result": "PASS"
+    },
+    {
+      "check": "Material revision invalidates approvals",
+      "result": "PASS",
+      "sourceSqlAdmissions": 0
+    },
+    {
+      "check": "Disabled registration",
+      "result": "PASS",
+      "sourceSqlAdmissions": 0
+    },
+    {
+      "check": "Platform starts with all MCP services stopped; readiness remains DB-only",
+      "result": "PASS"
+    },
+    {
+      "check": "Network/source isolation, no MCP host ports, existing named volumes preserved",
+      "result": "PASS"
+    },
+    {
+      "check": "Runtime registry INSERT permitted; immutable revision UPDATE, identity writes and migration history denied",
+      "result": "PASS"
+    },
+    {
+      "check": "Actual service logs contain no generated credential/key values or sentinel credential",
+      "result": "PASS"
+    }
+  ]
+}

@@ -37,6 +37,7 @@ public class HttpNativeMcpClient implements NativeMcpClient {
   return Boolean.TRUE.equals(result.get("cancelled"));
  }
  @Override public void close(Handle h,boolean revoke){post("/v1/close",Map.of("key",h.key(),"leaseId",h.leaseId(),"revoke",revoke),Map.class);}
+ @jakarta.annotation.PreDestroy public void shutdown(){http.shutdownNow();}
  private <T>T post(String path,Object body,Class<T> type){
   byte[] data=json.writeValueAsBytes(body);if(data.length>65536)throw new McpFailure("MCP_ARGUMENTS_TOO_LARGE");
   var request=HttpRequest.newBuilder(base.resolve(path)).timeout(Duration.ofSeconds(30)).header("Authorization","Bearer "+credential)

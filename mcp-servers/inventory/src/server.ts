@@ -3,7 +3,7 @@ import {timingSafeEqual} from 'node:crypto';
 import {createPool} from 'mysql2/promise';
 import {createMcpHandler} from '@modelcontextprotocol/server';
 import {toNodeHandler} from '@modelcontextprotocol/node';
-import {inventoryServer} from './queries.js';
+import {inventoryServer,operations} from './queries.js';
 
 const token=process.env.INVENTORY_MCP_TOKEN??'';
 if(!/^[A-Za-z0-9_-]{32,128}$/.test(token))throw Error('MCP credential required');
@@ -15,10 +15,11 @@ const adapter=toNodeHandler({fetch:async request=>{
  if(url.pathname==='/health/ready'){
   try{await pool.execute({sql:'SELECT 1 FROM inventory.items LIMIT 1',timeout:4000});return Response.json({ready:true});}catch{return Response.json({ready:false},{status:503});}
  }
- if(url.pathname!=='/mcp')return new Response(null,{status:404});
+ if(!['/mcp','/internal/operations'].includes(url.pathname))return new Response(null,{status:404});
  if(request.headers.has('origin')||!['inventory-mcp','localhost','127.0.0.1'].includes(url.hostname))return new Response(null,{status:403});
  const auth=Buffer.from(request.headers.get('authorization')??'');
  if(auth.length!==expected.length||!timingSafeEqual(expected,auth))return new Response(null,{status:401,headers:{'WWW-Authenticate':'Bearer'}});
+ if(url.pathname==='/internal/operations')return process.env.MCP_DEVELOPMENT_VERIFICATION==='true'?Response.json(operations):new Response(null,{status:404});
  return handler.fetch(request);
 }});
 const server=createServer({maxHeaderSize:8192},(req,res)=>{void adapter(req,res).catch(()=>{if(!res.headersSent)res.writeHead(500);res.end();});});

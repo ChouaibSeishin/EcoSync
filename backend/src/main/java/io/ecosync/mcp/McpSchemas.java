@@ -20,7 +20,9 @@ public class McpSchemas {
   if(depth>8||++count[0]>200||!KEYWORDS.containsAll(schema.keySet()))throw new IllegalArgumentException();
   if(schema.containsKey("$schema")&&!Set.of("https://json-schema.org/draft/2020-12/schema","http://json-schema.org/draft-07/schema#").contains(schema.get("$schema")))throw new IllegalArgumentException();
   if(schema.containsKey("format")&&!schema.get("format").equals("date-time"))throw new IllegalArgumentException();
-  if("array".equals(schema.get("type"))&&(!(schema.get("maxItems") instanceof Number n)||n.intValue()>100||n.intValue()<0))throw new IllegalArgumentException();
+  var types=schema.get("type") instanceof List<?> list?list:List.of(schema.get("type"));
+  if(types.isEmpty()||types.size()>2||!Set.of("object","array","string","integer","number","boolean","null").containsAll(types)||types.size()==2&&!types.contains("null"))throw new IllegalArgumentException();
+  if(types.contains("array")&&(!(schema.get("maxItems") instanceof Number n)||n.intValue()>100||n.intValue()<0))throw new IllegalArgumentException();
   if(schema.get("properties") instanceof Map<?,?> props)for(var e:props.entrySet()){
    if(Set.of("__proto__","constructor","prototype").contains(e.getKey()))throw new IllegalArgumentException();guard((Map<String,Object>)e.getValue(),depth+1,count);
   }

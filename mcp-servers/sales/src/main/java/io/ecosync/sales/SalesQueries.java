@@ -7,6 +7,7 @@ import org.springframework.jdbc.core.JdbcTemplate;
 
 /** Fixed, bounded prepared reads. No caller-provided SQL, identifiers, or ordering. */
 final class SalesQueries {
+ static final java.util.concurrent.atomic.AtomicLong sourceAttempts=new java.util.concurrent.atomic.AtomicLong();
  private final JdbcTemplate db;
  SalesQueries(JdbcTemplate db){this.db=db;}
  private static Map<String,Object> integer(int max){return Map.of("type","integer","minimum",1,"maximum",max);}
@@ -61,6 +62,7 @@ final class SalesQueries {
     "GROUP BY o.order_id,o.ordered_at,o.order_status,l.currency_code ORDER BY o.order_id,l.currency_code LIMIT ?";
    values.add(status);values.add(status);values.add(order);values.add(order);values.add(limit+1);
   }
+  sourceAttempts.incrementAndGet();
   var rows=db.query(sql,(rs,index)->{
    Map<String,Object> row=new LinkedHashMap<>();var md=rs.getMetaData();
    for(int c=1;c<=md.getColumnCount();c++){Object value=rs.getObject(c);if(value instanceof Timestamp t)value=t.toInstant().toString();row.put(md.getColumnLabel(c),value);}

@@ -1,0 +1,8 @@
+# Test-only SQL admission counters. Authenticated; not advertised as tools; no host ports.
+services:
+  sales-mcp:
+    environment:
+      MCP_DEVELOPMENT_VERIFICATION: "true"
+  inventory-mcp:
+    environment:
+      MCP_DEVELOPMENT_VERIFICATION: "true"

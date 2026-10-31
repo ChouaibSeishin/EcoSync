@@ -116,20 +116,23 @@ public class McpRegistry {
     insertRevision(actor,org,id,old.version+1,credential,input);stale(org,id);if(!credential.equals(old.credential))secrets.revoke(org,old.credential);
     event(actor,org,id,old.version+1,null,null,"EDIT","SUCCESS","ALLOWED",null,null);
    });}catch(DuplicateKeyException e){throw new IllegalArgumentException("Duplicate integration name");}
-   retire(org,id,true);
+   retire(org,id,old.version,true);
   }
   return view(org,id);
  }
  private void stale(UUID org,UUID id){
   db.update("UPDATE app.mcp_approval SET status='STALE' WHERE organization_id=? AND status='APPROVED' AND capability_id IN(SELECT id FROM app.mcp_capability WHERE organization_id=? AND integration_id=?)",org,org,id);
  }
- private void retire(UUID org,UUID id,boolean revoke){var lease=leases.remove(key(org,id));if(lease!=null)try{client.close(lease.handle,revoke);}catch(McpFailure ignored){/* DB remains authoritative; adapter TTL bounds cleanup. */}}
+ private void retire(UUID org,UUID id,long version,boolean revoke){
+  var lease=leases.remove(key(org,id));var handle=revoke?new NativeMcpClient.Handle(org+"/"+id+"/"+version,""):lease==null||lease.version!=version?null:lease.handle;
+  if(handle!=null)try{client.close(handle,revoke);}catch(McpFailure ignored){/* DB remains authoritative; adapter TTL bounds cleanup. */}
+ }
  public Map<String,Object> disable(UUID actor,UUID org,UUID id,boolean remove){
   admin(actor,org);synchronized(lock(org,id)){
    var rev=revision(org,id);tx.executeWithoutResult(status->{
     db.update("UPDATE app.mcp_integration SET state='DISABLED',removed=?,updated_at=CURRENT_TIMESTAMP WHERE organization_id=? AND id=?",remove,org,id);stale(org,id);
     if(remove)secrets.revoke(org,rev.credential);event(actor,org,id,rev.version,null,null,remove?"REMOVE":"DISABLE","SUCCESS","ALLOWED",null,null);
-   });retire(org,id,true);
+   });retire(org,id,rev.version,true);
   }return remove?Map.of("removed",true):view(org,id);
  }
  private NativeMcpClient.Snapshot connect(Revision r){
@@ -145,6 +148,7 @@ public class McpRegistry {
    if(db.update("UPDATE app.mcp_integration SET state='VALIDATING',updated_at=CURRENT_TIMESTAMP WHERE organization_id=? AND id=? AND configuration_version=? AND state<>'VALIDATING' AND state<>'DISABLED' AND NOT removed",org,id,rev.version)!=1)throw new McpFailure("MCP_CONNECTION_BUSY");
   }
   try{
+   retire(org,id,rev.version,false);
    var snapshot=connect(rev);snapshot=client.discover(snapshot.handle());
    synchronized(lock(org,id)){persistDiscovery(actor,rev,snapshot,true);}
    return view(org,id);
@@ -156,7 +160,7 @@ public class McpRegistry {
  private void persistDiscovery(UUID actor,Revision rev,NativeMcpClient.Snapshot snapshot,boolean validation){
   tx.executeWithoutResult(status->{
    String current=validation?"VALIDATING":"ACTIVE";
-   if(db.update("UPDATE app.mcp_integration SET health='HEALTHY',state=CASE WHEN state='VALIDATING' THEN 'DRAFT' ELSE state END,last_connected_at=CURRENT_TIMESTAMP,last_discovered_at=CURRENT_TIMESTAMP,updated_at=CURRENT_TIMESTAMP WHERE organization_id=? AND id=? AND configuration_version=? AND state=? AND NOT removed",rev.org,rev.id,rev.version,current)!=1){try{client.close(snapshot.handle(),true);}catch(McpFailure ignored){}throw new McpFailure("MCP_CLIENT_RETIRED");}
+   if(db.update("UPDATE app.mcp_integration SET health='HEALTHY',state=CASE WHEN state='VALIDATING' THEN 'DRAFT' ELSE state END,last_connected_at=CURRENT_TIMESTAMP,last_discovered_at=CURRENT_TIMESTAMP,updated_at=CURRENT_TIMESTAMP WHERE organization_id=? AND id=? AND configuration_version=? AND state=? AND NOT removed",rev.org,rev.id,rev.version,current)!=1){try{client.close(snapshot.handle(),false);}catch(McpFailure ignored){}throw new McpFailure("MCP_CLIENT_RETIRED");}
    db.update("UPDATE app.mcp_capability SET present=false WHERE organization_id=? AND integration_id=? AND version=?",rev.org,rev.id,rev.version);
    for(var remote:snapshot.tools()){
     boolean supported=remote.supported()&&schemas.supported(remote.inputSchema())&&(remote.outputSchema()==null||schemas.supported(remote.outputSchema()));
@@ -197,7 +201,7 @@ public class McpRegistry {
   var snapshot=connect(rev);snapshot=client.discover(snapshot.handle());persistDiscovery(actor,rev,snapshot,false);return snapshot.handle();
  }
  public Map<String,Object> invoke(UUID actor,UUID org,UUID id,UUID capability,UUID invocation,Map<String,Object> arguments){
-  var roles=roles(actor,org);Revision rev;NativeMcpClient.Tool tool;NativeMcpClient.Handle handle;
+  var roles=roles(actor,org);Revision rev;NativeMcpClient.Tool tool;NativeMcpClient.Handle handle=null;
   Instant start=Instant.now();
   synchronized(lock(org,id)){
    rev=revision(org,id);
@@ -205,23 +209,34 @@ public class McpRegistry {
    tool=tool(org,id,rev.version,capability);
    List<String> granted=db.queryForList("SELECT role FROM app.mcp_approval WHERE organization_id=? AND capability_id=? AND status='APPROVED'",String.class,org,capability);
    if(roles.stream().noneMatch(granted::contains)){event(actor,org,id,rev.version,capability,null,"INVOKE","DENIED","DENIED",null,start);throw new AccessDeniedException("Capability role grant required");}
-   schemas.arguments(tool.inputSchema(),arguments);handle=ensure(rev,actor);
-   // Recovery discovery can invalidate the previously loaded capability.
-   tool=tool(org,id,rev.version,capability);
-   try{db.update("INSERT INTO app.mcp_event(organization_id,integration_id,id,actor,version,capability_id,kind,status,authorization_outcome) VALUES(?,?,?,?,?,?,'INVOKE','RUNNING','ALLOWED')",org,id,invocation,actor,rev.version,capability);}catch(DuplicateKeyException e){throw new McpFailure("MCP_CONNECTION_BUSY");}
+   String protocol=db.queryForObject("SELECT protocol FROM app.mcp_capability WHERE organization_id=? AND id=?",String.class,org,capability);
+   try{db.update("INSERT INTO app.mcp_event(organization_id,integration_id,id,actor,version,capability_id,protocol,kind,status,authorization_outcome) VALUES(?,?,?,?,?,?,?,'INVOKE','RUNNING','ALLOWED')",org,id,invocation,actor,rev.version,capability,protocol);}catch(DuplicateKeyException e){throw new McpFailure("MCP_CONNECTION_BUSY");}
   }
   try{
+   schemas.arguments(tool.inputSchema(),arguments);
+   // Never hold the admission lock over remote recovery: disable must fence it immediately.
+   handle=ensure(rev,actor);
+   synchronized(lock(org,id)){
+    var current=revision(org,id);if(current.version!=rev.version||!current.state.equals("ACTIVE"))throw new McpFailure("MCP_CLIENT_RETIRED");
+    try{tool=tool(org,id,rev.version,capability);}catch(AccessDeniedException e){throw new McpFailure("MCP_SCHEMA_CHANGED");}
+    var currentRoles=roles(actor,org);
+    var grants=db.queryForList("SELECT role FROM app.mcp_approval WHERE organization_id=? AND capability_id=? AND status='APPROVED'",String.class,org,capability);
+    if(currentRoles.stream().noneMatch(grants::contains))throw new AccessDeniedException("Capability role grant required");
+   }
    var outcome=client.invoke(handle,tool.name(),tool.fingerprint(),arguments,invocation);
    if(tool.outputSchema()!=null)schemas.output(tool.outputSchema(),outcome.result().get("structuredContent"));
    finish(org,invocation,"SUCCESS",outcome.protocol(),null,start);
    return Map.of("invocationId",invocation,"protocol",outcome.protocol(),"durationMs",java.time.Duration.between(start,Instant.now()).toMillis(),"result",outcome.result(),"untrusted",true);
   }catch(McpFailure e){
    finish(org,invocation,e.code().equals("MCP_CANCELLED")?"CANCELLED":"FAILED",null,e.code(),start);
-   if(e.code().equals("MCP_SCHEMA_CHANGED"))synchronized(lock(org,id)){
-    stale(org,id);try{var snapshot=client.discover(handle);persistDiscovery(actor,rev,snapshot,false);}catch(McpFailure ignored){}
+   if(e.code().equals("MCP_SCHEMA_CHANGED")){
+    db.update("UPDATE app.mcp_approval SET status='STALE' WHERE organization_id=? AND capability_id=? AND status='APPROVED'",org,capability);
+    if(handle!=null)try{var snapshot=client.discover(handle);persistDiscovery(actor,rev,snapshot,false);}catch(McpFailure ignored){}
    }
-   else if(!Set.of("MCP_CANCELLED","MCP_CLIENT_RETIRED","MCP_INVALID_ARGUMENTS").contains(e.code()))db.update("UPDATE app.mcp_integration SET health='UNREACHABLE' WHERE organization_id=? AND id=? AND configuration_version=? AND state='ACTIVE'",org,id,rev.version);
+   else if(Set.of("MCP_UNAVAILABLE","MCP_AUTHENTICATION_FAILED","MCP_TIMEOUT","MCP_INVALID_RESPONSE","MCP_RESPONSE_TOO_LARGE","MCP_UNSUPPORTED_PROTOCOL").contains(e.code()))db.update("UPDATE app.mcp_integration SET health='UNREACHABLE' WHERE organization_id=? AND id=? AND configuration_version=? AND state='ACTIVE'",org,id,rev.version);
    throw e;
+  }catch(AccessDeniedException e){
+   finish(org,invocation,"DENIED",null,"FORBIDDEN",start);db.update("UPDATE app.mcp_event SET authorization_outcome='DENIED' WHERE organization_id=? AND id=?",org,invocation);throw e;
   }
  }
  public Map<String,Object> cancel(UUID actor,UUID org,UUID id,UUID invocation){
@@ -230,7 +245,7 @@ public class McpRegistry {
   if(actors.size()!=1||!actors.getFirst().equals(actor)&&!roles.contains("INTEGRATION_ADMIN"))throw new AccessDeniedException("Invocation unavailable");
   var lease=leases.get(key(org,id));return Map.of("cancelled",lease!=null&&client.cancel(lease.handle,invocation));
  }
- private void finish(UUID org,UUID invocation,String status,String protocol,String code,Instant start){db.update("UPDATE app.mcp_event SET status=?,protocol=?,error_code=?,ended_at=CURRENT_TIMESTAMP,duration_ms=? WHERE organization_id=? AND id=? AND status='RUNNING'",status,protocol,code,java.time.Duration.between(start,Instant.now()).toMillis(),org,invocation);}
+ private void finish(UUID org,UUID invocation,String status,String protocol,String code,Instant start){db.update("UPDATE app.mcp_event SET status=?,protocol=COALESCE(?,protocol),error_code=?,ended_at=CURRENT_TIMESTAMP,duration_ms=? WHERE organization_id=? AND id=? AND status='RUNNING'",status,protocol,code,java.time.Duration.between(start,Instant.now()).toMillis(),org,invocation);}
  private void event(UUID actor,UUID org,UUID id,long version,UUID cap,String protocol,String kind,String status,String authorization_outcome,String code,Instant start){
   db.update("INSERT INTO app.mcp_event(organization_id,integration_id,id,actor,version,capability_id,protocol,kind,status,authorization_outcome,error_code,ended_at,duration_ms) VALUES(?,?,?,?,?,?,?,?,?,?,?,CURRENT_TIMESTAMP,?)",org,id,UUID.randomUUID(),actor,version,cap,protocol,kind,status,authorization_outcome,code,start==null?0:java.time.Duration.between(start,Instant.now()).toMillis());
  }

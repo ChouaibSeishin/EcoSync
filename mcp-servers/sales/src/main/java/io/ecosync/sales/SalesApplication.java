@@ -20,6 +20,10 @@ import org.springframework.web.bind.annotation.*;
 @SpringBootApplication
 @RestController
 public class SalesApplication {
+ @GetMapping("/internal/operations") ResponseEntity<Map<String,Long>> operations(){
+  if(!"true".equals(System.getenv("MCP_DEVELOPMENT_VERIFICATION")))return ResponseEntity.notFound().build();
+  return ResponseEntity.ok(Map.of("sourceSqlAttempts",SalesQueries.sourceAttempts.get()));
+ }
  public static void main(String[] args){SpringApplication.run(SalesApplication.class,args);}
  private final JdbcTemplate readinessDb;
  public SalesApplication(JdbcTemplate db){this.readinessDb=db;}
@@ -60,6 +64,6 @@ public class SalesApplication {
    if(supplied==null||!MessageDigest.isEqual(expected,supplied.getBytes(StandardCharsets.UTF_8))){res.setHeader("WWW-Authenticate","Bearer");res.setStatus(401);return;}
    chain.doFilter(request,response);
   };
-  var bean=new FilterRegistrationBean<>(filter);bean.setUrlPatterns(List.of("/mcp"));bean.setAsyncSupported(true);bean.setOrder(-100);return bean;
+  var bean=new FilterRegistrationBean<>(filter);bean.setUrlPatterns(List.of("/mcp","/internal/operations"));bean.setAsyncSupported(true);bean.setOrder(-100);return bean;
  }
 }

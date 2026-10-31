@@ -1,6 +1,19 @@
 # Initial data model
 
-Phase 0 conceptual target schema, updated for Phase 1. Organization, app_user, membership, role_assignment and bootstrap_marker are implemented in versioned Flyway migrations under backend/src/main/resources/db/migration. Remaining entities in this document are future design. Runtime access is read-only for the implemented identity/workspace tables; only the one-shot setup process provisions data. Migration and bootstrap control tables are not exposed to the runtime role.
+## Implemented native MCP registry (V3, 2026-10-31)
+
+| Table | Persisted responsibility |
+|---|---|
+| mcp_integration | Tenant identity, unique display name, current revision, governance/health, creator/timestamps, soft removal |
+| mcp_configuration | Immutable native endpoint/transport/policy/credential reference/fingerprint; runtime SELECT/INSERT only |
+| mcp_credential | Tenant-bound AES-GCM ciphertext, nonce, external key ID and revocation; no plaintext |
+| mcp_capability | Opaque identity, original remote name, revision/fingerprint, Tool JSON, protocol/server identity, current/stale presence |
+| mcp_approval | Explicit INTEGRATION_ADMIN or USER tools/call grants, approver and revocation/staleness history |
+| mcp_event | Actor/org/integration/revision/capability/protocol/correlation/time/duration/status/authorization/error metadata; no arguments/results |
+
+Composite foreign keys bind revisions to tenant integrations, credentials to organizations, capabilities to exact revisions, and approvals to tenant capabilities. Identity tables remain runtime read-only and migration/bootstrap history remains denied. Removed entries retain evidence. Editing creates a new revision and invalidates old grants; discovery preserves stale schemas and approval history. CAS prevents obsolete validation from activating the current revision. Startup interrupts unfinished events, then reconstructs clients lazily with fresh discovery. External keys are outside PostgreSQL. See [MCP_INTEGRATIONS.md](MCP_INTEGRATIONS.md).
+
+Phase 0 conceptual target schema, updated for Phase 1. Organization, app_user, membership, role_assignment and bootstrap_marker are implemented in versioned Flyway migrations under backend/src/main/resources/db/migration. Phase 3 V3 additionally implements the native MCP tables listed below; other conceptual entities remain future design. Runtime access is read-only for the implemented identity/workspace tables; only the one-shot setup process provisions data. Migration and bootstrap control tables are not exposed to the runtime role.
 
 Use UUID primary keys, UTC `timestamptz`, explicit foreign keys and optimistic-lock versions. Every tenant-owned entity includes `organization_id`. Cross-entity references use composite `(organization_id, id)` constraints where necessary so a valid UUID from another org cannot satisfy a relationship. Index tenant plus common lookup/filter keys. Repository queries require org context from authenticated membership; global platform administration is separately authorized and audited.
 

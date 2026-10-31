@@ -59,8 +59,9 @@ export class ClientManager {
   if(this.retired.has(key))throw new ClientFailure('MCP_CLIENT_RETIRED',409);
   const existing=this.clients.get(key);
   if(existing&&!existing.closed&&existing.input.configurationFingerprint===input.configurationFingerprint&&existing.input.ownerId===input.ownerId)return this.metadata(existing);
-  if(this.clients.size>=64)throw new ClientFailure('MCP_CLIENT_LIMIT',429);
+  if(!existing&&this.clients.size>=64)throw new ClientFailure('MCP_CLIENT_LIMIT',429);
   if(existing)await this.retire(existing);
+  if(this.clients.size>=64)throw new ClientFailure('MCP_CLIENT_LIMIT',429);
   const generation=randomUUID();
   const mode=input.protocolPolicy==='LEGACY_2025'?'legacy':input.protocolPolicy==='MODERN_2026'?{pin:'2026-07-28' as const}:'auto';
   const client=new Client({name:'ecosync-native-mcp-client',version:'0.3.0'},{versionNegotiation:{mode,probe:{timeoutMs:5000,maxRetries:0}},listMaxPages:8,capabilities:{}});
@@ -70,7 +71,8 @@ export class ClientManager {
   const job=this.operation(slot,async context=>{
    const abort=()=>{context.cancelled=true;context.controller.abort();};if(signal?.aborted)abort();signal?.addEventListener('abort',abort,{once:true});
    try{
-    await client.connect(transport,{timeout:5000,signal:context.controller.signal});
+    try{await client.connect(transport,{timeout:5000,signal:context.controller.signal});}
+    catch(error){if(input.protocolPolicy==='LEGACY_2025'&&(error as {code?:string}).code==='CLIENT_HTTP_NOT_IMPLEMENTED')throw new ClientFailure('MCP_UNSUPPORTED_PROTOCOL',422);throw error;}
     const identity=client.getServerVersion();boundedTree(client.getServerCapabilities());
     if(!identity||identity.name.length>120||identity.version.length>64||Buffer.byteLength(JSON.stringify(client.getServerCapabilities()))>32768)throw new ClientFailure('MCP_INVALID_RESPONSE');
     const protocol=client.getNegotiatedProtocolVersion();
@@ -94,7 +96,8 @@ export class ClientManager {
     if(!/^[A-Za-z0-9_.:-]{1,128}$/.test(raw.name)||Buffer.byteLength(JSON.stringify(raw))>65536||(raw.description?.length??0)>4096)throw new ClientFailure('MCP_SCHEMA_TOO_LARGE',422);
     names.add(raw.name);
     const safe=redact(raw,[slot.input.credential,this.serviceSecret]) as typeof raw;
-    const issue=schemaIssue(safe.inputSchema)??(safe.outputSchema?schemaIssue(safe.outputSchema):null);
+    const alteredDispatch=safe.name!==raw.name||JSON.stringify(safe.inputSchema)!==JSON.stringify(raw.inputSchema)||JSON.stringify(safe.outputSchema)!==JSON.stringify(raw.outputSchema);
+    const issue=alteredDispatch?'CREDENTIAL_IN_SCHEMA':schemaIssue(safe.inputSchema)??(safe.outputSchema?schemaIssue(safe.outputSchema):null);
     const view:Omit<ToolView,'fingerprint'>={name:safe.name,description:safe.description??'',inputSchema:safe.inputSchema,outputSchema:safe.outputSchema,annotations:safe.annotations,metadata:safe._meta,supported:issue===null,unsupportedReason:issue};
     collected.push({...view,fingerprint:fingerprint(view)});
    }
@@ -136,7 +139,7 @@ export class ClientManager {
   if(!pending||pending.slot!==slot)return false;pending.context.cancelled=true;pending.context.controller.abort();return true;
  }
  async close(key:string,leaseId?:string,revoke=false):Promise<void>{
-  if(revoke){if(this.retired.size>=4096)throw new ClientFailure('MCP_CLIENT_LIMIT',429);this.retired.set(key,Date.now());}const slot=this.clients.get(key);if(slot&&(!leaseId||leaseId===slot.leaseId))await this.retire(slot);
+  if(revoke){if(this.retired.size>=4096)throw new ClientFailure('MCP_CLIENT_LIMIT',429);this.retired.set(key,Date.now());}const slot=this.clients.get(key);if(slot&&(revoke||!leaseId||leaseId===slot.leaseId))await this.retire(slot);
  }
  private async retire(slot:Slot):Promise<void>{
   if(slot.closed)return;slot.closed=true;

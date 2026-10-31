@@ -115,13 +115,43 @@ class McpRegistryIT {
   assertThatThrownBy(()->registry.invoke(admin,org,second,firstCap,UUID.randomUUID(),Map.of("value","no"))).isInstanceOf(AccessDeniedException.class);
   assertThat(peer.calls.get()).isZero();
  }
+ @Test void disableAfterRestartRevokesPersistedRevisionWithoutCachedLease(){
+  UUID id=register();activate(id);registry=build(secrets);registry.disable(admin,org,id,false);
+  assertThat(peer.lastClosed.key()).isEqualTo(org+"/"+id+"/1");assertThat(peer.lastClosed.leaseId()).isEmpty();assertThat(peer.calls.get()).isZero();
+ }
+ @Test void coldRecoveryFailureUpdatesHealthAndFinishesTrace(){
+  UUID id=register();activate(id);UUID cap=capability(id);registry=build(secrets);peer.unavailable=true;UUID operation=UUID.randomUUID();
+  assertThatThrownBy(()->registry.invoke(admin,org,id,cap,operation,Map.of("value","no"))).isInstanceOf(McpFailure.class);
+  assertThat(registry.detail(admin,org,id).get("health")).isEqualTo("UNREACHABLE");
+  assertThat(db.queryForObject("SELECT status FROM app.mcp_event WHERE organization_id=? AND id=?",String.class,org,operation)).isEqualTo("FAILED");assertThat(peer.calls.get()).isZero();
+ }
+ @Test void disableDoesNotWaitForColdRecoveryOrAllowItsLateDispatch()throws Exception{
+  UUID id=register();activate(id);UUID cap=capability(id);registry=build(secrets);peer.waiting=new CountDownLatch(1);peer.release=new CountDownLatch(1);
+  try(var executor=Executors.newSingleThreadExecutor()){
+   Future<?> pending=executor.submit(()->registry.invoke(admin,org,id,cap,UUID.randomUUID(),Map.of("value","no")));
+   assertThat(peer.waiting.await(5,TimeUnit.SECONDS)).isTrue();long start=System.nanoTime();registry.disable(admin,org,id,false);
+   assertThat(java.time.Duration.ofNanos(System.nanoTime()-start).toMillis()).isLessThan(1000);peer.release.countDown();
+   assertThatThrownBy(()->pending.get(5,TimeUnit.SECONDS)).hasCauseInstanceOf(McpFailure.class);
+  }
+  assertThat(registry.detail(admin,org,id).get("state")).isEqualTo("DISABLED");assertThat(peer.calls.get()).isZero();
+ }
+ @Test void lateSchemaFailureCannotRevokeNewRevisionApprovals()throws Exception{
+  UUID id=register();activate(id);UUID cap=capability(id);peer.invocationWaiting=new CountDownLatch(1);peer.invocationRelease=new CountDownLatch(1);
+  try(var executor=Executors.newSingleThreadExecutor()){
+   Future<?> old=executor.submit(()->registry.invoke(admin,org,id,cap,UUID.randomUUID(),Map.of("value","old")));assertThat(peer.invocationWaiting.await(5,TimeUnit.SECONDS)).isTrue();
+   peer.changed=true;registry.edit(admin,org,id,input("New revision survives"));activate(id);UUID fresh=capability(id);peer.invocationRelease.countDown();
+   assertThatThrownBy(()->old.get(5,TimeUnit.SECONDS)).hasCauseInstanceOf(McpFailure.class);
+   assertThat(db.queryForObject("SELECT count(*) FROM app.mcp_approval WHERE organization_id=? AND capability_id=? AND status='APPROVED'",Integer.class,org,fresh)).isEqualTo(1);
+   registry.invoke(admin,org,id,fresh,UUID.randomUUID(),Map.of("value","new"));assertThat(peer.calls.get()).isEqualTo(1);
+  }
+ }
  static class Peer implements NativeMcpClient {
-  AtomicInteger calls=new AtomicInteger(),closed=new AtomicInteger();boolean changed;CountDownLatch waiting,release;Connect input;
+  AtomicInteger calls=new AtomicInteger(),closed=new AtomicInteger();boolean changed,unavailable;CountDownLatch waiting,release,invocationWaiting,invocationRelease;Connect input;Handle lastClosed;
   Tool tool(){return new Tool("same_remote_name","Untrusted description",Map.of("type","object","properties",Map.of("value",Map.of("type","string","maxLength",40)),"required",List.of("value"),"additionalProperties",false),null,null,null,(changed?"b":"a").repeat(64),true,null);}
   Snapshot snapshot(){return new Snapshot(input.organizationId()+"/"+input.integrationId()+"/"+input.configurationVersion(),UUID.randomUUID().toString(),"2026-07-28","modern",Map.of("name","Controlled registry peer","version","1"),Map.of("tools",Map.of()),List.of(tool()));}
-  public Snapshot connect(Connect c){input=c;if(waiting!=null){waiting.countDown();try{release.await(5,TimeUnit.SECONDS);}catch(InterruptedException e){Thread.currentThread().interrupt();}}return snapshot();}
+  public Snapshot connect(Connect c){if(unavailable)throw new McpFailure("MCP_UNAVAILABLE");input=c;if(waiting!=null){waiting.countDown();try{release.await(5,TimeUnit.SECONDS);}catch(InterruptedException e){Thread.currentThread().interrupt();}}return snapshot();}
   public Snapshot discover(Handle h){return snapshot();}
-  public Outcome invoke(Handle h,String n,String fp,Map<String,Object>a,UUID id){if(!fp.equals(tool().fingerprint()))throw new McpFailure("MCP_SCHEMA_CHANGED");calls.incrementAndGet();return new Outcome("2026-07-28",fp,Map.of("structuredContent",a));}
-  public boolean cancel(Handle h,UUID id){return true;}public void close(Handle h,boolean revoke){closed.incrementAndGet();}
+  public Outcome invoke(Handle h,String n,String fp,Map<String,Object>a,UUID id){if(invocationWaiting!=null){invocationWaiting.countDown();try{invocationRelease.await(5,TimeUnit.SECONDS);}catch(InterruptedException e){Thread.currentThread().interrupt();}}if(!fp.equals(tool().fingerprint()))throw new McpFailure("MCP_SCHEMA_CHANGED");calls.incrementAndGet();return new Outcome("2026-07-28",fp,Map.of("structuredContent",a));}
+  public boolean cancel(Handle h,UUID id){return true;}public void close(Handle h,boolean revoke){lastClosed=h;closed.incrementAndGet();}
  }
 }

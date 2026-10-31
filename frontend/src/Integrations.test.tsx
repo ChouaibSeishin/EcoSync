@@ -27,6 +27,17 @@ function fixture({manage=true,unsupported=false,fail=false,empty=false}={}){
  return {item,cap,fetcher};
 }
 describe('native MCP management',()=>{
+ it('offers scoped cancellation while a manual invocation is running',async()=>{
+  const f=fixture();f.item.state='ACTIVE';f.item.tools=[f.cap];f.cap.approvals=[{role:'INTEGRATION_ADMIN',status:'APPROVED',actor:'admin',created_at:'now'}];
+  const original=f.fetcher.getMockImplementation()!;let complete:(response:Response)=>void=()=>{};
+  f.fetcher.mockImplementation(async(input,options)=>{
+   if(String(input).endsWith('/invocations'))return new Promise<Response>(resolve=>{complete=resolve;});
+   if(String(input).endsWith('/cancel')){complete(Response.json({message:'The MCP operation was cancelled.',code:'MCP_CANCELLED'},{status:409}));return Response.json({cancelled:true});}
+   return original(input,options);
+  });
+  fireEvent.click(await screen.findByRole('button',{name:'Invoke tool'}));fireEvent.click(await screen.findByRole('button',{name:'Cancel invocation'}));
+  expect(await screen.findByRole('alert')).toHaveTextContent('cancelled');expect(f.fetcher.mock.calls.some(([path])=>String(path).endsWith('/cancel'))).toBe(true);
+ });
  it('registers, discovers, approves, activates, invokes, traces and disables',async()=>{
   fixture({empty:true});await screen.findByRole('heading',{name:'No integrations yet'});
   fireEvent.click(screen.getByRole('button',{name:'Add MCP server'}));

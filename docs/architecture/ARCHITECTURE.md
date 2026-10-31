@@ -1,6 +1,24 @@
 # Architecture
 
-Status: target architecture established in Phase 0; updated 2026-10-30 for implemented Phases 1-2. The diagrams below include later-phase components. Phase 1 implements only identity, organizations, authorization, web and observability packages, platform PostgreSQL/Flyway and the React workspace. Phase 2 adds three independent demo sources and external mapping/oracle/case artifacts. MCP/gateway/connectors/AI, platform mapping management and benchmark execution remain unimplemented. See [ADR 0006](decisions/0006-phase1-identity-and-local-stack.md) for actual Phase 1 boundaries. Decisions: [0001](decisions/0001-modular-platform.md), [0002](decisions/0002-supported-dependencies.md), [0003](decisions/0003-mcp-and-gateway.md), [0004](decisions/0004-security-and-mappings.md), [0005](decisions/0005-delivery-and-evaluation.md).
+Status: target architecture established in Phase 0; updated 2026-10-30 for implemented Phases 1-2. The diagrams below include later-phase components. Phase 1 implements only identity, organizations, authorization, web and observability packages, platform PostgreSQL/Flyway and the React workspace. Phase 2 adds three independent demo sources and external mapping/oracle/case artifacts. Updated 2026-10-31: Phase 3 now implements native MCP registration, explicit approvals and manual invocation; managed gateway/connectors/AI, platform mapping management and benchmark execution remain unimplemented. See the implemented Phase 3 boundary below. See [ADR 0006](decisions/0006-phase1-identity-and-local-stack.md) for actual Phase 1 boundaries. Decisions: [0001](decisions/0001-modular-platform.md), [0002](decisions/0002-supported-dependencies.md), [0003](decisions/0003-mcp-and-gateway.md), [0004](decisions/0004-security-and-mappings.md), [0005](decisions/0005-delivery-and-evaluation.md).
+
+## Implemented Phase 3 boundary (2026-10-31)
+
+```mermaid
+flowchart LR
+  UI[React Integrations] -->|session and CSRF| API[Spring MVC authorization and registry]
+  API --> P[(Platform PostgreSQL revisions grants audit)]
+  API --> K[External AES-GCM keyring and credential resolver]
+  API -->|authenticated internal bounded interface| C[Official TS dual-era MCP client]
+  C -->|MCP 2025-11-25| S[Java Sales MCP]
+  C -->|MCP 2026-07-28| I[TypeScript Inventory MCP]
+  S -->|restricted prepared reads| PG[(Existing Sales PostgreSQL)]
+  I -->|restricted prepared reads| MY[(Existing Inventory MySQL)]
+```
+
+Java owns actor/org authorization, immutable configuration revisions, encrypted credential references, approval fingerprints, CAS lifecycle and sanitized audit. The replaceable NativeMcpClient port hides the additional Node process. The official-SDK adapter owns bounded transient connections keyed by organization/integration/revision; it is not the future managed connector gateway. No global Spring AI callback catalog or model dependency exists. Boot 4.1.2 / Spring AI 2.0.2 remain unchanged.
+
+The explicit MCP override joins the backend to MCP control and its metadata network. The adapter is control-only; native servers alone join the original source network. Default platform/demo Compose definitions and persistent volumes remain intact. Dynamic registration accepts operator-permitted endpoints without hardcoding their tools in Java or React. One backend replica and bearer authentication are the Phase 3 deployment scope. See [integrations](MCP_INTEGRATIONS.md), [compatibility](MCP_COMPATIBILITY.md), [security](MCP_SECURITY.md), and ADRs [0008](decisions/0008-mcp-dual-era-client.md), [0009](decisions/0009-native-mcp-registry.md), [0010](decisions/0010-native-source-mcp-servers.md), [0011](decisions/0011-mcp-credentials-and-destinations.md). [Verification](../development/PHASE_3_VERIFICATION.md) records actual results and remaining acceptance work.
 
 ## Implemented deployment boundaries (Phases 1-2)
 

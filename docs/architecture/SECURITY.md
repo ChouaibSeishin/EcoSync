@@ -1,6 +1,6 @@
 # Security design and threat model
 
-Target security design with Phase 1 implementation evidence dated 2026-10-30. Session/CSRF/password/bootstrap/tenant enforcement, bounded login throttling, safe errors, public status-only probes and runtime DB least privilege are implemented and tested; see [Phase 1 verification](../development/PHASE_1_VERIFICATION.md). Connector/MCP/model defenses, persistent audit browsing, broader rate limits and multi-instance governance remain future requirements. The matrix below remains the target; it does not claim every control is already delivered.
+Target security design with Phase 1 implementation evidence dated 2026-10-30. Session/CSRF/password/bootstrap/tenant enforcement, bounded login throttling, safe errors, public status-only probes and runtime DB least privilege are implemented and tested; see [Phase 1 verification](../development/PHASE_1_VERIFICATION.md). Updated 2026-10-31: native MCP now adds revision/schema-bound role grants, AES-GCM credentials with external keys, destination/DNS/redirect controls, bounded schema/results and persistent metadata audit browsing. See [MCP_SECURITY.md](MCP_SECURITY.md). Managed connector/model defenses, broader rate limits and multi-instance governance remain future work. The matrix below remains the target; it does not claim every control is already delivered.
 
 ## Assets and trust boundaries
 

@@ -3,12 +3,13 @@ import {McpServer,createMcpHandler,legacyStatelessFallback} from '@modelcontextp
 import {toNodeHandler} from '@modelcontextprotocol/node';
 import * as z from 'zod/v4';
 export async function peer({era='modern',token,mode='auto'}){
- const state={calls:0,changed:false,description:'Read-only peer tool',methods:[],aborted:0,pagination:null,listCalls:0};
+ const state={calls:0,changed:false,description:'Read-only peer tool',methods:[],aborted:0,pagination:null,listCalls:0,invalidResponse:false,delayMs:1500};
  const factory=()=>{
   const server=new McpServer({name:'official-'+era+'-peer',version:'1.0.0'});
   const input=state.changed?z.object({value:z.string().max(40),extra:z.boolean()}):z.object({value:z.string().max(40)});
   server.registerTool('lookup',{description:state.description,inputSchema:input,outputSchema:z.object({value:z.string().max(40)})},async({value})=>{state.calls++;return{content:[{type:'text',text:value}],structuredContent:{value}};});
-  server.registerTool('delay',{description:'Cancellable peer read',inputSchema:z.object({value:z.string().max(40)})},async()=>{state.calls++;await new Promise(r=>setTimeout(r,1500));return{content:[{type:'text',text:'done'}]};});
+  server.registerTool('delay',{description:'Cancellable peer read',inputSchema:z.object({value:z.string().max(40)})},async()=>{state.calls++;await new Promise(r=>setTimeout(r,state.delayMs));return{content:[{type:'text',text:'done'}]};});
+  if(state.invalidResponse)server.server.setRequestHandler('tools/list',async()=>({tools:'invalid-response-type'}));
   server.registerTool('large',{description:'Oversized peer response',inputSchema:z.object({})},async()=>{state.calls++;return{content:[{type:'text',text:'x'.repeat(1100000)}]};});
   if(state.pagination)server.server.setRequestHandler('tools/list',async request=>{
    const page=Number(request.params?.cursor??0);state.listCalls++;

@@ -4,10 +4,61 @@ import {randomBytes,randomUUID} from 'node:crypto';
 import {createServer} from 'node:http';
 import {ClientManager} from '../dist/manager.js';
 import {DestinationPolicy,guardedFetch,operations} from '../dist/network.js';
-import {schemaIssue,validateArguments} from '../dist/schema.js';
+import {schemaIssue,validateArguments,redact} from '../dist/schema.js';
 import {createClientService} from '../dist/server.js';
 import {peer} from './peer.mjs';
 const secret=()=>randomBytes(32).toString('base64url');
+test('full client capacity permits fenced owner replacement and rejects additional registrations',async()=>{
+ const f=await setup();try{
+  const configs=[],snapshots=[];for(let n=0;n<64;n++){const c={...f.config,integrationId:randomUUID()};configs.push(c);snapshots.push(await f.manager.connect(c));}
+  assert.equal(f.manager.stats().clients,64);await assert.rejects(f.manager.connect({...f.config,integrationId:randomUUID()}),e=>e.code==='MCP_CLIENT_LIMIT');
+  const fresh=await f.manager.connect({...configs[0],ownerId:randomUUID()});assert.notEqual(fresh.leaseId,snapshots[0].leaseId);assert.equal(f.manager.stats().clients,64);
+  await assert.rejects(f.manager.discover(snapshots[0].key,snapshots[0].leaseId),e=>e.code==='MCP_CLIENT_RETIRED');
+ }finally{await f.close();}
+});
+test('stale owner leases cannot invoke or close the replacement owner generation',async()=>{
+ const f=await setup();try{
+  const old=await f.manager.connect(f.config),fresh=await f.manager.connect({...f.config,ownerId:randomUUID()});
+  assert.notEqual(old.leaseId,fresh.leaseId);await f.manager.close(old.key,old.leaseId,false);
+  await assert.rejects(f.manager.discover(old.key,old.leaseId),e=>e.code==='MCP_CLIENT_RETIRED');
+  const tool=fresh.tools.find(t=>t.name==='lookup');await f.manager.invoke(fresh.key,fresh.leaseId,tool.name,tool.fingerprint,{value:'new owner'});assert.equal(f.remote.state.calls,1);
+ }finally{await f.close();}
+});
+test('pinned legacy initialization against a modern-only official peer reports protocol incompatibility',async()=>{
+ const f=await setup();try{await assert.rejects(f.manager.connect({...f.config,protocolPolicy:'LEGACY_2025'}),e=>e.code==='MCP_UNSUPPORTED_PROTOCOL');assert.equal(f.remote.state.calls,0);}finally{await f.close();}
+});
+test('persisted revision revocation retires a generation even after the host loses its lease',async()=>{
+ const f=await setup();try{
+  const snapshot=await f.manager.connect(f.config);await f.manager.close(snapshot.key,'',true);
+  assert.equal(f.manager.stats().clients,0);await assert.rejects(f.manager.discover(snapshot.key,snapshot.leaseId),e=>e.code==='MCP_CLIENT_RETIRED');
+  await assert.rejects(f.manager.connect(f.config),e=>e.code==='MCP_CLIENT_RETIRED');assert.equal(f.remote.state.calls,0);
+ }finally{await f.close();}
+});
+test('official modern peer rejects malformed JSON and unsupported methods without tool dispatch',async()=>{
+ const f=await setup();try{
+  const headers={Authorization:'Bearer '+f.config.credential,'Content-Type':'application/json',Accept:'application/json, text/event-stream','MCP-Protocol-Version':'2026-07-28'};
+  const malformed=await fetch(f.remote.endpoint,{method:'POST',headers,body:'{malformed'});assert.ok(malformed.status>=400);
+  const unsupported=await fetch(f.remote.endpoint,{method:'POST',headers,body:JSON.stringify({jsonrpc:'2.0',id:1,method:'server/not-supported',params:{_meta:{'io.modelcontextprotocol/protocolVersion':'2026-07-28','io.modelcontextprotocol/clientInfo':{name:'negative-test',version:'1'},'io.modelcontextprotocol/clientCapabilities':{}}}})});
+  assert.ok(unsupported.status>=400||Boolean((await unsupported.json()).error));assert.equal(f.remote.state.calls,0);
+ }finally{await f.close();}
+});
+test('invalid official-peer result types fail discovery closed',async()=>{
+ const f=await setup();f.remote.state.invalidResponse=true;
+ try{await assert.rejects(f.manager.connect(f.config));assert.equal(f.remote.state.calls,0);assert.equal(f.manager.stats().clients,0);}finally{await f.close();}
+});
+test('individual tool timeout is bounded with no invocation retry',async()=>{
+ const f=await setup();f.remote.state.delayMs=12000;
+ try{const snapshot=await f.manager.connect(f.config),tool=snapshot.tools.find(t=>t.name==='delay'),start=Date.now();
+  await assert.rejects(f.manager.invoke(snapshot.key,snapshot.leaseId,tool.name,tool.fingerprint,{value:'wait'}),e=>e.code==='MCP_TIMEOUT');assert.ok(Date.now()-start<13000);assert.equal(f.remote.state.calls,1);
+ }finally{await f.close();}
+});
+test('schema compiler rejects malformed keywords; redaction covers object keys',()=>{
+ assert.equal(schemaIssue({type:'string',maxLength:'untrusted'}),'SCHEMA_INVALID');
+ assert.equal(schemaIssue({type:['array','null'],items:{type:'string'}}),'SCHEMA_UNBOUNDED_ARRAY');
+ const token=secret(),clean=redact({[token]:{value:token}},[token]);assert.ok(!JSON.stringify(clean).includes(token));
+ validateArguments({type:'string',format:'date-time'},'2026-10-31T00:00:00.123Z');
+ assert.throws(()=>validateArguments({type:'string',format:'date-time'},'2026-02-31T00:00:00Z'));
+});
 const input=(endpoint,credential,policy='AUTO_DUAL')=>({organizationId:randomUUID(),integrationId:randomUUID(),configurationVersion:1,configurationFingerprint:'a'.repeat(64),ownerId:randomUUID(),endpoint,credential,protocolPolicy:policy});
 async function setup(era='modern',mode='auto'){
  const token=secret(),remote=await peer({era,token,mode}),manager=new ClientManager(new DestinationPolicy([remote.endpoint],true),secret());

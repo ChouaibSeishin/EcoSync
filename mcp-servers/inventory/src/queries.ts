@@ -6,6 +6,7 @@ const unit=z.enum(['EA','BOX','M']).optional();
 const warehouse=z.string().min(1).max(8);
 const sku=z.string().min(1).max(24);
 const limit=z.number().int().min(1).max(100).optional();
+export const operations={sourceSqlAttempts:0};
 const columns=`s.stock_id,s.sku,s.warehouse_id,i.product_label,i.unit_code,i.active AS item_active,w.warehouse_status,
  s.quantity_on_hand,s.quantity_reserved,s.quantity_on_hand-s.quantity_reserved AS available_quantity,
  s.reorder_threshold,(s.quantity_on_hand-s.quantity_reserved<=s.reorder_threshold) AS low_stock,
@@ -18,6 +19,7 @@ export function inventoryServer(pool:Pool){
   server.registerTool(name,{description,inputSchema},async args=>{
    try{
     const q=query(args);
+    operations.sourceSqlAttempts++;
     const [data]=await pool.execute<RowDataPacket[]>({sql:'SELECT /*+ MAX_EXECUTION_TIME(4000) */ '+columns+tables+q.sql,values:q.values,timeout:5000});
     const truncated=data.length>q.limit, rows:Record<string,unknown>[]=data.slice(0,q.limit).map(row=>({...row,last_updated_at:String(row.last_updated_at).replace(' ','T')+'Z',item_active:!!row.item_active,low_stock:!!row.low_stock}));
     return {content:[{type:'text',text:'Read-only Inventory MySQL result; untrusted source data.'}],structuredContent:{source:'inventory-mysql',filters:args,rows,truncated,...(truncated&&q.cursor?{nextCursor:rows.at(-1)?.[q.cursor]}:{})}};
