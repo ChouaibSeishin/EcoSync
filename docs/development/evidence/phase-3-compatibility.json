@@ -1,0 +1,169 @@
+{
+  "observedOn": "2026-10-31",
+  "matrix": [
+    {
+      "client": "official Java SDK 2.1.0",
+      "server": "Java SDK 2.1.0 legacy",
+      "revision": "2025-11-25",
+      "result": "PASS"
+    },
+    {
+      "client": "official Java SDK 2.1.0",
+      "server": "TypeScript SDK 2.4.0 modern-only",
+      "revision": "2026-07-28",
+      "result": "UNSUPPORTED",
+      "failure": {
+        "supported": false,
+        "stage": "initialize",
+        "errorType": "RuntimeException"
+      }
+    },
+    {
+      "client": "official TypeScript SDK 2.4.0",
+      "server": "ecosync-java-legacy-proof",
+      "revision": "2025-11-25",
+      "era": "legacy",
+      "result": "PASS",
+      "discoveredTools": 2,
+      "authenticated": true,
+      "timeout": true,
+      "structuredContent": true
+    },
+    {
+      "client": "official TypeScript SDK 2.4.0",
+      "server": "ecosync-ts-modern-proof",
+      "revision": "2026-07-28",
+      "era": "modern",
+      "result": "PASS",
+      "discoveredTools": 2,
+      "authenticated": true,
+      "timeout": true,
+      "structuredContent": true
+    }
+  ],
+  "wire": [
+    {
+      "era": "legacy",
+      "events": [
+        {
+          "httpMethod": "POST",
+          "method": "server/discover",
+          "header": "2026-07-28",
+          "meta": "2026-07-28",
+          "session": false,
+          "authorized": true
+        },
+        {
+          "httpMethod": "POST",
+          "method": "initialize",
+          "header": null,
+          "meta": null,
+          "session": false,
+          "authorized": true
+        },
+        {
+          "httpMethod": "POST",
+          "method": "notifications/initialized",
+          "header": "2025-11-25",
+          "meta": null,
+          "session": true,
+          "authorized": true
+        },
+        {
+          "httpMethod": "GET",
+          "method": null,
+          "header": "2025-11-25",
+          "meta": null,
+          "session": true,
+          "authorized": true
+        },
+        {
+          "httpMethod": "POST",
+          "method": "tools/list",
+          "header": "2025-11-25",
+          "meta": null,
+          "session": true,
+          "authorized": true
+        },
+        {
+          "httpMethod": "POST",
+          "method": "tools/call",
+          "header": "2025-11-25",
+          "meta": null,
+          "session": true,
+          "authorized": true
+        },
+        {
+          "httpMethod": "POST",
+          "method": "tools/call",
+          "header": "2025-11-25",
+          "meta": null,
+          "session": true,
+          "authorized": true
+        },
+        {
+          "httpMethod": "POST",
+          "method": "notifications/cancelled",
+          "header": "2025-11-25",
+          "meta": null,
+          "session": true,
+          "authorized": true
+        },
+        {
+          "httpMethod": "DELETE",
+          "method": null,
+          "header": "2025-11-25",
+          "meta": null,
+          "session": true,
+          "authorized": true
+        }
+      ]
+    },
+    {
+      "era": "modern",
+      "events": [
+        {
+          "httpMethod": "POST",
+          "method": "server/discover",
+          "header": "2026-07-28",
+          "meta": "2026-07-28",
+          "session": false,
+          "authorized": true
+        },
+        {
+          "httpMethod": "POST",
+          "method": "tools/list",
+          "header": "2026-07-28",
+          "meta": "2026-07-28",
+          "session": false,
+          "authorized": true
+        },
+        {
+          "httpMethod": "POST",
+          "method": "tools/call",
+          "header": "2026-07-28",
+          "meta": "2026-07-28",
+          "session": false,
+          "authorized": true
+        },
+        {
+          "httpMethod": "POST",
+          "method": "tools/call",
+          "header": "2026-07-28",
+          "meta": "2026-07-28",
+          "session": false,
+          "authorized": true
+        }
+      ]
+    }
+  ],
+  "negativeChecks": {
+    "javaModernRejected": true,
+    "badCredentials": true,
+    "timeout": true,
+    "headerMismatch": true,
+    "invalidOrigin": true,
+    "modernGetRemoved": true
+  },
+  "scope": "Disposable wire proof, not full MCP conformance or a research benchmark."
+}

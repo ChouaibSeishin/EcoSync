@@ -1,0 +1,3 @@
+**/node_modules
+java/target/*
+!java/target/mcp-compatibility-java-1.0.0.jar
