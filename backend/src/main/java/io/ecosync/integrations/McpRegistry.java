@@ -165,9 +165,9 @@ public class McpRegistry {
    for(var remote:snapshot.tools()){
     boolean supported=remote.supported()&&schemas.supported(remote.inputSchema())&&(remote.outputSchema()==null||schemas.supported(remote.outputSchema()));
     var tool=new NativeMcpClient.Tool(remote.name(),remote.description(),remote.inputSchema(),remote.outputSchema(),remote.annotations(),remote.metadata(),remote.fingerprint(),supported,supported?null:"Host schema policy rejected this capability");
-    db.update("INSERT INTO app.mcp_capability(organization_id,integration_id,version,id,remote_name,fingerprint,tool_json,protocol,server_json) VALUES(?,?,?,?,?,?,?::jsonb,?,?::jsonb) ON CONFLICT(organization_id,integration_id,version,remote_name,fingerprint) DO UPDATE SET present=true,discovered_at=CURRENT_TIMESTAMP",rev.org,rev.id,rev.version,UUID.randomUUID(),tool.name(),tool.fingerprint(),json.writeValueAsString(tool),snapshot.protocol(),json.writeValueAsString(snapshot.serverInfo()));
+    db.update("INSERT INTO app.mcp_capability(organization_id,integration_id,version,id,remote_name,fingerprint,tool_json,protocol,server_json) VALUES(?,?,?,?,?,?,?::jsonb,?,?::jsonb) ON CONFLICT(organization_id,integration_id,version,remote_name,fingerprint) DO UPDATE SET present=true,discovered_at=CURRENT_TIMESTAMP,tool_json=EXCLUDED.tool_json,protocol=EXCLUDED.protocol,server_json=EXCLUDED.server_json",rev.org,rev.id,rev.version,UUID.randomUUID(),tool.name(),tool.fingerprint(),json.writeValueAsString(tool),snapshot.protocol(),json.writeValueAsString(snapshot.serverInfo()));
    }
-   db.update("UPDATE app.mcp_approval SET status='STALE' WHERE organization_id=? AND status='APPROVED' AND capability_id IN(SELECT id FROM app.mcp_capability WHERE organization_id=? AND integration_id=? AND version=? AND NOT present)",rev.org,rev.org,rev.id,rev.version);
+   db.update("UPDATE app.mcp_approval SET status='STALE' WHERE organization_id=? AND status='APPROVED' AND capability_id IN(SELECT id FROM app.mcp_capability WHERE organization_id=? AND integration_id=? AND version=? AND (NOT present OR tool_json->>'supported'='false'))",rev.org,rev.org,rev.id,rev.version);
    event(actor,rev.org,rev.id,rev.version,null,snapshot.protocol(),"DISCOVER","SUCCESS","ALLOWED",null,null);
   });
  }
@@ -213,6 +213,7 @@ public class McpRegistry {
    try{db.update("INSERT INTO app.mcp_event(organization_id,integration_id,id,actor,version,capability_id,protocol,kind,status,authorization_outcome) VALUES(?,?,?,?,?,?,?,'INVOKE','RUNNING','ALLOWED')",org,id,invocation,actor,rev.version,capability,protocol);}catch(DuplicateKeyException e){throw new McpFailure("MCP_CONNECTION_BUSY");}
   }
   try{
+   if(!tool.supported()||tool.outputSchema()!=null&&!schemas.supported(tool.outputSchema()))throw new McpFailure("MCP_SCHEMA_UNSUPPORTED");
    schemas.arguments(tool.inputSchema(),arguments);
    // Never hold the admission lock over remote recovery: disable must fence it immediately.
    handle=ensure(rev,actor);

@@ -145,10 +145,17 @@ class McpRegistryIT {
    registry.invoke(admin,org,id,fresh,UUID.randomUUID(),Map.of("value","new"));assertThat(peer.calls.get()).isEqualTo(1);
   }
  }
+ @Test void refreshUpdatesServerIdentityAndProtocolWhenSchemaIsUnchanged(){
+  UUID id=register();activate(id);UUID cap=capability(id);peer.protocol="2025-11-25";peer.serverVersion="2";
+  registry.validate(admin,org,id);assertThat(capability(id)).isEqualTo(cap);
+  assertThat(db.queryForObject("SELECT protocol FROM app.mcp_capability WHERE organization_id=? AND id=?",String.class,org,cap)).isEqualTo("2025-11-25");
+  assertThat(db.queryForObject("SELECT server_json->>'version' FROM app.mcp_capability WHERE organization_id=? AND id=?",String.class,org,cap)).isEqualTo("2");
+  assertThat(db.queryForObject("SELECT count(*) FROM app.mcp_approval WHERE organization_id=? AND capability_id=? AND status='APPROVED'",Integer.class,org,cap)).isEqualTo(1);
+ }
  static class Peer implements NativeMcpClient {
-  AtomicInteger calls=new AtomicInteger(),closed=new AtomicInteger();boolean changed,unavailable;CountDownLatch waiting,release,invocationWaiting,invocationRelease;Connect input;Handle lastClosed;
+  AtomicInteger calls=new AtomicInteger(),closed=new AtomicInteger();boolean changed,unavailable;String protocol="2026-07-28",serverVersion="1";CountDownLatch waiting,release,invocationWaiting,invocationRelease;Connect input;Handle lastClosed;
   Tool tool(){return new Tool("same_remote_name","Untrusted description",Map.of("type","object","properties",Map.of("value",Map.of("type","string","maxLength",40)),"required",List.of("value"),"additionalProperties",false),null,null,null,(changed?"b":"a").repeat(64),true,null);}
-  Snapshot snapshot(){return new Snapshot(input.organizationId()+"/"+input.integrationId()+"/"+input.configurationVersion(),UUID.randomUUID().toString(),"2026-07-28","modern",Map.of("name","Controlled registry peer","version","1"),Map.of("tools",Map.of()),List.of(tool()));}
+  Snapshot snapshot(){return new Snapshot(input.organizationId()+"/"+input.integrationId()+"/"+input.configurationVersion(),UUID.randomUUID().toString(),protocol,protocol.equals("2026-07-28")?"modern":"legacy",Map.of("name","Controlled registry peer","version",serverVersion),Map.of("tools",Map.of()),List.of(tool()));}
   public Snapshot connect(Connect c){if(unavailable)throw new McpFailure("MCP_UNAVAILABLE");input=c;if(waiting!=null){waiting.countDown();try{release.await(5,TimeUnit.SECONDS);}catch(InterruptedException e){Thread.currentThread().interrupt();}}return snapshot();}
   public Snapshot discover(Handle h){return snapshot();}
   public Outcome invoke(Handle h,String n,String fp,Map<String,Object>a,UUID id){if(invocationWaiting!=null){invocationWaiting.countDown();try{invocationRelease.await(5,TimeUnit.SECONDS);}catch(InterruptedException e){Thread.currentThread().interrupt();}}if(!fp.equals(tool().fingerprint()))throw new McpFailure("MCP_SCHEMA_CHANGED");calls.incrementAndGet();return new Outcome("2026-07-28",fp,Map.of("structuredContent",a));}
