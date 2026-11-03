@@ -10,6 +10,8 @@ import org.springframework.web.servlet.resource.NoResourceFoundException;
 import org.springframework.http.converter.HttpMessageNotReadableException;
 @RestControllerAdvice
 public class ApiExceptionHandler {
+    @ExceptionHandler(io.ecosync.database.DatabaseFailure.class)
+    ResponseEntity<ApiError> database(io.ecosync.database.DatabaseFailure error,HttpServletRequest request){return result(error.status(),error.code(),error.getMessage(),request);}
     @ExceptionHandler(io.ecosync.mcp.McpFailure.class)
     ResponseEntity<ApiError> mcp(io.ecosync.mcp.McpFailure error,HttpServletRequest request){return result(error.status(),error.code(),error.safeMessage(),request);}
     private static final Logger LOG = LoggerFactory.getLogger(ApiExceptionHandler.class);

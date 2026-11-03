@@ -1,0 +1,55 @@
+package io.ecosync;
+import io.ecosync.credentials.DatabaseCredentials;
+import io.ecosync.database.*;
+import io.ecosync.organizations.TenantDirectory;
+import java.nio.file.*;
+import java.security.*;
+import java.util.*;
+import java.util.concurrent.*;
+import org.flywaydb.core.Flyway;
+import org.junit.jupiter.api.*;
+import org.junit.jupiter.api.io.TempDir;
+import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.jdbc.datasource.DriverManagerDataSource;
+import org.springframework.jdbc.support.JdbcTransactionManager;
+import org.springframework.security.access.AccessDeniedException;
+import org.testcontainers.postgresql.PostgreSQLContainer;
+import org.testcontainers.junit.jupiter.*;
+import org.testcontainers.utility.DockerImageName;
+import tools.jackson.databind.json.JsonMapper;
+import static org.assertj.core.api.Assertions.*;
+
+/** Real Flyway/PostgreSQL/crypto. Controlled gateway port isolates control-plane races. */
+@Testcontainers @TestInstance(TestInstance.Lifecycle.PER_CLASS)
+class DatabaseRegistryIT {
+ @Container static final PostgreSQLContainer pg=new PostgreSQLContainer(DockerImageName.parse("postgres:17.11-bookworm@sha256:2cd2c0f809604aaeff6f0ec8f40aecbd025613107561015c69369a1a7f1d3416").asCompatibleSubstituteFor("postgres"));
+ @TempDir Path temp;JdbcTemplate db;DriverManagerDataSource ds;JsonMapper json=new JsonMapper();DatabaseCredentials credentials;DatabaseAssertions assertions;DatabaseRegistry registry;Peer peer;UUID org,other,admin,user,auditor;Path ring;
+ @BeforeAll void database(){pg.start();ds=new DriverManagerDataSource(pg.getJdbcUrl(),pg.getUsername(),pg.getPassword());db=new JdbcTemplate(ds);Flyway.configure().dataSource(ds).schemas("app").defaultSchema("app").load().migrate();}
+ @BeforeEach void setup()throws Exception{
+  org=UUID.randomUUID();other=UUID.randomUUID();admin=UUID.randomUUID();user=UUID.randomUUID();auditor=UUID.randomUUID();db.update("INSERT INTO app.organization(id,slug,display_name) VALUES(?,?,?),(?,?,?)",org,org.toString(),"First",other,other.toString(),"Other");
+  for(var e:Map.of(admin,"INTEGRATION_ADMIN",user,"USER",auditor,"AUDITOR").entrySet()){UUID m=UUID.randomUUID();db.update("INSERT INTO app.app_user(id,login,display_name,password_hash) VALUES(?,?,?,?)",e.getKey(),e.getKey().toString(),"Fixture","not-a-login");db.update("INSERT INTO app.membership VALUES(?,?,?)",org,m,e.getKey());db.update("INSERT INTO app.role_assignment VALUES(?,?,?)",org,m,e.getValue());}
+  ring=temp.resolve(UUID.randomUUID()+".json");byte[] key=new byte[32];new SecureRandom().nextBytes(key);Files.writeString(ring,json.writeValueAsString(Map.of("activeKeyId","v1","keys",Map.of("v1",Base64.getEncoder().encodeToString(key)))));credentials=new DatabaseCredentials(db,json,ring.toString());
+  var kp=KeyPairGenerator.getInstance("Ed25519").generateKeyPair();Path priv=temp.resolve(UUID.randomUUID()+".der"),pub=temp.resolve(UUID.randomUUID()+".der");Files.write(priv,kp.getPrivate().getEncoded());Files.write(pub,kp.getPublic().getEncoded());assertions=new DatabaseAssertions(json,priv.toString(),pub.toString());peer=new Peer();registry=build();
+ }
+ DatabaseRegistry build(){return new DatabaseRegistry(db,new TenantDirectory(db),credentials,new DatabasePolicy("POSTGRESQL|sales|5432|sales|sales|dev","development"),assertions,peer,json,new JdbcTransactionManager(ds));}
+ DatabaseRegistry.Registration input(String name,String password){return new DatabaseRegistry.Registration(name,"POSTGRESQL","sales",5432,"sales",List.of("sales"),false,"connector_reader",password);}
+ UUID register(){return(UUID)registry.register(admin,org,input("DB "+UUID.randomUUID(),"password-sentinel-"+UUID.randomUUID())).get("id");}
+ UUID table(UUID id){return db.queryForObject("SELECT id FROM app.database_table WHERE organization_id=? AND connector_id=? AND present AND version=(SELECT configuration_version FROM app.database_connector WHERE organization_id=? AND id=?)",UUID.class,org,id,org,id);}
+ UUID activate(UUID id){registry.inspect(admin,org,id);UUID t=table(id);registry.approve(admin,org,id,t,new DatabaseRegistry.Scope("INTEGRATION_ADMIN",List.of("id","label"),true));registry.activate(admin,org,id);return t;}
+ @Test void encryptedPersistenceTenantBindingRotationAndRevocation(){String password="password-sentinel-"+UUID.randomUUID();UUID id=(UUID)registry.register(admin,org,input("Encrypted",password)).get("id");UUID ref=db.queryForObject("SELECT credential_id FROM app.database_configuration WHERE connector_id=?",UUID.class,id);assertThat(credentials.resolve(org,ref).password()).isEqualTo(password);assertThatThrownBy(()->credentials.resolve(other,ref)).isInstanceOf(IllegalStateException.class);assertThat(json.writeValueAsString(registry.detail(admin,org,id))).doesNotContain(password,"ciphertext","nonce");assertThat(new String(db.queryForObject("SELECT ciphertext FROM app.database_credential WHERE id=?",byte[].class,ref),java.nio.charset.StandardCharsets.UTF_8)).doesNotContain(password);registry.edit(admin,org,id,input("Encrypted",password+"new"));assertThatThrownBy(()->credentials.resolve(org,ref)).isInstanceOf(IllegalStateException.class);assertThat(db.queryForObject("SELECT count(*) FROM app.database_configuration WHERE connector_id=?",Integer.class,id)).isEqualTo(2);}
+ @Test void discoveryNeverApprovesAndTenantRolesCannotBypass(){UUID id=register();registry.inspect(admin,org,id);UUID t=table(id);assertThatThrownBy(()->registry.activate(admin,org,id)).isInstanceOf(DatabaseFailure.class);assertThatThrownBy(()->registry.register(user,org,input("Denied","sentinel-long-password"))).isInstanceOf(AccessDeniedException.class);assertThatThrownBy(()->registry.detail(admin,other,id)).isInstanceOf(AccessDeniedException.class);activate(id);assertThatThrownBy(()->registry.query(user,org,id,t,UUID.randomUUID(),Map.of("columns",List.of("id")),false)).isInstanceOf(DatabaseFailure.class);assertThatThrownBy(()->registry.query(auditor,org,id,t,UUID.randomUUID(),Map.of("columns",List.of("id")),false)).isInstanceOf(DatabaseFailure.class);assertThat(peer.calls).isZero();}
+ @Test void approvalsDisableAndRevisionsFenceEveryInvocation(){UUID id=register(),t=activate(id);registry.query(admin,org,id,t,UUID.randomUUID(),Map.of("columns",List.of("id")),false);assertThat(peer.calls).isEqualTo(1);registry.approve(admin,org,id,t,new DatabaseRegistry.Scope("USER",List.of("id"),true));registry.query(user,org,id,t,UUID.randomUUID(),Map.of("columns",List.of("id")),false);registry.approve(admin,org,id,t,new DatabaseRegistry.Scope("USER",List.of(),false));assertThatThrownBy(()->registry.query(user,org,id,t,UUID.randomUUID(),Map.of("columns",List.of("id")),false)).isInstanceOf(DatabaseFailure.class);registry.disable(admin,org,id,false);assertThatThrownBy(()->registry.query(admin,org,id,t,UUID.randomUUID(),Map.of("columns",List.of("id")),false)).isInstanceOf(DatabaseFailure.class);registry.edit(admin,org,id,input("Changed",""));activate(id);assertThatThrownBy(()->registry.query(admin,org,id,t,UUID.randomUUID(),Map.of("columns",List.of("id")),false)).isInstanceOf(DatabaseFailure.class);assertThat(peer.calls).isEqualTo(2);}
+ @Test void changedMetadataStalesApprovalsWithoutApprovingNewColumns(){UUID id=register(),t=activate(id);peer.changed=true;registry.inspect(admin,org,id);assertThat(table(id)).isNotEqualTo(t);assertThat(db.queryForObject("SELECT count(*) FROM app.database_approval WHERE table_id=? AND status='STALE'",Integer.class,t)).isEqualTo(1);assertThatThrownBy(()->registry.activate(admin,org,id)).isInstanceOf(DatabaseFailure.class);}
+ @Test void restartUsesPersistentRegistrationsAndInterruptsIncompleteAudit(){UUID id=register(),t=activate(id);db.update("INSERT INTO app.database_event(organization_id,connector_id,id,actor,version,table_id,kind,status) VALUES(?,?,?,?,1,?,'QUERY','RUNNING')",org,id,UUID.randomUUID(),admin,t);registry=build();assertThat(db.queryForObject("SELECT count(*) FROM app.database_event WHERE connector_id=? AND status='INTERRUPTED'",Integer.class,id)).isEqualTo(1);registry.query(admin,org,id,t,UUID.randomUUID(),Map.of("columns",List.of("id")),false);assertThat(peer.calls).isEqualTo(1);}
+ @Test void lateQueryResultIsDeniedAfterConcurrentDisable()throws Exception{UUID id=register(),t=activate(id);peer.block=new CountDownLatch(1);peer.entered=new CountDownLatch(1);try(var pool=Executors.newVirtualThreadPerTaskExecutor()){var result=pool.submit(()->registry.query(admin,org,id,t,UUID.randomUUID(),Map.of("columns",List.of("id")),false));assertThat(peer.entered.await(5,TimeUnit.SECONDS)).isTrue();registry.disable(admin,org,id,false);peer.block.countDown();assertThatThrownBy(()->result.get(5,TimeUnit.SECONDS)).isInstanceOf(ExecutionException.class).hasCauseInstanceOf(DatabaseFailure.class);}}
+ @Test void staleInspectionCannotOverrideDisableOrNewRevision()throws Exception{UUID id=register();peer.block=new CountDownLatch(1);peer.entered=new CountDownLatch(1);try(var pool=Executors.newVirtualThreadPerTaskExecutor()){var result=pool.submit(()->registry.inspect(admin,org,id));assertThat(peer.entered.await(5,TimeUnit.SECONDS)).isTrue();registry.disable(admin,org,id,false);peer.block.countDown();assertThatThrownBy(()->result.get(5,TimeUnit.SECONDS)).isInstanceOf(ExecutionException.class);assertThat(registry.detail(admin,org,id).get("state")).isEqualTo("DISABLED");}}
+ @Test void unsupportedAndUnknownScopeColumnsCannotBeApproved(){UUID id=register();registry.inspect(admin,org,id);UUID t=table(id);for(List<String> columns:List.of(List.of("label"),List.of("id","unknown"),List.of("id","id")))assertThatThrownBy(()->registry.approve(admin,org,id,t,new DatabaseRegistry.Scope("INTEGRATION_ADMIN",columns,true))).isInstanceOf(DatabaseFailure.class);assertThat(peer.calls).isZero();}
+ @Test void delegatedAssertionsBindAudienceActorRevisionAndExpiry(){UUID id=register();String token=assertions.issue(admin,org,id,1,"LIST",UUID.randomUUID(),null,"");assertThat(assertions.verify(token).get("org")).isEqualTo(org.toString());assertThatThrownBy(()->assertions.verify(token.substring(0,token.length()-10)+"bad")).isInstanceOf(DatabaseFailure.class);assertThatThrownBy(()->assertions.verify(null)).isInstanceOf(DatabaseFailure.class);}
+ final class Peer implements DatabaseGateway {
+  boolean changed;int calls;CountDownLatch block,entered;
+  void await(){if(entered!=null)entered.countDown();if(block!=null)try{block.await(5,TimeUnit.SECONDS);}catch(InterruptedException e){Thread.currentThread().interrupt();}}
+  public Map<String,Object> inspect(String a){await();return Map.of("tables",List.of(Map.of("schema","sales","name","items","columns",List.of(Map.of("name","id","supported",true),Map.of("name","label","supported",true)),"primaryKey",List.of("id"),"foreignKeys",changed?List.of(Map.of("changed",true)):List.of())));}
+  public Map<String,Object> call(String a,String tool,Map<String,Object> args){calls++;await();return Map.of("rows",List.of(Map.of("id","1")));}
+  public List<Map<String,Object>> tools(String a){return List.of(Map.of("name","database_read_rows"));}public void retire(UUID o,UUID i){}public void cancel(UUID e){}public void reconcile(){}
+ }
+}
