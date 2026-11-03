@@ -112,7 +112,7 @@ try{
  const mismatch=await fetch(modern+'/mcp',{method:'POST',headers:{...headers,'mcp-protocol-version':'2025-11-25'},body:JSON.stringify(envelope)});assert.equal(mismatch.status,400);
  assert.equal((await fetch(modern+'/mcp',{headers,method:'GET'})).status,405);
  assert.equal((await fetch(modern+'/mcp',{method:'POST',headers:{...headers,origin:'https://untrusted.invalid'},body:JSON.stringify(envelope)})).status,403);
- await writeFile(path.join(out,'compatibility-proof.json'),JSON.stringify({observedOn:'2026-10-31',matrix,wire,negativeChecks:{javaModernRejected:true,badCredentials:true,timeout:true,headerMismatch:true,invalidOrigin:true,modernGetRemoved:true},scope:'Disposable wire proof, not full MCP conformance or a research benchmark.'},null,2)+'\n');
+ await writeFile(path.join(out,'compatibility-proof.json'),JSON.stringify({observedOn:new Date().toISOString(),matrix,wire,negativeChecks:{javaModernRejected:true,badCredentials:true,timeout:true,headerMismatch:true,invalidOrigin:true,modernGetRemoved:true},scope:'Disposable wire proof, not full MCP conformance or a research benchmark.'},null,2)+'\n');
  console.log(JSON.stringify(matrix,null,2));
  console.log('PASS: actual loopback Java/TypeScript SDK peers, both eras, schemas, structured tools, auth, timeout, metadata, Origin and disconnect.');
 }finally{

@@ -1,6 +1,6 @@
 # Project status
 
-Updated: 2026-10-31 UTC. Authorized scope: **Phase 3 only**, currently in progress.
+Updated: 2026-11-03 UTC. **Phase 3 native MCP implementation is accepted.** No later phase is authorized or started.
 
 ## Current delivery state
 
@@ -20,7 +20,7 @@ Versioned external mappings preserve 22 approved sales identities, 27 catalog me
 
 Local Compose/HTTP and the Vite frontend are development tooling. Source migrations initialize empty fixture volumes; checksum verification detects drift, with no automatic live fixture upgrade. Supplier storage is a small immutable JSON snapshot. Phase 1 sessions/throttling remain single-instance/in-memory. Point-in-time npm audits and source checks do not establish production readiness.
 
-Phase 3 checkpoints A-G passed locally: dual-era official-SDK client, two source-backed native servers, persistent versioned registry, encrypted credentials, explicit role approvals, manual invocation UI and 30 real stack checks. Final CI/source review is in progress. See docs/development/PHASE_3_VERIFICATION.md. No managed gateway, dynamic DB/REST connectors, AI/model calls, chat, mapping management UI, benchmark executor, Kubernetes/Argo or publishing is implemented.
+Phase 3 checkpoints A-H passed: dual-era official-SDK client, two source-backed native servers, persistent versioned registry, encrypted credentials, explicit role approvals, manual invocation UI and 30 actual stack checks. All three jobs passed at 794b267 in [run 41615632337](https://github.com/ChouaibSeishin/EcoSync/actions/runs/41615632337); the final handoff revision runs the same checks. See [Phase 3 acceptance](docs/development/PHASE_3_ACCEPTANCE.md) and [verification](docs/development/PHASE_3_VERIFICATION.md). The user-stopped services were restarted on November 3 and left healthy. No managed gateway, dynamic DB/REST connectors, AI/model calls, chat, mapping management UI, benchmark executor, Kubernetes/Argo or publishing is implemented.
 
 ## Final Phase 1 handoff addendum (reconciled on Phase 2 branch)
 

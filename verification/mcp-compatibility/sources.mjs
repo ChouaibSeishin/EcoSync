@@ -54,4 +54,4 @@ for(const kind of ['sales','inventory']){
   const response=await fetch(input.endpoint,{method:'POST',headers:{...headers,'Content-Type':'application/json'},body:'{}'});assert.ok([401,403].includes(response.status));
  }
 }
-console.log(JSON.stringify({observedOn:'2026-10-31',result:'PASS',evidence},null,2));
+console.log(JSON.stringify({observedOn:new Date().toISOString(),result:'PASS',evidence},null,2));

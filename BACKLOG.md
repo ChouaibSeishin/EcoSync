@@ -69,6 +69,6 @@ The implementing developer owns each decision unless the user must supply extern
 | P3-08 / F (passed) | Concurrency/deadline/cancellation/recovery | Disabled/revised clients retired; transport health cannot override governance |
 | P3-09 / G (passed) | Separate MCP Compose and explicit network overrides | Backend only reaches client/server control path; independent source lifecycles/data preserved |
 | P3-10 / D-G (passed) | Sanitized actor/org/revision/tool/protocol execution/audit metadata | Recent UI history, duration/correlation/denials without raw credentials/results |
-| P3-11 / H | Add real native MCP CI job; preserve Phase 1/2 jobs | Actual final-head jobs/test counts, docs/ADRs/security review, incremental Git push |
+| P3-11 / H (passed implementation CI) | Add real native MCP CI job; preserve Phase 1/2 jobs | Actual final-head jobs/test counts, docs/ADRs/security review, incremental Git push |
 
 Phases 4/5 dynamic DB/REST connectors, managed gateway, general joins/mapping UI, AI/chat, benchmark execution and deployment/publishing remain excluded.

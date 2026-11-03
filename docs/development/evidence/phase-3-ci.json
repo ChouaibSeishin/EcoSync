@@ -1,0 +1,67 @@
+{
+  "observedOn": "2026-11-03T10:07:35.743Z",
+  "id": 41615632337,
+  "head": "794b267405715007f9f4208cbd3bb07c745eafcd",
+  "url": "https://github.com/ChouaibSeishin/EcoSync/actions/runs/41615632337",
+  "status": "completed",
+  "conclusion": "success",
+  "jobs": [
+    {
+      "name": "verify",
+      "id": 125848257502,
+      "conclusion": "success",
+      "skippedSteps": [],
+      "evidence": [
+        "2026-11-03T10:00:54.2942269Z [INFO] Tests run: 1, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 1.615 s -- in io.ecosync.ArchitectureTest",
+        "2026-11-03T10:00:54.3145948Z [INFO] Tests run: 2, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.053 s -- in io.ecosync.authorization.LoginThrottleTest",
+        "2026-11-03T10:00:54.5412276Z [INFO] Tests run: 2, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.234 s -- in io.ecosync.mcp.McpSchemasTest",
+        "2026-11-03T10:00:55.2009029Z [INFO] Tests run: 1, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.662 s -- in io.ecosync.observability.SystemStatusTest",
+        "2026-11-03T10:00:55.2301652Z [INFO] Tests run: 6, Failures: 0, Errors: 0, Skipped: 0",
+        "2026-11-03T10:01:11.2648986Z [INFO] Tests run: 1, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 14.84 s -- in io.ecosync.MigrationIT",
+        "2026-11-03T10:01:18.0157444Z [INFO] Tests run: 12, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 6.748 s -- in io.ecosync.McpRegistryIT",
+        "2026-11-03T10:01:25.7191486Z [INFO] Tests run: 9, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 7.704 s -- in io.ecosync.SecurityIT",
+        "2026-11-03T10:01:25.7690555Z [INFO] Tests run: 22, Failures: 0, Errors: 0, Skipped: 0",
+        "2026-11-03T10:01:32.9875264Z  Test Files  2 passed (2)",
+        "2026-11-03T10:01:32.9876582Z       Tests  17 passed (17)",
+        "2026-11-03T10:02:40.1287515Z   1 passed (3.0s)"
+      ]
+    },
+    {
+      "name": "Native MCP interoperability and governance",
+      "id": 125848257825,
+      "conclusion": "success",
+      "skippedSteps": [
+        "Bounded redacted diagnostics on failure"
+      ],
+      "evidence": [
+        "2026-11-03T10:01:07.5451139Z ℹ tests 25",
+        "2026-11-03T10:01:07.5453094Z ℹ skipped 0",
+        "2026-11-03T10:01:36.6570662Z [INFO] Tests run: 1, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 2.678 s -- in io.ecosync.ArchitectureTest",
+        "2026-11-03T10:01:36.7067763Z [INFO] Tests run: 2, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.072 s -- in io.ecosync.authorization.LoginThrottleTest",
+        "2026-11-03T10:01:37.0105945Z [INFO] Tests run: 2, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.299 s -- in io.ecosync.mcp.McpSchemasTest",
+        "2026-11-03T10:01:37.9777070Z [INFO] Tests run: 1, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.962 s -- in io.ecosync.observability.SystemStatusTest",
+        "2026-11-03T10:01:38.0214623Z [INFO] Tests run: 6, Failures: 0, Errors: 0, Skipped: 0",
+        "2026-11-03T10:01:59.9400521Z  Test Files  2 passed (2)",
+        "2026-11-03T10:01:59.9402059Z       Tests  17 passed (17)",
+        "2026-11-03T10:02:43.9874436Z PASS: actual loopback Java/TypeScript SDK peers, both eras, schemas, structured tools, auth, timeout, metadata, Origin and disconnect.",
+        "2026-11-03T10:05:31.7011282Z PASS: 30 actual stack/security/lifecycle checks; no skipped checks. Evidence: .verification/phase3/stack-results.json",
+        "2026-11-03T10:05:39.3194610Z   2 passed (7.0s)"
+      ]
+    },
+    {
+      "name": "Independent demo sources and dataset",
+      "id": 125848257923,
+      "conclusion": "success",
+      "skippedSteps": [
+        "Demo startup diagnostics on failure"
+      ],
+      "evidence": [
+        "2026-11-03T10:00:48.3164431Z ℹ tests 14",
+        "2026-11-03T10:00:48.3166227Z ℹ skipped 0",
+        "2026-11-03T10:00:49.1227962Z PASS: independently recomputed and compared 36 explicit expected results and SHA-256 manifest.",
+        "2026-11-03T10:02:23.6698124Z PASS: two fresh projects, independently randomized credentials, identical actual business fingerprint 596536dcd9fdbbd1f9334e9e2e92c23cf29ca07bb225a587bf604e3758332725. Test volumes preserved.",
+        "2026-11-03T10:02:23.7681093Z PASS: independently recomputed and compared 36 explicit expected results and SHA-256 manifest."
+      ]
+    }
+  ]
+}
