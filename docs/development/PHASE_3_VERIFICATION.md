@@ -1,6 +1,6 @@
 # Phase 3 verification
 
-Started 2026-10-31 UTC. Authorized scope: native remote MCP only. Phase 3 is in progress; no MCP implementation or compatibility success is claimed yet.
+Started 2026-10-31 UTC; resumed 2026-11-03. Authorized scope: native remote MCP only. Checkpoints A-G are locally verified; H final CI/source review is in progress. Entries below are chronological: early checkpoint statements describe their original state, not current missing features.
 
 Verified base a38682428457cca417cbac8f20bc14e7c0792f21 exists remotely; Phase 1 is its ancestor; branch codex/phase-3-native-mcp was created at that exact commit. Public visibility and default codex/phase-0-foundation are unchanged. Phase 2 final run 41062443616 and both successful jobs were checked against the exact head.
 
@@ -47,3 +47,11 @@ Corrections found by the negative suites are preserved rather than hidden: malfo
 Current advisory review initially reported ten moderate lint-tree entries for minimatch GHSA-g3hv-75wg-m249, not new MCP packages. The publisher patch is 11.0.1, with Node 24 support. A temporary exact minimatch override was tested instead of npm audit's proposed obsolete ESLint downgrade: the same 14 source paths were linted, strict types/build and all 17 UI tests passed, and a clean npm install/audit reported zero vulnerabilities. MCP client, Inventory and Supplier audits also reported zero. This override is outside the original transitive major range and must be removed/revisited when upstream lint packages adopt the fixed version; no full upstream compatibility or exhaustive security-audit claim is made.
 
 Checkpoint H remains: preserve both accepted CI jobs, add and inspect the actual native MCP job, finish the remaining regression/source review and final branch-head acceptance. No Phase 4/5/AI work has started.
+
+## Checkpoint H resume — 2026-11-03
+
+The previous tool session stopped when automatic approval review exhausted its usage allowance; its last documentation/staging/check action did not execute. Work resumed without bypassing that review. The user had stopped the containers. All three existing Ecosync projects were started in source/MCP/platform order with the original environment files and retained named volumes; all application services became healthy. Unrelated stopped projects were left untouched.
+
+The official SDK/Spring release pages were rechecked on resume; the selected exact dependencies and October 31 compatibility observation remain the implementation baseline. Prior local Phase 1 browser/persistence/outage/recovery and Phase 2 live source/reader/oracle/restart regressions passed, as did all 14 Supplier HTTP tests and all 36 fixture/oracle/hash cases. The six actual MCP tools additionally passed exact fixture checks for ranked revenue/quantities, pending order/currency amounts, low-stock defaults and warehouse cursors.
+
+The new native CI job preserves both complete prior jobs verbatim, uses the existing SHA-pinned Actions and read-only permissions, builds the actual peers/servers/client/platform, verifies the real six-row matrix and original source data, runs the 30 stack checks and both browser journeys, then checks source/secret cleanliness. Generated credentials are registered with the GitHub runner mask mechanism; diagnostics redact known environment/key values. Its cleanup addresses only the job's disposable Compose projects, without deleting volumes. Foundation/source/whitespace review passed locally before commit. Actual CI results are not yet claimed.

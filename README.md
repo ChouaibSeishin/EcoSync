@@ -6,9 +6,9 @@ Research: **AI-Driven Interoperability: Exploring the Role of Large Language Mod
 
 ## Current release
 
-Phase 1 implements a Spring MVC/PostgreSQL foundation, secure session login, tenant-scoped workspace access, and a responsive React interface. It includes a dashboard, empty integrations page, system status, and an explicitly unavailable AI workspace. Phase 2 adds independently running sales PostgreSQL, inventory MySQL and a supplier REST API, with deterministic source data and external evaluation fixtures. No MCP, platform database/API connectors, AI orchestration or deployment automation is implemented.
+Phase 1 implements a Spring MVC/PostgreSQL foundation, secure session login, tenant-scoped workspace access, and a responsive React interface. It includes secure workspace access and system status. Phase 2 adds independent sales PostgreSQL, inventory MySQL and Supplier REST with deterministic data and external research fixtures. Phase 3 implements native MCP registration, actual legacy/modern tool discovery, explicit approvals, encrypted credentials, scoped manual invocation and execution history in the existing React app. Dynamic DB/REST connectors, managed gateway, AI/chat and deployment automation remain absent.
 
-The repository is currently [public](https://github.com/ChouaibSeishin/EcoSync) (verified 2026-10-30); visibility was not changed by this work. Current work is on `codex/phase-2-demo-ecosystem`, based on the accepted Phase 1 commit. The default Phase 0 branch remains preserved.
+The repository is currently [public](https://github.com/ChouaibSeishin/EcoSync) (verified 2026-10-30); visibility was not changed by this work. Current work is on `codex/phase-3-native-mcp`, based on the exact accepted final Phase 2 head a386824. The default Phase 0 branch remains preserved.
 
 ## Run locally
 
@@ -16,7 +16,7 @@ Requires Java 21 (Temurin 21.0.13+9), Node 24.22.2/npm 11.19.1 and Docker with L
 
 ```powershell
 # The default branch still contains Phase 0; select the implementation branch.
-git clone --branch codex/phase-2-demo-ecosystem https://github.com/ChouaibSeishin/EcoSync.git
+git clone --branch codex/phase-3-native-mcp https://github.com/ChouaibSeishin/EcoSync.git
 Set-Location EcoSync
 Push-Location backend
 ./mvnw.cmd -B -ntp verify
@@ -67,11 +67,11 @@ All ports are localhost-only: sales 55433, inventory 53307 and supplier API 1808
 
 ## Architecture and next work
 
-- `backend/`: Spring Boot 4.1.2, Spring Security, JPA, JDBC and Flyway; identity, organizations, authorization, web and observability modules. Spring AI 2.0.2 BOM only; no runtime AI/MCP dependencies.
+- `backend/`: Spring Boot 4.1.2, Spring Security, JPA, JDBC and Flyway; identity, organizations, authorization, web and observability modules. Spring AI 2.0.2 BOM only; a replaceable native MCP client interface and persistent registry, with no model-provider runtime.
 - `frontend/`: React 19.3.1, strict TypeScript 6.0.3, Vite 8.3.5, React Query, React Router, Radix dialog and CSS tokens.
 - `infra/docker/`: digest-pinned platform PostgreSQL, one-shot migration/bootstrap, backend and frontend; localhost ports and a persistent named volume.
 - `.github/workflows/ci.yml`: actual build/test/browser/runtime workflow with verified action SHAs and read-only repository permissions; no publishing/deployment credentials.
 - [Version pins](config/versions.json), [image pins](config/container-images.json), [compatibility and official sources](docs/architecture/COMPATIBILITY.md), [architecture](docs/architecture/ARCHITECTURE.md), [security](docs/architecture/SECURITY.md), [data model](docs/architecture/DATA_MODEL.md).
 - [Roadmap](ROADMAP.md), [backlog](BACKLOG.md), [Phase 1 identity/runtime decision](docs/architecture/decisions/0006-phase1-identity-and-local-stack.md), [research methodology](docs/research/METHODOLOGY.md), [deployment design](docs/deployment/DEPLOYMENT.md), [historical Phase 0 report](docs/development/PHASE_0_VERIFICATION.md).
 
-Phase 3 native MCP work is authorized and in progress on codex/phase-3-native-mcp. The actual dual-era compatibility gate has passed; see [compatibility evidence](docs/architecture/MCP_COMPATIBILITY.md) and [Phase 3 progress](docs/development/PHASE_3_VERIFICATION.md). Preserve the existing phase branches and keep local credentials out of Git.
+Phase 3 native MCP is locally verified on codex/phase-3-native-mcp; final CI acceptance is in progress. See [native MCP startup and UI instructions](docs/development/MCP_LOCAL_SETUP.md), [acceptance](docs/development/PHASE_3_ACCEPTANCE.md), see [compatibility evidence](docs/architecture/MCP_COMPATIBILITY.md) and [Phase 3 progress](docs/development/PHASE_3_VERIFICATION.md). Preserve the existing phase branches and keep local credentials out of Git.

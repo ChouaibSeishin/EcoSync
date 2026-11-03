@@ -61,14 +61,14 @@ The implementing developer owns each decision unless the user must supply extern
 | --- | --- | --- |
 | P3-01 / A (passed) | Reconcile Phase 2 final head, inspect official specs/graphs, actual legacy/modern wire proof, ADR 0008 | Exact branch a386824; actual SDK matrix and failure limits, stable baseline preserved |
 | P3-04 / B (passed foundation checks) | Scoped official-SDK client adapter and clean Java port | Actual JSON/SSE discovery/calls, bounds, cancellation, typed failures, clean leases |
-| P3-02 / C | Independent Java Sales and TypeScript Inventory native servers | Restricted real source readers, fixed parameterized SQL, protocol/auth/origin tests, exact fixture facts |
-| P3-03 / D | Versioned PostgreSQL registry, AES-GCM credential references and lifecycle | Persistent revisions, CAS fencing, restart reconstruction, no plaintext credentials |
-| P3-05 / D-E | Capability identities, fingerprints, role approvals and revocation | Discovery never authorizes; changed schemas stale; opaque integration-aware aliases |
-| P3-06 / E | Existing Integrations UI, registration, explorer, manual playground | Actual API state, accessible/responsive controls, real results and cancellation |
-| P3-07 / F | Destination/credential/tenant/tool enforcement | Negative URL/DNS/redirect/secret/Origin/schema tests and zero unauthorized source operations |
-| P3-08 / F | Concurrency/deadline/cancellation/recovery | Disabled/revised clients retired; transport health cannot override governance |
-| P3-09 / G | Separate MCP Compose and explicit network overrides | Backend only reaches client/server control path; independent source lifecycles/data preserved |
-| P3-10 / D-G | Sanitized actor/org/revision/tool/protocol execution/audit metadata | Recent UI history, duration/correlation/denials without raw credentials/results |
+| P3-02 / C (passed) | Independent Java Sales and TypeScript Inventory native servers | Restricted real source readers, fixed parameterized SQL, protocol/auth/origin tests, exact fixture facts |
+| P3-03 / D (passed) | Versioned PostgreSQL registry, AES-GCM credential references and lifecycle | Persistent revisions, CAS fencing, restart reconstruction, no plaintext credentials |
+| P3-05 / D-E (passed) | Capability identities, fingerprints, role approvals and revocation | Discovery never authorizes; changed schemas stale; opaque integration-aware aliases |
+| P3-06 / E (passed) | Existing Integrations UI, registration, explorer, manual playground | Actual API state, accessible/responsive controls, real results and cancellation |
+| P3-07 / F (passed) | Destination/credential/tenant/tool enforcement | Negative URL/DNS/redirect/secret/Origin/schema tests and zero unauthorized source operations |
+| P3-08 / F (passed) | Concurrency/deadline/cancellation/recovery | Disabled/revised clients retired; transport health cannot override governance |
+| P3-09 / G (passed) | Separate MCP Compose and explicit network overrides | Backend only reaches client/server control path; independent source lifecycles/data preserved |
+| P3-10 / D-G (passed) | Sanitized actor/org/revision/tool/protocol execution/audit metadata | Recent UI history, duration/correlation/denials without raw credentials/results |
 | P3-11 / H | Add real native MCP CI job; preserve Phase 1/2 jobs | Actual final-head jobs/test counts, docs/ADRs/security review, incremental Git push |
 
 Phases 4/5 dynamic DB/REST connectors, managed gateway, general joins/mapping UI, AI/chat, benchmark execution and deployment/publishing remain excluded.

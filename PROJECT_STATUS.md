@@ -6,11 +6,11 @@ Updated: 2026-10-31 UTC. Authorized scope: **Phase 3 only**, currently in progre
 
 Phase 0 remains accepted at 6a1749f40d394933c0e4b421048eab96818da436. Phase 1 is complete at 603cfb993566f465d0c3328f175d71b27f6a4942 with both accepted CI runs preserved. **Phase 2 is complete.** Checkpoints A-G passed locally and in actual [GitHub Actions run 41061522829](https://github.com/ChouaibSeishin/EcoSync/actions/runs/41061522829) at code commit 002cdd6348dd1f39481255ae4472d66a967ce559; both the unchanged Phase 1 verify job and the independent demo job succeeded. See [Phase 2 verification](docs/development/PHASE_2_VERIFICATION.md) and [acceptance](docs/development/PHASE_2_ACCEPTANCE.md).
 
-Work branch: codex/phase-3-native-mcp, based on exact final Phase 2 head a38682428457cca417cbac8f20bc14e7c0792f21. All previous phase branches remain unchanged. Repository visibility is intentionally public and has not been changed. No unrelated starting changes existed.
+Work branch: codex/phase-3-native-mcp, based on exact final Phase 2 head a38682428457cca417cbac8f20bc14e7c0792f21. All previous phase branches remain unchanged. Repository visibility is intentionally public and has not been changed. One pre-existing supplier OpenAPI whitespace edit was preserved separately and will be restored at handoff; it is excluded from Phase 3 commits.
 
 ## Delivered systems
 
-The Phase 1 Spring MVC/PostgreSQL identity/workspace application and React UI remain unchanged. Local workspace: http://127.0.0.1:5173, platform API: localhost:18080, metadata PostgreSQL: localhost:55432. [Phase 1 evidence](docs/development/PHASE_1_VERIFICATION.md) documents security, persistence, browser checks and historical corrections.
+The Phase 1 Spring MVC/PostgreSQL identity, session, tenant and least-privilege boundaries remain; Phase 3 extends the React UI with native MCP management. Local workspace: http://127.0.0.1:5173, platform API: localhost:18080, metadata PostgreSQL: localhost:55432. [Phase 1 evidence](docs/development/PHASE_1_VERIFICATION.md) documents security, persistence, browser checks and historical corrections.
 
 Phase 2 adds separately owned PostgreSQL sales (34 products, 18 anonymous customers, 144 orders, 432 lines), MySQL inventory (30 SKUs, three warehouses, 90 stock rows), and a Node 24/TypeScript/Fastify supplier API (10 suppliers, 40 offers). They have independent contracts, processes, credentials and lifecycle; the two databases have separate persistent volumes and restricted readers. [Demo setup](docs/development/DEMO_SYSTEMS_SETUP.md) gives reproducible commands and ports.
 
@@ -20,7 +20,7 @@ Versioned external mappings preserve 22 approved sales identities, 27 catalog me
 
 Local Compose/HTTP and the Vite frontend are development tooling. Source migrations initialize empty fixture volumes; checksum verification detects drift, with no automatic live fixture upgrade. Supplier storage is a small immutable JSON snapshot. Phase 1 sessions/throttling remain single-instance/in-memory. Point-in-time npm audits and source checks do not establish production readiness.
 
-Phase 3 compatibility gate A passed against real official Java/TypeScript peers. Client foundation B implements a scoped bounded official-SDK adapter and Java interface; native source servers, persistent registry, approvals and UI remain in progress and are not yet accepted. See docs/development/PHASE_3_VERIFICATION.md. No managed gateway, dynamic DB/REST connectors, AI/model calls, chat, mapping management UI, benchmark executor, Kubernetes/Argo or publishing is implemented.
+Phase 3 checkpoints A-G passed locally: dual-era official-SDK client, two source-backed native servers, persistent versioned registry, encrypted credentials, explicit role approvals, manual invocation UI and 30 real stack checks. Final CI/source review is in progress. See docs/development/PHASE_3_VERIFICATION.md. No managed gateway, dynamic DB/REST connectors, AI/model calls, chat, mapping management UI, benchmark executor, Kubernetes/Argo or publishing is implemented.
 
 ## Final Phase 1 handoff addendum (reconciled on Phase 2 branch)
 
