@@ -1,0 +1,22 @@
+{
+  "observedOn": "2026-11-03T13:56:45.859Z",
+  "sdk": "2.1.0",
+  "boot": "4.1.2",
+  "springAi": "2.0.2",
+  "protocol": "2025-11-25",
+  "checks": [
+    "authenticated legacy HTTP discovery; no tenant schema in catalog",
+    "tenant-isolated discovery",
+    "authorized structured result",
+    "cross-tenant call denied independently of list filter",
+    "missing malformed expired wrong-audience forged delegation; absent service credential; Origin",
+    "authority unavailable fails closed for list and call",
+    "runtime removal and concurrent discovery/call do not bypass persisted revoke",
+    "runtime addition and duplicate reconciliation are idempotent",
+    "failed registration and absent-tool removal preserve catalog and live authorization",
+    "notifications emitted by stable SDK when explicitly enabled",
+    "restart reconstructs approved catalog from persistent authority"
+  ],
+  "notifications": 1,
+  "claims": "Tools interoperability only. No modern protocol claim. Separate persistent proof authority, not a source DB connector."
+}

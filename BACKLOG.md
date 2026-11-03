@@ -4,6 +4,8 @@ Phases 1-3 are complete with local and actual GitHub Actions acceptance evidence
 
 ## Phase 1: ordered implementation plan
 
+Phase 4 ordered checkpoints (new authorization, 2026-11-03): P4-01 real authenticated gateway compatibility/tenant-isolation proof and ADR; P4-02 additive connector persistence, encrypted credentials and destination policy; P4-03 JDBC metadata and explicit fingerprint-bound scope approval; P4-04 bounded prepared single-table reads for both dialects with separate real DB reader grants; P4-05 managed gateway lifecycle, delegated authorization and restart reconstruction; P4-06 real accessible React management/explorer; P4-07 adversarial/live-stack/browser verification; P4-08 preserve all three previous CI jobs, add a dedicated job, inspect actual final remote head/run and complete documentation. Each checkpoint requires evidence before being reported complete.
+
 | ID / priority | Work and affected paths | Dependencies | Acceptance and meaningful verification |
 | --- | --- | --- | --- |
 | P1-01 / P0 | Establish pinned toolchains and build wrappers: backend Maven wrapper, frontend package/lockfile, Node version file, developer setup | Phase 0 | Refresh official metadata and security advisories; update JDK 21 patch and Node 24; Maven 3.9.16 wrapper with distribution checksum; exact npm deps and committed lockfile; clean dependency install using npm ci; fail unsupported engines; no global host upgrades without need |

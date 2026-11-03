@@ -1,0 +1,11 @@
+**
+!verification/
+!verification/gateway-compatibility/
+!verification/gateway-compatibility/proof.mjs
+!verification/gateway-compatibility/java/
+!verification/gateway-compatibility/java/target/
+!verification/gateway-compatibility/java/target/gateway-proof-1.0.0.jar
+!verification/mcp-compatibility/
+!verification/mcp-compatibility/typescript/
+!verification/mcp-compatibility/typescript/package.json
+!verification/mcp-compatibility/typescript/package-lock.json
