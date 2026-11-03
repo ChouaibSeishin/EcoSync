@@ -1,0 +1,16 @@
+{
+  "checkedOn": "2026-11-03",
+  "branch": "codex/phase-3-native-mcp",
+  "head": "0e681ab5cb9a1930a159d3b459d9380fe660a363",
+  "run": 41619804974,
+  "url": "https://github.com/ChouaibSeishin/EcoSync/actions/runs/41619804974",
+  "conclusion": "success",
+  "jobs": [
+    {"id":125862353266,"name":"Independent demo sources and dataset","conclusion":"success","supplierTests":14,"fixtureCases":36},
+    {"id":125862353539,"name":"verify","conclusion":"success","backendUnitTests":6,"postgresqlIntegrationTests":23,"frontendTests":17,"browserJourneys":1},
+    {"id":125862353597,"name":"Native MCP interoperability and governance","conclusion":"success","officialPeerTests":25,"stackChecks":30,"browserJourneys":2}
+  ],
+  "skippedTests": 0,
+  "skippedSteps": ["Demo startup diagnostics on failure", "Bounded redacted diagnostics on failure"],
+  "regression": "Rediscovery refreshes server identity, protocol and host support while retaining capability identity for an unchanged tool fingerprint; unsupported capabilities stale grants; output-schema support is checked before dispatch."
+}

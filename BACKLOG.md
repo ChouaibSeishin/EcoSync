@@ -1,6 +1,6 @@
 # Backlog
 
-Phase 1 P1-01 through P1-09 are complete with local and actual GitHub Actions acceptance evidence. Phase 2 checkpoints A-G are complete with local and actual GitHub Actions evidence; see docs/development/PHASE_2_ACCEPTANCE.md. Phases 3-11 remain unimplemented. See PROJECT_STATUS.md and the Phase 1 verification report for evidence. P0 = foundation-critical priority, P1 = required phase scope, P2 = later extension. IDs remain stable between phases.
+Phases 1-3 are complete with local and actual GitHub Actions acceptance evidence. Phase 3 final branch `codex/phase-3-native-mcp` at `0e681ab5cb9a1930a159d3b459d9380fe660a363` passed all three jobs in [run 41619804974](https://github.com/ChouaibSeishin/EcoSync/actions/runs/41619804974). Final verify: 6 backend unit, 23 PostgreSQL integration, 17 frontend tests and browser/persistence checks; zero skipped tests. The metadata-refresh regression is included. Two failure-only diagnostic steps were unnecessary. Phase 4 is now authorized from that exact head; gateway proof precedes implementation. Phases 5-11 remain unimplemented. See PROJECT_STATUS.md for evidence. P0 = foundation-critical priority, P1 = required phase scope, P2 = later extension. IDs remain stable between phases.
 
 ## Phase 1: ordered implementation plan
 

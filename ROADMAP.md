@@ -1,5 +1,7 @@
 # Roadmap
 
+Phase 3 final acceptance: `codex/phase-3-native-mcp` at `0e681ab5cb9a1930a159d3b459d9380fe660a363`; [run 41619804974](https://github.com/ChouaibSeishin/EcoSync/actions/runs/41619804974) passed all three jobs. Final verify ran 6 backend unit, 23 PostgreSQL integration and 17 frontend tests plus browser/persistence checks, zero skipped tests. The final metadata-refresh regression is included. Phase 4 is separately authorized from that head, beginning with a real gateway compatibility/tenant-isolation gate. Historical earlier acceptance references remain below.
+
 Each phase ends with a reviewable Git state, updated status/backlog, relevant tests, an integration check where applicable, and an honest verification report. Phase 3 is currently authorized; Phases 4-11 are not. Later rows describe acceptance criteria, not delivered functionality.
 
 | Phase | Deliverable | Required exit evidence | State |

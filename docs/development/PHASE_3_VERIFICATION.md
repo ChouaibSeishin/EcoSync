@@ -1,5 +1,13 @@
 # Phase 3 verification
 
+## Authoritative final acceptance — reconciled 2026-11-03
+
+Branch `codex/phase-3-native-mcp` finished at `0e681ab5cb9a1930a159d3b459d9380fe660a363`. [Actual final workflow 41619804974](https://github.com/ChouaibSeishin/EcoSync/actions/runs/41619804974) succeeded in all three jobs: verify (125862353539), Independent demo sources and dataset (125862353266), and Native MCP interoperability and governance (125862353597). GitHub API status was rechecked before Phase 4. [Final evidence](evidence/phase-3-final-ci.json) records the authoritative result.
+
+Final verify ran 6 backend unit tests, 23 real PostgreSQL integration tests (13 registry, 9 security, 1 migration), 17 frontend tests, the browser journey and persistence/outage/recovery checks. Native MCP passed 25 client/official-peer tests, the six-row matrix, six source tools, 30 stack checks and two browser journeys. Demo passed 14 Supplier HTTP tests and 36 fixture/oracle cases with reader permissions, outages/restarts and fresh differently credentialed initializations. Zero tests were skipped. Only the two failure-only diagnostics were skipped; cleanup executed.
+
+The final regression refreshes server/protocol observations without changing a matching capability identity or approved fingerprint, stales grants when current host policy rejects a tool, and checks output-schema support before dispatch. The historical record below retains earlier accepted runs, failures, corrections and then-pending statements as checkpoint observations; none supersedes this final result. The original supplier OpenAPI whitespace edit was restored after final verification and remains outside project commits.
+
 Started 2026-10-31 UTC; resumed 2026-11-03. Authorized scope: native remote MCP only. Checkpoints A-H passed locally and at accepted implementation head 794b267 with all three CI jobs successful. The final handoff revision is subject to the same full CI. Entries below are chronological: early checkpoint statements describe their original state, not current missing features.
 
 Verified base a38682428457cca417cbac8f20bc14e7c0792f21 exists remotely; Phase 1 is its ancestor; branch codex/phase-3-native-mcp was created at that exact commit. Public visibility and default codex/phase-0-foundation are unchanged. Phase 2 final run 41062443616 and both successful jobs were checked against the exact head.

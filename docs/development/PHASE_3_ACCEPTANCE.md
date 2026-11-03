@@ -1,12 +1,12 @@
 # Phase 3 acceptance
 
-Implementation observation: 2026-10-31 UTC; acceptance verified 2026-11-03. Phase 3 native MCP implementation is accepted at 794b267405715007f9f4208cbd3bb07c745eafcd by [actual run 41615632337](https://github.com/ChouaibSeishin/EcoSync/actions/runs/41615632337). All three jobs succeeded. The final handoff revision updates documentation, evidence and verification timestamps; it must pass the same three jobs, with its exact head/run reported in the final handoff. No later phase is authorized or started.
+Implementation observation: 2026-10-31 UTC; final acceptance verified 2026-11-03. The authoritative Phase 3 branch is `codex/phase-3-native-mcp`, final head `0e681ab5cb9a1930a159d3b459d9380fe660a363`, accepted by [actual final run 41619804974](https://github.com/ChouaibSeishin/EcoSync/actions/runs/41619804974). All three jobs succeeded. [Final CI evidence](evidence/phase-3-final-ci.json) supersedes earlier acceptance references for completion; historical runs and failures remain in the verification record. Phase 4 is separately authorized by the subsequent brief and starts from this exact head.
 
 ## Actual CI acceptance
 
 | Job | Result and exercised checks |
 |---|---|
-| verify | SUCCESS: 6 backend unit +22 PostgreSQL integration tests, 17 frontend component tests, one actual Phase 1 browser journey, persistence/session/DB-outage/recovery verification, clean builds and audit |
+| verify | SUCCESS: 6 backend unit +23 PostgreSQL integration tests, 17 frontend component tests, one actual Phase 1 browser journey, persistence/session/DB-outage/recovery verification, clean builds and audit |
 | Independent demo sources and dataset | SUCCESS: 14 Supplier HTTP tests, 36 fixture/oracle/hash cases, actual source/reader denials, independent outages/restarts, and two fresh initializations with different credentials |
 | Native MCP interoperability and governance | SUCCESS: 25 official-peer/client tests, Java platform/server builds, six-row wire matrix, six source-backed tool queries, 30 actual stack checks, 17 repeated UI component tests and two actual MCP browser journeys |
 
@@ -23,7 +23,7 @@ The platform retains Java 21, Boot 4.1.2 and the Spring AI 2.0.2 BOM. A replacea
 | Credentials | AES-256-GCM, fresh nonce, organization/reference/key-ID AAD, separate encrypted reference, external versioned keyring, rotation/revocation, write-only UI input |
 | Authorization | Current membership, organization role, ACTIVE revision, capability identity, current fingerprint, explicit tools/call grant; global administrator has no membership bypass |
 | User interface | Existing React registration/edit/discovery/explorer/approval/revocation/activate/disable/remove/manual JSON/cancel/result/history; actual API counts and permission-dependent controls |
-| Security/lifecycle | 25 client tests; 6 backend unit +22 real PostgreSQL integration tests; 17 frontend component tests; 30 actual stack checks; two actual browser journeys; no skipped checks in these suites |
+| Security/lifecycle | 25 client tests; 6 backend unit +23 real PostgreSQL integration tests; 17 frontend component tests; 30 actual stack checks; two actual browser journeys; no skipped checks in these suites |
 | Deployment | Additional MCP project and explicit backend override; bridge control-only, backend outside source network; no MCP host ports; platform starts with MCP stopped; existing volumes preserved |
 | Audit | Actor/org/integration/revision/capability/protocol/correlation/time/duration/status/authorization/error; no raw args/results; unfinished events interrupted on restart |
 
@@ -37,4 +37,4 @@ The 30-second budget applies to each client connection/discovery/invocation oper
 
 Phase 4 starts by inspecting the accepted native registry/client/security contracts, researching the then-current gateway and JDBC dependencies, and designing separately governed PostgreSQL/MySQL connector registration, schema allowlists and bounded prepared read operations through a managed MCP gateway. Preserve native MCP registration and source isolation. Phase 4 implementation has not begun. Supplier REST onboarding remains Phase 5; AI selection/chat remains Phase 6; general joins/mapping management, benchmark execution, Kubernetes/Argo and registry publishing are absent.
 
-Final review addendum: e86250c also passed all three jobs in [run 41618741009](https://github.com/ChouaibSeishin/EcoSync/actions/runs/41618741009). A subsequent metadata-refresh regression fixes stale server identity/protocol observations when tool schemas are unchanged, preserving capability IDs and explicit grants. All 13 registry cases passed locally; final CI must include 23 total PostgreSQL integration cases. Earlier counts above remain accurate for their recorded runs. The exact final head and successful run are reported at handoff.
+Final review addendum: e86250c also passed all three jobs in [run 41618741009](https://github.com/ChouaibSeishin/EcoSync/actions/runs/41618741009). The final metadata-refresh regression at 0e681ab fixes stale server identity/protocol observations when tool schemas are unchanged, preserving capability IDs and explicit grants; unsupported capabilities stale their grants and output-schema support is checked before dispatch. Actual final run 41619804974 passed all 13 registry cases and 23 total PostgreSQL integration cases, zero skips. Earlier verification counts remain accurate for their recorded historical runs. Only two failure-only diagnostic steps were skipped; these were not tests.

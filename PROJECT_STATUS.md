@@ -1,6 +1,6 @@
 # Project status
 
-Updated: 2026-11-03 UTC. **Phase 3 native MCP implementation is accepted.** No later phase is authorized or started.
+Updated: 2026-11-03 UTC. **Phase 3 is complete at final head `0e681ab5cb9a1930a159d3b459d9380fe660a363` on `codex/phase-3-native-mcp`.** [Actual final run 41619804974](https://github.com/ChouaibSeishin/EcoSync/actions/runs/41619804974) passed verify, Independent demo sources and dataset, and Native MCP interoperability and governance. Final verify: 6 unit, 23 PostgreSQL integration, 17 frontend tests plus browser/persistence checks, zero skipped tests. Two failure-only diagnostics were unnecessary. The final metadata-refresh regression preserves capability identity while refreshing server/protocol observations. Earlier run references below are historical. Phase 4 is now authorized on `codex/phase-4-managed-db-connectors`, from that exact head; its compatibility gate is pending. Phase 5 and later remain unstarted.
 
 ## Current delivery state
 
