@@ -20,5 +20,5 @@ export async function request<T>(path: string, options: RequestInit = {}): Promi
 }
 export type Workspace = { id: string; name: string; roles: string[]; createdAt: string };
 export type Session = { id: string; username: string; displayName: string; platformAdministrator: boolean; workspaces: Workspace[] };
-export type Status = { application: string; database: string; status: string; uptimeSeconds: number; aiAvailable: boolean; integrationManagementAvailable: boolean };
-export type Overview = { workspace: Workspace; registeredIntegrations: number; aiAvailable: boolean; integrationManagementAvailable: boolean };
+export type Status = { application: string; database: string; status: string; uptimeSeconds: number; aiAvailable: boolean; integrationManagementAvailable: boolean; databaseManagementAvailable?: boolean };
+export type Overview = { workspace: Workspace; registeredIntegrations: number; aiAvailable: boolean; integrationManagementAvailable: boolean; databaseManagementAvailable?: boolean };
