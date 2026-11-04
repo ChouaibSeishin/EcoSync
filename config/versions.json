@@ -1,6 +1,6 @@
 {
   "verifiedOn": "2026-11-03",
-  "status": "phase-3-complete",
+  "status": "phase-4-in-progress",
   "toolchain": {
     "javaRelease": "21",
     "jdkDistribution": "Eclipse Temurin",
@@ -43,6 +43,14 @@
       "2026-07-28"
     ],
     "mysql2": "3.24.6"
+  },
+  "databaseConnectors": {
+    "postgresqlJdbc": "42.7.14",
+    "mysqlConnectorJ": "26.10.0",
+    "serverJavaSdk": "2.1.0",
+    "gatewayProtocol": "2025-11-25",
+    "postgresqlServer": "17.11",
+    "mysqlServer": "8.4.13"
   },
   "frontend": {
     "dependencies": {

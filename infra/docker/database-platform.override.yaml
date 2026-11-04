@@ -1,0 +1,21 @@
+# Opt-in only; native MCP and the original standalone platform remain independent.
+services:
+  backend:
+    environment:
+      ECOSYNC_DATABASE_ENABLED: "true"
+      ECOSYNC_DATABASE_ENVIRONMENT: development
+      ECOSYNC_DATABASE_GATEWAY_URL: http://database-gateway:8093
+      ECOSYNC_DATABASE_SERVICE_TOKEN: ${DATABASE_GATEWAY_TOKEN:?Required}
+      ECOSYNC_DATABASE_DESTINATIONS: POSTGRESQL|sales|5432|sales|sales|dev,MYSQL|inventory|3306|inventory|inventory|dev,POSTGRESQL|sales|5432|sales|sales|tls,MYSQL|inventory|3306|inventory|inventory|tls
+      ECOSYNC_DATABASE_KEYRING: /run/ecosync/keyring.json
+      ECOSYNC_DATABASE_PRIVATE_KEY: /run/ecosync/assertion-private.der
+      ECOSYNC_DATABASE_PUBLIC_KEY: /run/ecosync/assertion-public.der
+    volumes:
+      - ../../.verification/mcp/keyring.json:/run/ecosync/keyring.json:ro
+      - ../../.verification/database/assertion-private.der:/run/ecosync/assertion-private.der:ro
+      - ../../.verification/database/assertion-public.der:/run/ecosync/assertion-public.der:ro
+    networks: [default, database-control]
+networks:
+  database-control:
+    external: true
+    name: ecosync-database_control

@@ -65,3 +65,4 @@ logging:
   level:
     org.hibernate.orm.jdbc.bind: OFF
     org.springframework.security: WARN
+    io.modelcontextprotocol: OFF

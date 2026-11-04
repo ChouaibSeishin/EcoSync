@@ -1,0 +1,25 @@
+spring:
+  application:
+    name: ecosync-managed-database-gateway
+  autoconfigure:
+    exclude: org.springframework.boot.jdbc.autoconfigure.DataSourceAutoConfiguration
+server:
+  port: 8093
+  max-http-request-header-size: 8KB
+  tomcat:
+    threads:
+      max: 32
+    max-connections: 64
+    accept-count: 16
+    connection-timeout: 5s
+    max-swallow-size: 64KB
+  error:
+    include-message: never
+    include-stacktrace: never
+logging:
+  level:
+    root: WARN
+    com.zaxxer.hikari: OFF
+    org.postgresql: OFF
+    com.mysql: OFF
+    io.modelcontextprotocol: OFF
