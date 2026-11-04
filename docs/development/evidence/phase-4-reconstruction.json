@@ -1,0 +1,11 @@
+{
+  "observedOn": "2026-11-04T10:12:10.825Z",
+  "checks": [
+    "Stopped gateway returns fixed 503 without poisoning source health or changing governance",
+    "Normal gateway recovers persisted approved source-backed reads without new approval",
+    "Backend readiness followed by actual MCP discovery yields a fresh successful source read"
+  ],
+  "profile": "Normal gateway profile, verification hooks disabled",
+  "result": "PASS",
+  "verificationObserverDisabled": true
+}

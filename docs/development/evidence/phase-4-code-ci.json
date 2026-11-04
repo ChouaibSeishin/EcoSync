@@ -1,0 +1,55 @@
+{
+  "observedOn": "2026-11-04T10:18:39.120Z",
+  "run": 41812225715,
+  "head": "18aafb7d41011171e64da25e14cc1bdf363fc533",
+  "url": "https://github.com/ChouaibSeishin/EcoSync/actions/runs/41812225715",
+  "conclusion": "success",
+  "jobs": [
+    {
+      "id": 126514037076,
+      "name": "verify",
+      "conclusion": "success",
+      "skippedSteps": []
+    },
+    {
+      "id": 126514037528,
+      "name": "Independent demo sources and dataset",
+      "conclusion": "success",
+      "skippedSteps": [
+        "Demo startup diagnostics on failure"
+      ]
+    },
+    {
+      "id": 126514037668,
+      "name": "Native MCP interoperability and governance",
+      "conclusion": "success",
+      "skippedSteps": [
+        "Bounded redacted diagnostics on failure"
+      ]
+    },
+    {
+      "id": 126514038209,
+      "name": "Managed database gateway and connector governance",
+      "conclusion": "success",
+      "skippedSteps": [
+        "Bounded redacted managed database diagnostics on failure"
+      ]
+    }
+  ],
+  "verifiedCounts": {
+    "backendUnit": 10,
+    "backendPostgresqlIntegration": 38,
+    "gatewayUnit": 17,
+    "gatewayPostgresqlMysqlIntegration": 10,
+    "frontend": 22,
+    "gatewayWireProof": 11,
+    "managedStack": 58,
+    "databaseBrowser": 2,
+    "nativeBrowserInManagedJob": 2,
+    "nativeClient": 25,
+    "nativeStack": 30,
+    "sourceSupplier": 14,
+    "datasetCases": 36,
+    "skippedTests": 0
+  }
+}

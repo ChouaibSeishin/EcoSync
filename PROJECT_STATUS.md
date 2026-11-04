@@ -1,6 +1,6 @@
 # Project status
 
-Updated: 2026-11-03 UTC. **Phase 3 is complete at final head `0e681ab5cb9a1930a159d3b459d9380fe660a363` on `codex/phase-3-native-mcp`.** [Actual final run 41619804974](https://github.com/ChouaibSeishin/EcoSync/actions/runs/41619804974) passed verify, Independent demo sources and dataset, and Native MCP interoperability and governance. Final verify: 6 unit, 23 PostgreSQL integration, 17 frontend tests plus browser/persistence checks, zero skipped tests. Two failure-only diagnostics were unnecessary. The final metadata-refresh regression preserves capability identity while refreshing server/protocol observations. Earlier run references below are historical. Phase 4 is now authorized on `codex/phase-4-managed-db-connectors`, from that exact head; its 11-check actual compatibility gate passed and ADR 0012 was accepted. Phase 5 and later remain unstarted.
+Updated: 2026-11-04 UTC. **Phase 4 is complete at application head `18aafb7d41011171e64da25e14cc1bdf363fc533` on `codex/phase-4-managed-db-connectors`. [Actual run 41812225715](https://github.com/ChouaibSeishin/EcoSync/actions/runs/41812225715) passed all four jobs. Phase 5/6 remain unstarted.** The exact Phase 3 base remains `0e681ab5cb9a1930a159d3b459d9380fe660a363` with final run 41619804974. Earlier phase acceptance/failure records are retained below.
 
 ## Current delivery state
 
@@ -36,4 +36,4 @@ Phase 3 work is based on the exact verified a386824 commit on codex/phase-3-nati
 
 P4-01 through P4-06 are implemented: actual stable gateway proof/ADR, additive V4 tenant-bound immutable registry, AES-GCM credential lifecycle, Ed25519 delegation, real JDBC discovery/fingerprints, explicit per-role columns, bounded prepared reads, private pools/lifecycle and React registration/explorer/history.
 
-Local checks passed 10 backend unit/38 PostgreSQL integration tests, 17 gateway unit tests, 52 actual stack checks and two actual database browser journeys. Final concurrency/deadline expansion and actual final-head four-job CI remain pending. [Acceptance](docs/development/PHASE_4_ACCEPTANCE.md) and [verification](docs/development/PHASE_4_VERIFICATION.md) track the final evidence and retained failures. Phase 5/6 remain unstarted.
+Final checks passed 10 backend unit/38 PostgreSQL integration, 17 gateway unit/10 real PostgreSQL-MySQL integration, 22 frontend, 11 wire proof, 58 actual stack checks and two database plus two native browser journeys, with zero skipped tests. All four actual CI jobs passed at the application head recorded above. [Acceptance](docs/development/PHASE_4_ACCEPTANCE.md) and [verification](docs/development/PHASE_4_VERIFICATION.md) track the final evidence and retained failures. Phase 5/6 remain unstarted.

@@ -62,3 +62,7 @@ Audit stores actor/org/integration/revision/capability/protocol/correlation/star
 All filters are prepared parameters; SQL/identifiers/order clauses are never caller-supplied. Sales windows require UTC [startInclusive,endExclusive), positive length <=366 days, with exact decimal strings and no mixed-currency totals. Inventory never converts units. The existing reader roles cannot write, migrate or read administrative history. Source query timeouts are bounded to four/five seconds. No source schema/fixture was changed. [Native-source evidence](../development/evidence/phase-3-native-sources.json) compares actual results to immutable fixtures, including USD 145444.58, EUR 32033.59 and GBP 29495.75 for October 2026 FULFILLED revenue.
 
 Run commands, key ownership, operator endpoint policy and complete UI steps are in [MCP_LOCAL_SETUP.md](../development/MCP_LOCAL_SETUP.md). Security decisions are in [MCP_SECURITY.md](MCP_SECURITY.md). Supplier remains REST; neither the native servers nor the adapter implement Phase 4/5 managed connectors or Phase 6 AI execution.
+
+## Managed database coexistence
+
+Phase 4 adds a separate [database registry and private managed gateway](DATABASE_CONNECTORS.md); native registrations, source servers and client adapter remain independent. Database configuration is not native MCP endpoint registration. The gateway uses neutral tools and backend-signed context with live tenant/scope checks, and serves 2025-11-25 only. Supplier REST onboarding remains Phase 5.

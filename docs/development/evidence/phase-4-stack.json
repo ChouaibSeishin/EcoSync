@@ -1,0 +1,261 @@
+{
+  "observedOn": "2026-11-04T10:00:14.447Z",
+  "checks": [
+    {
+      "check": "Session, CSRF, membership and management role gates",
+      "result": "PASS",
+      "sourceSqlAdmissions": 0
+    },
+    {
+      "check": "Operator destination policy rejects URL, system schemas, host, port and database expansion",
+      "result": "PASS",
+      "sourceSqlAdmissions": 0
+    },
+    {
+      "check": "sales DRAFT persists without automatic approval",
+      "result": "PASS",
+      "sourceSqlAdmissions": 0
+    },
+    {
+      "check": "sales actual bounded JDBC metadata and immutable encrypted registration",
+      "result": "PASS"
+    },
+    {
+      "check": "sales discovery and unapproved columns do not authorize reads",
+      "result": "PASS",
+      "sourceSqlAdmissions": 0
+    },
+    {
+      "check": "sales authenticated MCP discovery contains only tenant-neutral schemas",
+      "result": "PASS"
+    },
+    {
+      "check": "sales actual source-backed read, typed filter and deterministic pagination",
+      "result": "PASS"
+    },
+    {
+      "check": "sales description exposes approved columns only",
+      "result": "PASS",
+      "sourceSqlAdmissions": 0
+    },
+    {
+      "check": "sales identifiers, SQL, functions, operators, ordering and argument limits are rejected",
+      "result": "PASS",
+      "sourceSqlAdmissions": 0
+    },
+    {
+      "check": "sales injection text remains a prepared literal, not executable SQL",
+      "result": "PASS"
+    },
+    {
+      "check": "sales current USER column scope and AUDITOR execution denial",
+      "result": "PASS",
+      "sourceSqlAdmissions": 0
+    },
+    {
+      "check": "sales role revocation prevents new source reads",
+      "result": "PASS",
+      "sourceSqlAdmissions": 0
+    },
+    {
+      "check": "sales actual dedicated reader grants prevent writes, DDL and control metadata",
+      "result": "PASS"
+    },
+    {
+      "check": "sales credential failure is sanitized and produces no protected reads",
+      "result": "PASS",
+      "sourceSqlAdmissions": 0
+    },
+    {
+      "check": "sales tls failure is sanitized and produces no protected reads",
+      "result": "PASS",
+      "sourceSqlAdmissions": 0
+    },
+    {
+      "check": "inventory DRAFT persists without automatic approval",
+      "result": "PASS",
+      "sourceSqlAdmissions": 0
+    },
+    {
+      "check": "inventory actual bounded JDBC metadata and immutable encrypted registration",
+      "result": "PASS"
+    },
+    {
+      "check": "inventory discovery and unapproved columns do not authorize reads",
+      "result": "PASS",
+      "sourceSqlAdmissions": 0
+    },
+    {
+      "check": "inventory authenticated MCP discovery contains only tenant-neutral schemas",
+      "result": "PASS"
+    },
+    {
+      "check": "inventory actual source-backed read, typed filter and deterministic pagination",
+      "result": "PASS"
+    },
+    {
+      "check": "inventory description exposes approved columns only",
+      "result": "PASS",
+      "sourceSqlAdmissions": 0
+    },
+    {
+      "check": "inventory identifiers, SQL, functions, operators, ordering and argument limits are rejected",
+      "result": "PASS",
+      "sourceSqlAdmissions": 0
+    },
+    {
+      "check": "inventory injection text remains a prepared literal, not executable SQL",
+      "result": "PASS"
+    },
+    {
+      "check": "inventory current USER column scope and AUDITOR execution denial",
+      "result": "PASS",
+      "sourceSqlAdmissions": 0
+    },
+    {
+      "check": "inventory role revocation prevents new source reads",
+      "result": "PASS",
+      "sourceSqlAdmissions": 0
+    },
+    {
+      "check": "inventory actual dedicated reader grants prevent writes, DDL and control metadata",
+      "result": "PASS"
+    },
+    {
+      "check": "inventory credential failure is sanitized and produces no protected reads",
+      "result": "PASS",
+      "sourceSqlAdmissions": 0
+    },
+    {
+      "check": "inventory tls failure is sanitized and produces no protected reads",
+      "result": "PASS",
+      "sourceSqlAdmissions": 0
+    },
+    {
+      "check": "sales another reviewed table becomes readable dynamically without rebuilding core or frontend",
+      "result": "PASS"
+    },
+    {
+      "check": "inventory another reviewed table becomes readable dynamically without rebuilding core or frontend",
+      "result": "PASS"
+    },
+    {
+      "check": "Cross-organization and cross-connector opaque identities cannot substitute data scope",
+      "result": "PASS",
+      "sourceSqlAdmissions": 0
+    },
+    {
+      "check": "Official TypeScript client reads approved gateway data and rejects assertion replay",
+      "result": "PASS"
+    },
+    {
+      "check": "Signed foreign-organization context cannot enumerate or invoke a connector",
+      "result": "PASS"
+    },
+    {
+      "check": "Signed auditor context cannot enumerate or invoke read tools",
+      "result": "PASS"
+    },
+    {
+      "check": "Signed missing-membership context cannot enumerate or invoke read tools",
+      "result": "PASS"
+    },
+    {
+      "check": "Gateway does not claim modern protocol support",
+      "result": "PASS"
+    },
+    {
+      "check": "Missing internal service credential denied",
+      "result": "PASS"
+    },
+    {
+      "check": "Missing delegated context denied",
+      "result": "PASS"
+    },
+    {
+      "check": "Malformed delegated context denied",
+      "result": "PASS"
+    },
+    {
+      "check": "Expired signed context denied",
+      "result": "PASS"
+    },
+    {
+      "check": "Wrong audience signed context denied",
+      "result": "PASS"
+    },
+    {
+      "check": "Forged signature denied",
+      "result": "PASS"
+    },
+    {
+      "check": "Origin denied on actual gateway transport",
+      "result": "PASS"
+    },
+    {
+      "check": "Host denied on actual gateway transport",
+      "result": "PASS"
+    },
+    {
+      "check": "Gateway is private; backend stays outside source network; key material stays in authority",
+      "result": "PASS"
+    },
+    {
+      "check": "Real gateway concurrency, cancellation and disable fence late admissions before protected SQL",
+      "result": "PASS"
+    },
+    {
+      "check": "Gateway restart during a held real request releases no stale result and requires healthy recovery",
+      "result": "PASS"
+    },
+    {
+      "check": "Unavailable platform authority fails closed over actual MCP without protected SQL",
+      "result": "PASS"
+    },
+    {
+      "check": "Platform readiness and native profile start while database gateway is stopped",
+      "result": "PASS"
+    },
+    {
+      "check": "Gateway restart reconstructs the approved catalog and fresh scoped pools",
+      "result": "PASS"
+    },
+    {
+      "check": "sales outage, sanitized failure, fresh revalidation and recovery",
+      "result": "PASS"
+    },
+    {
+      "check": "inventory outage, sanitized failure, fresh revalidation and recovery",
+      "result": "PASS"
+    },
+    {
+      "check": "Persisted metadata mismatch stales scope before read dispatch; original source stays unchanged",
+      "result": "PASS",
+      "sourceSqlAdmissions": 0
+    },
+    {
+      "check": "Credential replacement creates immutable revision, revokes old secret and denies old table identity",
+      "result": "PASS",
+      "sourceSqlAdmissions": 0
+    },
+    {
+      "check": "Backend restart retains connector state, revisions and approvals",
+      "result": "PASS"
+    },
+    {
+      "check": "Disable persists across gateway restart and excludes discovery and invocation",
+      "result": "PASS",
+      "sourceSqlAdmissions": 0
+    },
+    {
+      "check": "Disabled connector cannot rediscover old permissions after process reconstruction",
+      "result": "PASS",
+      "sourceSqlAdmissions": 0
+    },
+    {
+      "check": "Known generated credentials and key values do not appear in actual service logs or normal APIs",
+      "result": "PASS"
+    }
+  ],
+  "scope": "Actual original demo sources, private gateway and platform. Metadata-corruption fence is distinct from disposable JDBC schema-change tests; original source schemas/data are untouched."
+}

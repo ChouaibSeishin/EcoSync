@@ -1,6 +1,6 @@
 # Backlog
 
-Phases 1-3 are complete with local and actual GitHub Actions acceptance evidence. Phase 3 final branch `codex/phase-3-native-mcp` at `0e681ab5cb9a1930a159d3b459d9380fe660a363` passed all three jobs in [run 41619804974](https://github.com/ChouaibSeishin/EcoSync/actions/runs/41619804974). Final verify: 6 backend unit, 23 PostgreSQL integration, 17 frontend tests and browser/persistence checks; zero skipped tests. The metadata-refresh regression is included. Two failure-only diagnostic steps were unnecessary. Phase 4 is now authorized from that exact head; gateway proof precedes implementation. Phases 5-11 remain unimplemented. See PROJECT_STATUS.md for evidence. P0 = foundation-critical priority, P1 = required phase scope, P2 = later extension. IDs remain stable between phases.
+Phase 4 is complete at application head `18aafb7d41011171e64da25e14cc1bdf363fc533` on `codex/phase-4-managed-db-connectors`. [Actual run 41812225715](https://github.com/ChouaibSeishin/EcoSync/actions/runs/41812225715) passed all four jobs. Phase 5/6 remain unstarted. P4-01 through P4-08 are complete with actual evidence. Historical earlier work-package descriptions below remain as the project record.
 
 ## Phase 1: ordered implementation plan
 
@@ -82,10 +82,10 @@ Phases 4/5 dynamic DB/REST connectors, managed gateway, general joins/mapping UI
 | P4-01 | Stable runtime/authentication/tenant-isolation proof, ADR 0012 | Passed, 11 actual wire checks |
 | P4-02 | V4 registry, encrypted credential lifecycle, operator policy | Implemented and PostgreSQL tested |
 | P4-03 | JDBC metadata/fingerprints, explicit role/table/column approvals | Implemented; two actual source browser journeys passed |
-| P4-04 | Typed prepared bounded reads, actual separate reader grants | Implemented; expanded real-engine verification pending |
-| P4-05 | Private managed gateway, live authorization, restart/cancel fencing | Implemented; final concurrency verification pending |
+| P4-04 | Typed prepared bounded reads, actual separate reader grants | Passed; ten real PostgreSQL/MySQL integration tests |
+| P4-05 | Private managed gateway, live authorization, restart/cancel fencing | Passed; actual concurrent cancel/disable/restart/authority outage |
 | P4-06 | Existing React management/explorer/results/history | Implemented; 22 component tests, two actual browser journeys |
-| P4-07 | Adversarial/outage/restart/secret/limit checks | 52 actual stack checks passed; expansion pending |
-| P4-08 | Preserve all three old CI jobs; dedicated fourth job; final head/docs | In progress; actual remote CI required |
+| P4-07 | Adversarial/outage/restart/secret/limit checks | 58 actual stack checks passed locally and in CI |
+| P4-08 | Preserve all three old CI jobs; dedicated fourth job; final head/docs | Passed; actual four-job run 41812225715 |
 
 Phase 5 REST and Phase 6 AI/chat require separate explicit authorization.
