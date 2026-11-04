@@ -8,12 +8,13 @@ if(listing.status!==0)throw new Error('Cannot inspect tracked files.');
 const files=listing.stdout.split('\0').filter(Boolean),failures=[];
 let secrets=[];
 for(const name of await readdir(path.join(root,'infra/docker'))){
- if(!['.env','demo.env','.env.mcp'].includes(name)&&!name.startsWith('.env.demo-repro-'))continue;
+ if(!['.env','demo.env','.env.mcp','.env.database'].includes(name)&&!name.startsWith('.env.demo-repro-'))continue;
  const source=await readFile(path.join(root,'infra/docker',name),'utf8');
  secrets.push(...source.split(/\r?\n/).filter(l=>/^[A-Z_]*(PASSWORD|TOKEN|SECRET)=/.test(l)).map(l=>l.slice(l.indexOf('=')+1)).filter(v=>v.length>=16));
 }
 try{const ring=JSON.parse(await readFile(path.join(root,'.verification/mcp/keyring.json'),'utf8'));secrets.push(...Object.values(ring.keys).filter(v=>typeof v==='string'&&v.length>=16));}catch(error){if(error.code!=='ENOENT')failures.push('Cannot inspect local MCP keyring for known-secret review.');}
 secrets=[...new Set(secrets)];
+try{secrets.push((await readFile(path.join(root,'.verification/database/assertion-private.der'))).toString('base64'));}catch(error){if(error.code!=='ENOENT')failures.push('Cannot inspect delegated signing key for known-secret review.');}
 for(const file of files){
  const base=path.basename(file);
  if(file.split('/').some(p=>['node_modules','target','.verification','test-results','playwright-report'].includes(p))||base==='demo.env'||base==='.env'||base.startsWith('.env.')&&base!=='.env.example')failures.push('Generated/private path tracked: '+file);
@@ -36,11 +37,13 @@ for(const file of ['mcp-client/package.json','mcp-servers/inventory/package.json
   if(expected&&version!==expected)failures.push('MCP manifest mismatch: '+file+'/'+name);
  }
 }
-for(const file of ['mcp-servers/sales/pom.xml','verification/mcp-compatibility/java/pom.xml']){
+for(const file of ['mcp-servers/sales/pom.xml','verification/mcp-compatibility/java/pom.xml','managed-gateway/pom.xml','verification/gateway-compatibility/java/pom.xml']){
  const source=await readFile(path.join(root,file),'utf8');
  for(const version of [v.backend.springBoot,v.backend.springAi,v.managedObservations.mcpJavaSdk])if(!source.includes('<version>'+version+'</version>'))failures.push('MCP Java baseline mismatch: '+file);
 }
 if(!(await readFile(path.join(root,'backend/pom.xml'),'utf8')).includes('<artifactId>json-schema-validator</artifactId><version>'+v.backend.jsonSchemaValidator+'</version>'))failures.push('Java schema validator pin differs.');
+const gatewayPom=await readFile(path.join(root,'managed-gateway/pom.xml'),'utf8');
+for(const version of [v.databaseConnectors.postgresqlJdbc,v.databaseConnectors.mysqlConnectorJ])if(!gatewayPom.includes('<version>'+version+'</version>'))failures.push('Gateway JDBC pin differs.');
 const demo=JSON.parse(await readFile(path.join(root,'config/demo-versions.json'),'utf8'));
 const supplier=JSON.parse(await readFile(path.join(root,'demo-systems/supplier-api/package.json'),'utf8'));
 const lock=JSON.parse(await readFile(path.join(root,'demo-systems/supplier-api/package-lock.json'),'utf8'));
@@ -56,7 +59,9 @@ for(const [key,file]of [['postgres','infra/docker/compose.yaml'],['java','backen
 const workflow=await readFile(path.join(root,'.github/workflows/ci.yml'),'utf8');
 const phase2=await readFile(path.join(root,'config/phase2-ci-job.txt'),'utf8');
 if(!workflow.replaceAll('\r\n','\n').includes(phase2.trimEnd()))failures.push('Accepted Phase 2 CI job was changed or removed.');
-for(const [key,file]of [['java','mcp-servers/sales/Dockerfile'],['node','mcp-servers/inventory/Dockerfile'],['node','mcp-client/Dockerfile'],['java','verification/mcp-compatibility/Dockerfile'],['node','verification/mcp-compatibility/Dockerfile']])if(!(await readFile(path.join(root,file),'utf8')).includes(images[key]))failures.push('MCP image digest mismatch: '+file);
+const phase3=await readFile(path.join(root,'config/phase3-ci-job.txt'),'utf8');
+if(!workflow.replaceAll('\r\n','\n').includes(phase3.trimEnd()))failures.push('Accepted Phase 3 CI job was changed or removed.');
+for(const [key,file]of [['java','managed-gateway/Dockerfile'],['java','verification/gateway-compatibility/Dockerfile'],['node','verification/gateway-compatibility/Dockerfile'],['java','mcp-servers/sales/Dockerfile'],['node','mcp-servers/inventory/Dockerfile'],['node','mcp-client/Dockerfile'],['java','verification/mcp-compatibility/Dockerfile'],['node','verification/mcp-compatibility/Dockerfile']])if(!(await readFile(path.join(root,file),'utf8')).includes(images[key]))failures.push('MCP image digest mismatch: '+file);
 for(const file of ['infra/docker/compose.yaml','infra/docker/demo-systems.compose.yaml']){
  const previous=spawnSync('git',['show','a38682428457cca417cbac8f20bc14e7c0792f21:'+file],{cwd:root,encoding:'utf8',windowsHide:true});
  if(previous.status===0&&(await readFile(path.join(root,file),'utf8')).replaceAll('\r\n','\n')!==previous.stdout.replaceAll('\r\n','\n'))failures.push('Accepted platform/source lifecycle file changed: '+file);

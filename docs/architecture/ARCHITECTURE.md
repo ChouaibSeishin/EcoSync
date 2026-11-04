@@ -142,8 +142,14 @@ Execution status distinguishes COMPLETED, PARTIAL, FAILED, CANCELLED. Evidence r
 | `config/versions.json`, `scripts/`, `docs/` and root planning files | 0 | Pins, compatibility/documentation verification and design |
 | `backend/`, `frontend/`, `infra/docker/`, `.github/workflows/` | 1 | Main platform, initial local stack and CI |
 | `demo-systems/sales/`, `demo-systems/inventory/`, `demo-systems/suppliers/`, `evaluation/datasets/` | 2 | Independent systems and reproducible synthetic data |
-| `mcp-servers/`, gateway module inside `backend/` | 3-4 | Native servers and runtime-managed connector tools |
+| `mcp-servers/`, separate `managed-gateway/` | 3-4 | Native servers and runtime-managed connector tools |
 | `evaluation/` execution/results tooling | 9 | Benchmarks, run manifests and measured reports |
 | `infra/kubernetes/`, isolated `infra/gitops/` fallback, `infra/argocd/` | 10 | Kustomize sources, desired environment state and Argo bootstrap; prefer a separate GitOps repo when provisioned |
 
 Do not create the future empty directories now. Backend is Spring MVC/JPA for metadata, JDBC for controlled external reads. PostgreSQL metadata is distinct from demo PostgreSQL even when local containers share a host. React uses strict TypeScript, React Query, React Router and accessible Radix primitives with a small CSS token system. Evaluate errors, focus states and real empty data explicitly.
+
+## Implemented Phase 4 boundary
+
+[ADR 0012](decisions/0012-managed-gateway-and-database-boundary.md) supersedes the initial in-process gateway suggestion. Separate Java process in `managed-gateway/` joins private control and approved source networks. Backend owns all tenant/governance/credential state and never joins the source network. Phase 3 TypeScript remains a client adapter.
+
+Two neutral MCP tools accept opaque connector/table IDs and structured reads; signed delegated identity and current authority callbacks bind actor/org/revision/scope. Catalog reconstruction is not authorization. Stable Java SDK 2.1.0 gateway serves 2025-11-25 only. Production broadcasts are disabled for tenant privacy. [Actual connector limits/lifecycle](DATABASE_CONNECTORS.md) differ from the proposed future Phase 6 limits above.

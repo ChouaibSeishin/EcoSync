@@ -1,0 +1,98 @@
+  native_mcp:
+    name: Native MCP interoperability and governance
+    runs-on: ubuntu-24.04
+    timeout-minutes: 40
+    steps:
+      - name: Checkout source
+        uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803
+        with:
+          persist-credentials: false
+      - name: Set up pinned Java
+        uses: actions/setup-java@b6effb05e454b25005698d916606bdc6ffcbf961
+        with:
+          distribution: temurin
+          java-version: '21.0.13+9'
+          cache: maven
+          cache-dependency-path: |
+            backend/pom.xml
+            mcp-servers/sales/pom.xml
+            verification/mcp-compatibility/java/pom.xml
+      - name: Set up pinned Node
+        uses: actions/setup-node@249970729cb0ef3589644e2896645e5dc5ba9c38
+        with:
+          node-version: '24.22.2'
+          cache: npm
+          cache-dependency-path: |
+            mcp-client/package-lock.json
+            mcp-servers/inventory/package-lock.json
+            frontend/package-lock.json
+            verification/mcp-compatibility/typescript/package-lock.json
+      - name: Foundation and preserved source review
+        run: |
+          node scripts/verify-foundation.mjs
+          node scripts/review-repository.mjs
+          git diff --check
+      - name: Clean client and Inventory installs, types, real peer tests and audits
+        run: |
+          npm ci --prefix mcp-client
+          npm run verify --prefix mcp-client
+          npm audit --prefix mcp-client --audit-level=high
+          npm ci --prefix mcp-servers/inventory
+          npm run verify --prefix mcp-servers/inventory
+          npm audit --prefix mcp-servers/inventory --audit-level=high
+      - name: Build Java platform, Sales server and compatibility peer
+        run: |
+          ./backend/mvnw -B -ntp -f backend/pom.xml package
+          ./backend/mvnw -B -ntp -f mcp-servers/sales/pom.xml package
+          ./backend/mvnw -B -ntp -f verification/mcp-compatibility/java/pom.xml package
+      - name: Clean frontend install and management UI checks
+        run: |
+          npm ci --prefix frontend
+          npm run lint --prefix frontend
+          npm run typecheck --prefix frontend
+          npm test --prefix frontend -- --run
+          npm run build --prefix frontend
+          npm audit --prefix frontend --audit-level=high
+      - name: Install pinned browser
+        working-directory: frontend
+        run: npx --no-install playwright install --with-deps chromium
+      - name: Generate independent local credentials and protect the external key
+        run: |
+          node scripts/init-local.mjs
+          node scripts/init-demo.mjs
+          node scripts/init-mcp.mjs
+          mkdir -p .verification/phase3
+          sudo chgrp 10001 .verification/mcp/keyring.json
+          chmod 640 .verification/mcp/keyring.json
+          node scripts/mcp-mask-secrets.mjs
+      - name: Actual Java and TypeScript dual-era compatibility matrix
+        run: |
+          docker build -t ecosync-mcp-compatibility:phase3 verification/mcp-compatibility
+          docker run --rm --network none --memory 768m --cpus 2 --mount "type=bind,source=$PWD/.verification/phase3,target=/workspace/.verification/phase3" --mount "type=bind,source=$PWD/mcp-client,target=/client,readonly" -e MCP_FOUNDATION_MODULE=/client/dist/manager.js ecosync-mcp-compatibility:phase3
+      - name: Start actual independent sources, native MCP servers and platform
+        run: |
+          docker compose --env-file infra/docker/demo.env -f infra/docker/demo-systems.compose.yaml up -d --build --wait --wait-timeout 240
+          docker compose --env-file infra/docker/demo.env --env-file infra/docker/.env.mcp -f infra/docker/mcp-demo.compose.yaml -f verification/mcp-compatibility/observe.compose.yaml up -d --build --wait --wait-timeout 180
+          docker compose --env-file infra/docker/.env --env-file infra/docker/.env.mcp -f infra/docker/compose.yaml -f infra/docker/mcp-platform.override.yaml up -d --build --wait --wait-timeout 180
+      - name: Six source-backed tools and exact source evidence over actual MCP
+        run: docker run --rm --network ecosync-mcp_control --env-file infra/docker/.env.mcp --mount "type=bind,source=$PWD,target=/repo,readonly" --entrypoint node ecosync-native-mcp-client:phase3 /repo/verification/mcp-compatibility/sources.mjs
+      - name: Registry, denied operations, real outages, recovery, isolation and credential checks
+        run: node scripts/verify-mcp-stack.mjs
+      - name: Actual authenticated legacy and modern browser journeys
+        run: node scripts/run-mcp-e2e.mjs
+      - name: Final known-secret and source review
+        run: |
+          node scripts/review-repository.mjs
+          git diff --check
+          git diff --exit-code
+      - name: Bounded redacted diagnostics on failure
+        if: failure()
+        run: node scripts/mcp-diagnostics.mjs
+      - name: Stop only this job's disposable projects, retain volumes
+        if: always()
+        run: |
+          if [ -f infra/docker/.env.mcp ]; then
+            docker compose --env-file infra/docker/.env --env-file infra/docker/.env.mcp -f infra/docker/compose.yaml -f infra/docker/mcp-platform.override.yaml down --timeout 10
+            docker compose --env-file infra/docker/demo.env --env-file infra/docker/.env.mcp -f infra/docker/mcp-demo.compose.yaml -f verification/mcp-compatibility/observe.compose.yaml down --timeout 10
+            docker compose --env-file infra/docker/demo.env -f infra/docker/demo-systems.compose.yaml down --timeout 10
+          fi

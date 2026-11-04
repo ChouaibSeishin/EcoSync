@@ -6,9 +6,9 @@ Research: **AI-Driven Interoperability: Exploring the Role of Large Language Mod
 
 ## Current release
 
-Phase 1 implements a Spring MVC/PostgreSQL foundation, secure session login, tenant-scoped workspace access, and a responsive React interface. It includes secure workspace access and system status. Phase 2 adds independent sales PostgreSQL, inventory MySQL and Supplier REST with deterministic data and external research fixtures. Phase 3 implements native MCP registration, actual legacy/modern tool discovery, explicit approvals, encrypted credentials, scoped manual invocation and execution history in the existing React app. Dynamic DB/REST connectors, managed gateway, AI/chat and deployment automation remain absent.
+Phase 1 implements a Spring MVC/PostgreSQL foundation, secure session login, tenant-scoped workspace access, and a responsive React interface. It includes secure workspace access and system status. Phase 2 adds independent sales PostgreSQL, inventory MySQL and Supplier REST with deterministic data and external research fixtures. Phase 3 implements native MCP registration, actual legacy/modern tool discovery, explicit approvals, encrypted credentials, scoped manual invocation and execution history in the existing React app. Phase 4 adds dynamic PostgreSQL/MySQL registration, bounded JDBC metadata, explicit column approvals, typed prepared reads and a private managed MCP gateway. REST onboarding, AI/chat and deployment automation remain future work. Final Phase 4 CI acceptance is pending.
 
-The repository is currently [public](https://github.com/ChouaibSeishin/EcoSync) (verified 2026-11-03); visibility was not changed by this work. Current work is on `codex/phase-3-native-mcp`, based on the exact accepted final Phase 2 head a386824. The default Phase 0 branch remains preserved.
+The repository is currently [public](https://github.com/ChouaibSeishin/EcoSync) (verified 2026-11-03); visibility was not changed by this work. Current work is on `codex/phase-4-managed-db-connectors`, based on exact accepted Phase 3 head `0e681ab5cb9a1930a159d3b459d9380fe660a363`. The default Phase 0 branch remains preserved.
 
 ## Run locally
 
@@ -16,7 +16,7 @@ Requires Java 21 (Temurin 21.0.13+9), Node 24.22.2/npm 11.19.1 and Docker with L
 
 ```powershell
 # The default branch still contains Phase 0; select the implementation branch.
-git clone --branch codex/phase-3-native-mcp https://github.com/ChouaibSeishin/EcoSync.git
+git clone --branch codex/phase-4-managed-db-connectors https://github.com/ChouaibSeishin/EcoSync.git
 Set-Location EcoSync
 Push-Location backend
 ./mvnw.cmd -B -ntp verify
@@ -75,3 +75,11 @@ All ports are localhost-only: sales 55433, inventory 53307 and supplier API 1808
 - [Roadmap](ROADMAP.md), [backlog](BACKLOG.md), [Phase 1 identity/runtime decision](docs/architecture/decisions/0006-phase1-identity-and-local-stack.md), [research methodology](docs/research/METHODOLOGY.md), [deployment design](docs/deployment/DEPLOYMENT.md), [historical Phase 0 report](docs/development/PHASE_0_VERIFICATION.md).
 
 Phase 3 is accepted on `codex/phase-3-native-mcp` at final head `0e681ab5cb9a1930a159d3b459d9380fe660a363`: all three jobs succeeded in [actual final run 41619804974](https://github.com/ChouaibSeishin/EcoSync/actions/runs/41619804974). Final verify passed 6 backend unit, 23 PostgreSQL integration and 17 frontend tests plus browser/persistence checks, zero skipped tests. The final metadata-refresh regression preserves capability identity while refreshing server/protocol observations. Only two failure-only diagnostic steps were skipped. See [native MCP startup and UI instructions](docs/development/MCP_LOCAL_SETUP.md), [acceptance](docs/development/PHASE_3_ACCEPTANCE.md), [compatibility](docs/architecture/MCP_COMPATIBILITY.md) and [verification](docs/development/PHASE_3_VERIFICATION.md). Preserve existing phase branches, volumes and local credentials. Phase 4 is now authorized on `codex/phase-4-managed-db-connectors` from that exact head; its gateway gate comes first. No Phase 5/6 work is authorized.
+
+## Managed database connectors (Phase 4)
+
+Follow [database local setup](docs/development/DATABASE_LOCAL_SETUP.md) for the explicit gateway/platform overrides and separate reader/key provisioning. In Integrations → Databases, register a permitted PostgreSQL/MySQL destination, inspect metadata, approve selected columns for a role, activate, discover MCP tools and read bounded rows. Another permitted database/table needs configuration and approval without rebuilding core or frontend. Original startup paths remain independent of the gateway.
+
+The private Java gateway serves MCP 2025-11-25 only; native MCP retains its tested dual-generation client. Two neutral tools enforce live actor/organization/revision/scope authorization. Backend stays outside the source network and alone receives AES/private signing keys. Source schemas/data and volumes are preserved.
+
+See [architecture](docs/architecture/DATABASE_CONNECTORS.md), [security](docs/architecture/DATABASE_SECURITY.md), [acceptance](docs/development/PHASE_4_ACCEPTANCE.md) and [verification](docs/development/PHASE_4_VERIFICATION.md). One backend replica, bounded single-table reads and explicit refresh are supported. Local Docker/CI do not establish production readiness. Phase 5/6 have not begun.

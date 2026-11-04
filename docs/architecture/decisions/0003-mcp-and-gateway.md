@@ -1,6 +1,6 @@
 # ADR 0003: Dynamic MCP clients and managed connector gateway
 
-Date: 2026-10-29. Status: accepted initial target; current-spec interoperability gate open for Phase 3.
+Date: 2026-10-29. Status: historical initial target; Phase 3 client refined by ADR 0008, Phase 4 deployment/catalog superseded by ADR 0012.
 
 ## Context
 
@@ -17,3 +17,7 @@ Expose approved PostgreSQL/MySQL/REST connector operations through an authentica
 ## Alternatives and consequences
 
 Direct connector calls from the orchestrator are simpler but would not demonstrate the same MCP execution path. A separate gateway deployment improves isolation but adds service auth/deployment overhead too early; keep its boundary extractable. Startup YAML connections alone cannot implement dynamic onboarding. Protocol compatibility is an explicit acceptance gate, not silently assumed. API details and exact tagged evidence are in [compatibility](../COMPATIBILITY.md).
+
+## Verified Phase 4 refinement
+
+[ADR 0012](0012-managed-gateway-and-database-boundary.md) selects a separate Java data plane to preserve backend/source network isolation, explicit SDK servlet authentication, neutral tools with live authority, and gateway protocol 2025-11-25 only. Spring callback scanning is not the runtime registry. Production list-change broadcasts are disabled for tenant privacy. Earlier alternatives remain as decision history.

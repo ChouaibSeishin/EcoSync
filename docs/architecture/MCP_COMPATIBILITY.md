@@ -51,3 +51,7 @@ Schema-library compatibility was verified against the [NetworkNT 3.0.8 publisher
 ## November 3 acceptance recheck
 
 Official release pages and GitHub release metadata still list Java stable 2.1.0 (modern-server 2.2.0-M1 remains prerelease), TS 2.4.0/Node adapter 2.1.2, and Spring AI stable 2.0.2 with 2.1.0-RC1 prerelease. The selected baseline is retained. The [final six-row matrix](../development/evidence/phase-3-final-matrix.json) and [source-tool evidence](../development/evidence/phase-3-final-sources.json) were rerun against the selected client on 2026-11-03. Verification scripts now record the actual execution timestamp instead of repeating the original gate date. The original October gate evidence is preserved.
+
+## Phase 4 managed server
+
+The separate gateway uses stable Java SDK 2.1.0 and actual official TypeScript 2.4.0 Streamable HTTP interoperability. Gateway serves **2025-11-25 only**, not 2026-07-28. [ADR 0012](decisions/0012-managed-gateway-and-database-boundary.md) records alternatives, runtime failures and neutral tenant-filtered catalog selection. Notifications are proven in the isolated gate but disabled in production because the stable SDK broadcasts across sessions. Existing native protocol claims are unchanged.

@@ -1,0 +1,4 @@
+services:
+  database-gateway:
+    environment:
+      DATABASE_DEVELOPMENT_VERIFICATION: "true"

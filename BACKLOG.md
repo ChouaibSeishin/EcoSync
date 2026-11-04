@@ -74,3 +74,18 @@ The implementing developer owns each decision unless the user must supply extern
 | P3-11 / H (passed implementation CI) | Add real native MCP CI job; preserve Phase 1/2 jobs | Actual final-head jobs/test counts, docs/ADRs/security review, incremental Git push |
 
 Phases 4/5 dynamic DB/REST connectors, managed gateway, general joins/mapping UI, AI/chat, benchmark execution and deployment/publishing remain excluded.
+
+## Phase 4 checkpoint status
+
+| Checkpoint | Delivery | Status |
+|---|---|---|
+| P4-01 | Stable runtime/authentication/tenant-isolation proof, ADR 0012 | Passed, 11 actual wire checks |
+| P4-02 | V4 registry, encrypted credential lifecycle, operator policy | Implemented and PostgreSQL tested |
+| P4-03 | JDBC metadata/fingerprints, explicit role/table/column approvals | Implemented; two actual source browser journeys passed |
+| P4-04 | Typed prepared bounded reads, actual separate reader grants | Implemented; expanded real-engine verification pending |
+| P4-05 | Private managed gateway, live authorization, restart/cancel fencing | Implemented; final concurrency verification pending |
+| P4-06 | Existing React management/explorer/results/history | Implemented; 22 component tests, two actual browser journeys |
+| P4-07 | Adversarial/outage/restart/secret/limit checks | 52 actual stack checks passed; expansion pending |
+| P4-08 | Preserve all three old CI jobs; dedicated fourth job; final head/docs | In progress; actual remote CI required |
+
+Phase 5 REST and Phase 6 AI/chat require separate explicit authorization.
