@@ -82,7 +82,7 @@ jobs:
         uses: actions/setup-java@b6effb05e454b25005698d916606bdc6ffcbf961
         with:
           distribution: temurin
-          java-version: '21.0.13+9'
+          java-version: '21.0.13+9.0.LTS' # Exact Adoptium metadata for the same jdk-21.0.13+9 archive.
           cache: maven
           cache-dependency-path: |
             backend/pom.xml
@@ -97,6 +97,12 @@ jobs:
             frontend/package-lock.json
             mcp-client/package-lock.json
             mcp-servers/inventory/package-lock.json
+      - name: Verify unchanged Temurin runtime build
+        run: |
+          mkdir -p .verification/phase4
+          java -version > .verification/phase4/java-version.txt 2>&1
+          cat .verification/phase4/java-version.txt
+          grep -F 'build 21.0.13+9-LTS' .verification/phase4/java-version.txt
       - name: Build actual platform and gateway; real PostgreSQL and MySQL tests
         run: |
           ./backend/mvnw -B -ntp -f backend/pom.xml verify
