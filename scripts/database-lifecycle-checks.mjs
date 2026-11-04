@@ -18,8 +18,8 @@ export async function lifecycle({api,base,records,query,check,validate,activate,
   finally{docker([...platform,'up','-d','--no-build','--wait','--wait-timeout','180','backend']);await ready();await api.login();}
  });
  await check('Platform readiness and native profile start while database gateway is stopped',async()=>{
-  try{docker([...gateway,'stop','--timeout','2']);docker([...platform,'restart','--timeout','2','backend']);await ready();await api.login();assert.equal((await api.call('/api/system/status')).database,'UP');const result=await query(records[1].id,records[1].table.id,{columns:records[1].columns},null);assert.equal(result.status,503);}
+  try{docker([...gateway,'stop','--timeout','2']);docker([...platform,'restart','--timeout','2','backend']);await ready();await api.login();assert.equal((await api.call('/api/system/status')).database,'UP');const result=await query(records[1].id,records[1].table.id,{columns:records[1].columns},null);assert.equal(result.status,503);assert.equal(result.value.code,'DB_GATEWAY_UNAVAILABLE');const detail=await api.call(base+'/'+records[1].id);assert.equal(detail.state,'ACTIVE');assert.equal(detail.health,'HEALTHY');}
   finally{docker([...gateway,'up','-d','--no-build','--wait','--wait-timeout','180']);}
-  await validate(records[1]);await activate(records[1]);await query(records[1].id,records[1].table.id,{columns:records[1].columns,limit:1});
+  await gatewayReady(records[1]);await query(records[1].id,records[1].table.id,{columns:records[1].columns,limit:1});
  });
 }

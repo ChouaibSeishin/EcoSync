@@ -74,6 +74,8 @@ The describe endpoint substitutes `/describe` and returns only the caller's appr
 
 The official backend client bounds each initialize/call operation separately; a cold HTTP API request can involve more than one such stage. These are implementation limits, not measured performance claims. Driver workers may outlive cancellation while their socket/deadline machinery closes; they cannot authorize a new dispatch without the current operation/authority fences.
 
+Backend readiness does not imply the gateway's periodic catalog reconstruction is complete. Refresh actual MCP discovery after restart. Gateway transport/protocol unavailability returns fixed 503 `DB_GATEWAY_UNAVAILABLE` and preserves the last source-health observation and persisted governance; source SQL/credential/TLS failures are classified separately. Recovery never grants new permissions or automatically retries a tool call.
+
 ## JDBC and network policy
 
 Tested target engines are PostgreSQL 17.11 and MySQL 8.4.13. The gateway uses pgJDBC 42.7.14 and Connector/J 26.10.0, independently of the platform's metadata driver. Current vendor [PostgreSQL security/release information](https://jdbc.postgresql.org/security/), [MySQL release notes](https://dev.mysql.com/doc/relnotes/connector-j/en/news-26-10-0.html), and [compatibility](https://dev.mysql.com/doc/connector-j/en/connector-j-versions.html) were reviewed before selection. Only actual tested pins belong in `config/versions.json`.
