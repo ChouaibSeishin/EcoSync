@@ -150,6 +150,7 @@ jobs:
           node scripts/run-mcp-e2e.mjs
       - name: Source fixtures, all earlier jobs and known-secret review
         run: |
+          npm ci --prefix demo-systems/supplier-api
           node scripts/demo/validate-dataset.mjs
           node scripts/verify-foundation.mjs
           node scripts/review-repository.mjs
