@@ -1,5 +1,7 @@
 # Project status
 
+Phase 5 authorized and started 2026-11-05 on `codex/phase-5-dynamic-rest-connectors`, from exact Phase 4 final head `ec310f8c25b4778396bdc5f698f3ef7253967401`. Final Phase 4 handoff run [41814237164](https://github.com/ChouaibSeishin/EcoSync/actions/runs/41814237164) passed all four jobs. The application acceptance head/run recorded below remain historical evidence. Phase 5 is in progress; no REST acceptance or Phase 6 claim is made. Existing local movies access and source volumes are preserved.
+
 Updated: 2026-11-04 UTC. **Phase 4 is complete at application head `18aafb7d41011171e64da25e14cc1bdf363fc533` on `codex/phase-4-managed-db-connectors`. [Actual run 41812225715](https://github.com/ChouaibSeishin/EcoSync/actions/runs/41812225715) passed all four jobs. Phase 5/6 remain unstarted.** The exact Phase 3 base remains `0e681ab5cb9a1930a159d3b459d9380fe660a363` with final run 41619804974. Earlier phase acceptance/failure records are retained below.
 
 ## Current delivery state

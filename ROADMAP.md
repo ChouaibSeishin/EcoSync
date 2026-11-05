@@ -1,5 +1,7 @@
 # Roadmap
 
+2026-11-05: Phase 5 is authorized and in progress from exact Phase 4 final branch head `ec310f8c25b4778396bdc5f698f3ef7253967401`, final four-job run 41814237164. The older application acceptance record remains below. Phase 6 remains unstarted. Phase 5 completion requires its own final-head five-job run and two actual REST browser journeys.
+
 Phase 3 final acceptance: `codex/phase-3-native-mcp` at `0e681ab5cb9a1930a159d3b459d9380fe660a363`; [run 41619804974](https://github.com/ChouaibSeishin/EcoSync/actions/runs/41619804974) passed all three jobs. Final verify ran 6 backend unit, 23 PostgreSQL integration and 17 frontend tests plus browser/persistence checks, zero skipped tests. The final metadata-refresh regression is included. Phase 4 is separately authorized from that head, beginning with a real gateway compatibility/tenant-isolation gate. Historical earlier acceptance references remain below.
 
 Each phase ends with a reviewable Git state, updated status/backlog, relevant tests, an integration check where applicable, and an honest verification report. Phase 4 is complete; Phases 5-11 require separate authorization. Later rows describe acceptance criteria, not delivered functionality.

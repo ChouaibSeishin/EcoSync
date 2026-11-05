@@ -1,5 +1,22 @@
 # Backlog
 
+## Phase 5 ordered checkpoints (authorized 2026-11-05)
+
+Base: `ec310f8c25b4778396bdc5f698f3ef7253967401`, final Phase 4 run 41814237164. Historical application acceptance below is unchanged. Every row remains pending until its evidence is recorded.
+
+| Checkpoint | Dependency | Required exit evidence |
+|---|---|---|
+| P5-A | Exact base | Reconcile handoff, inspect runtime/network/governance, ADR 0013, preserve user edit and old CI jobs |
+| P5-B | A | Strict JSON OpenAPI 3.0/3.1 subset importer, local references, complexity bounds, normalized review/fingerprints and adversarial tests |
+| P5-C | B | Additive Flyway registry, immutable revisions, separate encrypted REST purpose, tenant/role/approval/revocation integration tests |
+| P5-D | A,C | Separate private REST gateway, exact operator destinations, full DNS validation and pinned TLS sockets, redirects denied |
+| P5-E | B,C,D | Typed bounded GET execution, schema validation, classified failures, cancellation and current-authority fencing |
+| P5-F | C,E | Actual official-SDK generic MCP discovery/invocation, separate audience, single-use argument-bound delegation |
+| P5-G | B,C,F | Accessible existing React integration management and bounded explorer, real state/history and secret clearing |
+| P5-H | D,G | Independent Supplier and Partner APIs onboarded through the same workflow, no API-specific backend adapters |
+| P5-I | All above | Importer/tenant/SSRF/DNS/HTTP/MCP/live-stack/browser negative and recovery tests; all Phase 1–4 regressions |
+| P5-J | I | Dedicated fifth CI job, exact final remote SHA/run/counts, documentation/evidence/security review, no merge or Phase 6 |
+
 Phase 4 is complete at application head `18aafb7d41011171e64da25e14cc1bdf363fc533` on `codex/phase-4-managed-db-connectors`. [Actual run 41812225715](https://github.com/ChouaibSeishin/EcoSync/actions/runs/41812225715) passed all four jobs. Phase 5/6 remain unstarted. P4-01 through P4-08 are complete with actual evidence. Historical earlier work-package descriptions below remain as the project record.
 
 ## Phase 1: ordered implementation plan
