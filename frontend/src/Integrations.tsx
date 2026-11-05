@@ -3,6 +3,7 @@ import {useQuery,useQueryClient} from '@tanstack/react-query';
 import * as Dialog from '@radix-ui/react-dialog';
 import {request,ApiError,type Workspace} from './api';
 import {DatabaseConnectors} from './DatabaseConnectors';
+import {RestConnectors} from './RestConnectors';
 
 type Approval={role:string;status:string;actor:string;created_at:string};
 type Capability={id:string;alias:string;present:boolean;protocol:string;server:Record<string,unknown>;tool:{name:string;description:string;inputSchema:Record<string,unknown>;outputSchema?:Record<string,unknown>;annotations?:unknown;metadata?:unknown;fingerprint:string;supported:boolean;unsupportedReason?:string};approvals:Approval[]};
@@ -39,7 +40,7 @@ function RegistrationDialog({initial,save}:{initial?:Integration;save:(input:unk
 
 export function Integrations({workspace}:{workspace:Workspace}){
  const [kind,setKind]=useState('native');
- return <><div className="integration-kinds" role="group" aria-label="Integration type"><button className="button secondary" aria-pressed={kind==='native'} onClick={()=>setKind('native')}>Native MCP servers</button><button className="button secondary" aria-pressed={kind==='database'} onClick={()=>setKind('database')}>Databases</button></div>{kind==='database'?<DatabaseConnectors key={workspace.id} workspace={workspace}/>:<NativeIntegrations workspace={workspace}/>}</>;
+ return <><div className="integration-kinds" role="group" aria-label="Integration type"><button className="button secondary" aria-pressed={kind==='native'} onClick={()=>setKind('native')}>Native MCP servers</button><button className="button secondary" aria-pressed={kind==='database'} onClick={()=>setKind('database')}>Databases</button><button className="button secondary" aria-pressed={kind==='rest'} onClick={()=>setKind('rest')}>REST APIs</button></div>{kind==='rest'?<RestConnectors key={workspace.id} workspace={workspace}/>:kind==='database'?<DatabaseConnectors key={workspace.id} workspace={workspace}/>:<NativeIntegrations workspace={workspace}/>}</>;
 }
 function NativeIntegrations({workspace}:{workspace:Workspace}){
  const cache=useQueryClient(),base='/api/organizations/'+workspace.id+'/integrations';

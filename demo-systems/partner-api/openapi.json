@@ -1,0 +1,213 @@
+{
+  "openapi": "3.1.0",
+  "info": {
+    "title": "Cedar Partner Directory",
+    "version": "1.0.0"
+  },
+  "servers": [
+    {
+      "url": "http://untrusted-suggestion.invalid"
+    }
+  ],
+  "security": [
+    {
+      "partnerKey": []
+    }
+  ],
+  "paths": {
+    "/v2/partners": {
+      "get": {
+        "operationId": "directorySearch",
+        "parameters": [
+          {
+            "name": "after",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "minimum": 0,
+              "maximum": 125,
+              "default": 0
+            }
+          },
+          {
+            "name": "limit",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "minimum": 1,
+              "maximum": 125,
+              "default": 5
+            }
+          },
+          {
+            "name": "tier",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "enum": [
+                "GOLD",
+                "SILVER"
+              ]
+            }
+          },
+          {
+            "name": "name",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 80
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "JSON success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "records": {
+                      "type": "array",
+                      "maxItems": 125,
+                      "items": {
+                        "$ref": "#/components/schemas/Partner"
+                      }
+                    },
+                    "page": {
+                      "type": "object",
+                      "properties": {
+                        "after": {
+                          "type": "integer"
+                        },
+                        "next": {
+                          "type": "integer"
+                        },
+                        "hasMore": {
+                          "type": "boolean"
+                        }
+                      },
+                      "required": [
+                        "after",
+                        "next",
+                        "hasMore"
+                      ],
+                      "additionalProperties": false
+                    },
+                    "total": {
+                      "type": "integer"
+                    }
+                  },
+                  "required": [
+                    "records",
+                    "page",
+                    "total"
+                  ],
+                  "additionalProperties": false
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "operationId": "unsupportedCreate",
+        "responses": {
+          "200": {
+            "description": "JSON success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v2/partners/{partnerCode}": {
+      "get": {
+        "operationId": "directoryEntry",
+        "parameters": [
+          {
+            "name": "partnerCode",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "pattern": "^PT-[0-9]{3}$"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "JSON success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "partner": {
+                      "$ref": "#/components/schemas/Partner"
+                    }
+                  },
+                  "required": [
+                    "partner"
+                  ],
+                  "additionalProperties": false
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "securitySchemes": {
+      "partnerKey": {
+        "type": "apiKey",
+        "in": "header",
+        "name": "X-Partner-Key"
+      }
+    },
+    "schemas": {
+      "Partner": {
+        "type": "object",
+        "properties": {
+          "code": {
+            "type": "string",
+            "pattern": "^PT-[0-9]{3}$"
+          },
+          "name": {
+            "type": "string",
+            "maxLength": 80
+          },
+          "tier": {
+            "type": "string",
+            "enum": [
+              "GOLD",
+              "SILVER"
+            ]
+          },
+          "enabled": {
+            "type": "boolean"
+          }
+        },
+        "required": [
+          "code",
+          "name",
+          "tier",
+          "enabled"
+        ],
+        "additionalProperties": false
+      }
+    }
+  }
+}
