@@ -11,7 +11,7 @@ public class RestConnectorController {
  private final ObjectProvider<RestRegistry> registry;public RestConnectorController(ObjectProvider<RestRegistry> registry){this.registry=registry;}
  private RestRegistry service(){var r=registry.getIfAvailable();if(r==null)throw new RestFailure("REST_DISABLED");return r;}
  public record Invocation(UUID invocationId,Map<String,Object> parameters){}
- @GetMapping public Map<String,Object> list(@PathVariable UUID org,@AuthenticationPrincipal AccountPrincipal actor){var r=registry.getIfAvailable();return r==null?Map.of("available",false,"items",List.of()):r.list(actor.id(),org);}
+ @GetMapping public Map<String,Object> list(@PathVariable UUID org,@AuthenticationPrincipal AccountPrincipal actor,@RequestParam(defaultValue="false")boolean includeRevoked){var r=registry.getIfAvailable();return r==null?Map.of("available",false,"items",List.of()):r.list(actor.id(),org,includeRevoked);}
  @PostMapping public Map<String,Object> create(@PathVariable UUID org,@AuthenticationPrincipal AccountPrincipal actor,@RequestBody RestRegistry.Registration input){return service().register(actor.id(),org,input);}
  @GetMapping("/{id}") public Map<String,Object> detail(@PathVariable UUID org,@PathVariable UUID id,@AuthenticationPrincipal AccountPrincipal actor){return service().detail(actor.id(),org,id);}
  @PutMapping("/{id}") public Map<String,Object> revise(@PathVariable UUID org,@PathVariable UUID id,@AuthenticationPrincipal AccountPrincipal actor,@RequestBody RestRegistry.Registration input){return service().revise(actor.id(),org,id,input);}

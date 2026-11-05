@@ -32,7 +32,7 @@ export function createPartnerServer(key,{verification=false}={}){
     if(kind==='deep'){res.writeHead(200,{'Content-Type':'application/json'});return res.end('{"x":'.repeat(45)+'0'+'}'.repeat(45));}
     if(kind==='gzip-bomb'){const bytes=gzipSync(JSON.stringify({blob:'x'.repeat(300000)}));res.writeHead(200,{'Content-Type':'application/json','Content-Encoding':'gzip','Content-Length':bytes.length});return res.end(bytes);}
     if(kind==='slow'){const timer=setTimeout(()=>send(res,200,{ok:true}),6000);timer.unref();req.on('close',()=>clearTimeout(timer));return;}
-    if(kind==='delay'){const timer=setTimeout(()=>send(res,200,{ok:true}),1800);timer.unref();res.on('close',()=>clearTimeout(timer));return;}
+    if(kind==='delay'){res.writeHead(200,{'Content-Type':'application/json','Cache-Control':'no-store'});res.write('{');let ticks=0;const timer=setInterval(()=>{if(++ticks<10)res.write(' ');else{clearInterval(timer);res.end('"ok":true}');}},500);timer.unref();res.on('close',()=>clearInterval(timer));return;}
     return send(res,200,{ok:true});
    }
    if(url.pathname==='/directory/v2/partners'){
