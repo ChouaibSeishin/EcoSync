@@ -15,7 +15,7 @@ public final class OpenApiImporter {
   var raw=object(read(document.getBytes(StandardCharsets.UTF_8),limits.bytes));
   String version=Objects.toString(raw.get("openapi"),"");if(!version.matches("3\\.(0|1)\\.[0-9]{1,3}"))throw new RestFailure("REST_CONTRACT_INVALID");boolean v31=version.startsWith("3.1.");
   if(raw.containsKey("webhooks")||raw.containsKey("jsonSchemaDialect"))throw new RestFailure("REST_CONTRACT_UNSUPPORTED");
-  var expanded=object(expand(raw,raw,new HashSet<>(),0,new int[]{0}));if(MAPPER.writeValueAsBytes(expanded).length>1048576)throw new RestFailure("REST_LIMIT");var info=object(expanded.get("info"));String title=label(info.get("title"),120),release=label(info.get("version"),100);
+  var expanded=object(expand(raw,raw,new HashSet<>(),0,new int[]{0,0}));if(MAPPER.writeValueAsBytes(expanded).length>1048576)throw new RestFailure("REST_LIMIT");var info=object(expanded.get("info"));String title=label(info.get("title"),120),release=label(info.get("version"),100);
   var paths=object(expanded.get("paths"));if(paths.isEmpty()||paths.size()>limits.paths)throw new RestFailure("REST_LIMIT");var result=new ArrayList<Operation>();int reviewBytes=0;var ids=new HashSet<String>();var templates=new HashSet<String>();
   var securitySchemes=object(object(expanded.getOrDefault("components",Map.of())).getOrDefault("securitySchemes",Map.of()));
   for(String path:new TreeSet<>(paths.keySet())){
@@ -60,8 +60,9 @@ public final class OpenApiImporter {
  }catch(RestFailure e){throw e;}catch(Exception e){throw new RestFailure("REST_CONTRACT_INVALID");}}
  private Object expand(Object value,Map<String,Object> root,Set<String> stack,int depth,int[] nodes){if(depth>24||++nodes[0]>limits.referenceNodes)throw new RestFailure("REST_LIMIT");
   if(value instanceof Map<?,?> raw){var m=object(raw);if(m.containsKey("$ref")){String ref=Objects.toString(m.get("$ref"),"");if(!ref.startsWith("#/")||ref.contains("%")||m.size()!=1)throw new RestFailure("REST_REFERENCE_DENIED");if(!stack.add(ref))throw new RestFailure("REST_REFERENCE_CIRCULAR");Object target=root;for(String part:ref.substring(2).split("/",-1)){if(part.matches(".*~(?:[^01]|$).*"))throw new RestFailure("REST_REFERENCE_INVALID");String key=part.replace("~1","/").replace("~0","~");if(!(target instanceof Map<?,?> map)||!map.containsKey(key))throw new RestFailure("REST_REFERENCE_UNRESOLVED");target=map.get(key);}Object out=expand(target,root,stack,depth+1,nodes);stack.remove(ref);return out;}
-   var out=new LinkedHashMap<String,Object>();for(var e:m.entrySet())out.put(e.getKey(),expand(e.getValue(),root,stack,depth+1,nodes));return out;
-  }if(value instanceof List<?> l){var out=new ArrayList<>();for(Object child:l)out.add(expand(child,root,stack,depth+1,nodes));return out;}return value;
+   charge(nodes,2L+2L*m.size());var out=new LinkedHashMap<String,Object>();for(var e:m.entrySet()){charge(nodes,2L+6L*e.getKey().length());out.put(e.getKey(),expand(e.getValue(),root,stack,depth+1,nodes));}return out;
+  }if(value instanceof List<?> l){charge(nodes,2L+l.size());var out=new ArrayList<>();for(Object child:l)out.add(expand(child,root,stack,depth+1,nodes));return out;}charge(nodes,value instanceof String text?2L+6L*text.length():64L);return value;
  }
+ private static void charge(int[] budget,long bytes){if(bytes>1048576L-budget[1])throw new RestFailure("REST_LIMIT");budget[1]+=(int)bytes;}
  private static String label(Object value,int max){if(!(value instanceof String s)||s.isBlank()||s.length()>max||s.chars().anyMatch(Character::isISOControl))throw new RestFailure("REST_CONTRACT_INVALID");return s;}
 }

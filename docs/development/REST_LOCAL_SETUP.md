@@ -41,7 +41,7 @@ Open [Integrations](http://127.0.0.1:5173/integrations) → **REST APIs → Add 
 
 Register saves DRAFT and imports without source execution. Inspect the normalized operations and unsupported reasons. Explicitly approve the selected GET for INTEGRATION_ADMIN (and USER separately if intended), choose it in the explorer, then **Test approved API authentication**. That test executes the approved GET and discards source data; it cannot bypass approval. On HEALTHY/APPROVED, activate. Discover the neutral tools and invoke through MCP. Review untrusted JSON, correlation/history and explicit truncation. Partner `{"name":"River & Pine"}` demonstrates safe query encoding; `{"limit":125}` demonstrates the 100-item returned-data cap. Unsupported POST remains unapprovable.
 
-Disable/revoke take effect before cleanup and block late result delivery. Revoking a credential requires a replacement secret when revising. A revised document/destination/auth configuration creates immutable new operation IDs and invalidates old approval. Reinspect/approve/test/activate explicitly. There is no chat or AI execution.
+Disable/revoke take effect before cleanup and block late result delivery. Revoking a credential requires a replacement secret when revising. Changing the destination/base path or auth type/header requires a replacement secret; blank retains a secret only for the same target and auth settings. A revised document/destination/auth configuration creates immutable new operation IDs and invalidates old approval. Reinspect/approve/test/activate explicitly. There is no chat or AI execution.
 
 ## Verification and recovery
 

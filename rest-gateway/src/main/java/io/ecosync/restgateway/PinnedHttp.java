@@ -14,7 +14,7 @@ public final class PinnedHttp {
  public PinnedHttp(DestinationPolicy destinations){this(destinations,(SSLSocketFactory)SSLSocketFactory.getDefault());}
  PinnedHttp(DestinationPolicy destinations,SSLSocketFactory tlsFactory){this.destinations=destinations;this.tlsFactory=tlsFactory;}
  public Map<String,Object> get(Map<String,Object> config,Map<String,Object> arguments,Operations.Operation operation,Runnable reauthorize){
-  var meta=object(config.get("operation"));String target=RestArguments.target(meta,arguments);String type=(String)config.get("authType"),header=(String)config.get("authHeader"),secret=(String)config.get("secret");RestAuth.configuration(type,header,secret);var destination=destinations.target((String)config.get("baseUrl"));
+  var meta=object(config.get("operation"));String target=RestArguments.target(meta,arguments);String type=(String)config.get("authType"),header=(String)config.get("authHeader"),secret=(String)config.get("secret");RestAuth.configuration(type,header,secret);if(RestJson.containsSecret(arguments,secret))throw new RestFailure("REST_INVALID_ARGUMENTS");var destination=destinations.target((String)config.get("baseUrl"));
   destinations.resolve(destination);operation.check();var address=destinations.resolve(destination);reauthorize.run();operation.check();
   try(Socket raw=new Socket(Proxy.NO_PROXY)){
    operation.socket(raw);raw.connect(new InetSocketAddress(address,destination.port()),2000);raw.setSoTimeout(3000);Socket connection=raw;

@@ -6,6 +6,7 @@ import java.util.concurrent.atomic.AtomicInteger;
 import org.junit.jupiter.api.Test;
 import static org.assertj.core.api.Assertions.*;
 class DestinationPolicyTest {
+ @Test void developmentHttpCannotReachPublicAddressesEvenIfMislisted(){try(var p=new DestinationPolicy(ENTRY,"",true,h->new InetAddress[]{InetAddress.getByName("8.8.8.8")})){assertThatThrownBy(()->p.resolve(p.target("http://fixture:8095/directory"))).isInstanceOf(RestFailure.class);}try(var p=new DestinationPolicy("https://fixture:443|tls","",false,h->new InetAddress[]{InetAddress.getByName("8.8.8.8")})){assertThat(p.resolve(p.target("https://fixture")).getHostAddress()).isEqualTo("8.8.8.8");}}
  static final String ENTRY="http://fixture:8095/directory|dev";
  DestinationPolicy policy(DestinationPolicy.Resolver resolver){return new DestinationPolicy(ENTRY,"172.30.0.0/24",true,resolver);}
  @Test void exactOperatorPolicyCannotBeExpanded(){for(String url:List.of("http://127.0.0.1:8095/directory","http://[::1]:8095/directory","http://fixture:8096/directory","http://user@fixture:8095/directory","http://fixture:8095/directory/../x","http://fixture:8095/directory%2fsecret","http://fixture:8095/directory?x=1","http://fixture:8095/directory#x","http://fixture.:8095/directory","HTTP://fixture:8095/directory","file://fixture/directory","http://fixture:8095//directory"))try(var p=policy(h->new InetAddress[]{InetAddress.getByName("172.30.0.2")})){assertThatThrownBy(()->p.target(url)).isInstanceOf(RestFailure.class);}}
