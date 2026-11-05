@@ -39,7 +39,7 @@ for(const file of ['mcp-client/package.json','mcp-servers/inventory/package.json
   if(expected&&version!==expected)failures.push('MCP manifest mismatch: '+file+'/'+name);
  }
 }
-for(const file of ['mcp-servers/sales/pom.xml','verification/mcp-compatibility/java/pom.xml','managed-gateway/pom.xml','verification/gateway-compatibility/java/pom.xml']){
+for(const file of ['mcp-servers/sales/pom.xml','verification/mcp-compatibility/java/pom.xml','managed-gateway/pom.xml','rest-gateway/pom.xml','verification/gateway-compatibility/java/pom.xml']){
  const source=await readFile(path.join(root,file),'utf8');
  for(const version of [v.backend.springBoot,v.backend.springAi,v.managedObservations.mcpJavaSdk])if(!source.includes('<version>'+version+'</version>'))failures.push('MCP Java baseline mismatch: '+file);
 }
@@ -63,7 +63,7 @@ const phase2=await readFile(path.join(root,'config/phase2-ci-job.txt'),'utf8');
 if(!workflow.replaceAll('\r\n','\n').includes(phase2.trimEnd()))failures.push('Accepted Phase 2 CI job was changed or removed.');
 const phase3=await readFile(path.join(root,'config/phase3-ci-job.txt'),'utf8');
 if(!workflow.replaceAll('\r\n','\n').includes(phase3.trimEnd()))failures.push('Accepted Phase 3 CI job was changed or removed.');
-for(const [key,file]of [['java','managed-gateway/Dockerfile'],['java','verification/gateway-compatibility/Dockerfile'],['node','verification/gateway-compatibility/Dockerfile'],['java','mcp-servers/sales/Dockerfile'],['node','mcp-servers/inventory/Dockerfile'],['node','mcp-client/Dockerfile'],['java','verification/mcp-compatibility/Dockerfile'],['node','verification/mcp-compatibility/Dockerfile']])if(!(await readFile(path.join(root,file),'utf8')).includes(images[key]))failures.push('MCP image digest mismatch: '+file);
+for(const [key,file]of [['java','rest-gateway/Dockerfile'],['node','demo-systems/partner-api/Dockerfile'],['java','managed-gateway/Dockerfile'],['java','verification/gateway-compatibility/Dockerfile'],['node','verification/gateway-compatibility/Dockerfile'],['java','mcp-servers/sales/Dockerfile'],['node','mcp-servers/inventory/Dockerfile'],['node','mcp-client/Dockerfile'],['java','verification/mcp-compatibility/Dockerfile'],['node','verification/mcp-compatibility/Dockerfile']])if(!(await readFile(path.join(root,file),'utf8')).includes(images[key]))failures.push('MCP image digest mismatch: '+file);
 for(const file of ['infra/docker/compose.yaml','infra/docker/demo-systems.compose.yaml']){
  const previous=spawnSync('git',['show','a38682428457cca417cbac8f20bc14e7c0792f21:'+file],{cwd:root,encoding:'utf8',windowsHide:true});
  if(previous.status===0&&(await readFile(path.join(root,file),'utf8')).replaceAll('\r\n','\n')!==previous.stdout.replaceAll('\r\n','\n'))failures.push('Accepted platform/source lifecycle file changed: '+file);

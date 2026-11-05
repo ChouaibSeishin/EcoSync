@@ -6,6 +6,6 @@ public interface RestGateway {
  Map<String,Object> call(String assertion,String tool,Map<String,Object> arguments);
  List<Map<String,Object>> tools(String assertion);
  void retire(UUID org,UUID connector);
- void cancel(UUID execution);
+ void cancel(UUID org,UUID connector,UUID execution);
  void reconcile();
 }

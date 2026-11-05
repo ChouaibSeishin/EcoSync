@@ -37,7 +37,7 @@ public class HttpRestGateway implements RestGateway {
  @Override public Map<String,Object> call(String assertion,String tool,Map<String,Object> arguments){return wire(assertion,c->{var r=c.callTool(new McpSchema.CallToolRequest(tool,arguments));if(Boolean.TRUE.equals(r.isError())){String code=r.content().isEmpty()?"REST_UNAVAILABLE":r.content().getFirst() instanceof McpSchema.TextContent t?t.text():"REST_UNAVAILABLE";throw new RestFailure(code);}return json.convertValue(r.structuredContent(),Map.class);});}
  @Override public List<Map<String,Object>> tools(String assertion){return wire(assertion,c->c.listTools().tools().stream().map(t->(Map<String,Object>)json.convertValue(t,Map.class)).toList());}
  @Override public void retire(UUID org,UUID connector){try{post("/internal/retire",null,Map.of("organizationId",org,"connectorId",connector));}catch(RestFailure ignored){/* Persisted authority still denies; periodic reconciliation retires resources. */}}
- @Override public void cancel(UUID execution){try{post("/internal/cancel",null,Map.of("execution",execution));}catch(RestFailure ignored){}}
+ @Override public void cancel(UUID org,UUID connector,UUID execution){try{post("/internal/cancel",null,Map.of("organizationId",org,"connectorId",connector,"execution",execution));}catch(RestFailure ignored){}}
  @Override public void reconcile(){try{post("/internal/reconcile",null,Map.of());}catch(RestFailure ignored){}}
  @jakarta.annotation.PreDestroy public void shutdown(){http.shutdownNow();}
 }

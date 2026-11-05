@@ -9,3 +9,12 @@ if(!await exists(privateFile)||!await exists(publicFile)){if(await exists(privat
 // Create our isolated network only if absent. Existing networks/volumes are never replaced.
 let network=spawnSync('docker',['network','inspect','ecosync-rest_sources'],{encoding:'utf8',windowsHide:true});if(network.status!==0){const created=spawnSync('docker',['network','create','--internal','--label','io.ecosync.owner=rest','ecosync-rest_sources'],{encoding:'utf8',windowsHide:true});if(created.status!==0)throw Error('Cannot create REST source network.');network=spawnSync('docker',['network','inspect','ecosync-rest_sources'],{encoding:'utf8',windowsHide:true});}
 const state=JSON.parse(network.stdout)[0];if(!state.Internal||state.Labels?.['io.ecosync.owner']!=='rest')throw Error('REST source network must be the owned internal fixture network.');const subnets=state.IPAM.Config.map(c=>c.Subnet).filter(s=>typeof s==='string'&&/^[0-9./]+$/.test(s));if(!subnets.length)throw Error('REST source subnet unavailable.');const values=await readFile(file,'utf8');if(!/^REST_ALLOWED_CIDRS=/m.test(values))await writeFile(file,values+'REST_ALLOWED_CIDRS='+subnets.join(',')+'\n');await chmod(file,0o600);console.log('REST private network and separate delegation identity ready; existing keys, source data and volumes retained.');
+
+// An unassigned address at the end of our owned internal subnet is a silent TCP test fixture.
+// Normal deployment never admits this hostname; the explicit verification override does.
+const subnet=subnets[0], [address,prefixText]=subnet.split('/'),prefix=Number(prefixText);
+if(prefix<16||prefix>28)throw Error('REST verification subnet must leave a bounded unused fixture address.');
+const octets=address.split('.').map(Number),base=octets.reduce((n,o)=>(n<<8n)+BigInt(o),0n),mask=(0xffffffffn<<BigInt(32-prefix))&0xffffffffn;
+const unused=(base&mask)+(1n<<BigInt(32-prefix))-2n,fixtureIp=[24n,16n,8n,0n].map(n=>Number((unused>>n)&255n)).join('.');
+if(Object.values(state.Containers??{}).some(c=>c.IPv4Address?.split('/')[0]===fixtureIp))throw Error('Controlled TCP timeout fixture address is already in use.');
+const latest=await readFile(file,'utf8');if(!/^REST_TIMEOUT_FIXTURE_IP=/m.test(latest))await writeFile(file,latest+'REST_TIMEOUT_FIXTURE_IP='+fixtureIp+'\n');

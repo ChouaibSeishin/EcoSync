@@ -1,4 +1,9 @@
 services:
+  rest-gateway:
+    environment:
+      REST_DESTINATIONS: http://supplier:8081|dev,http://partner:8095/directory|dev,http://timeout-fixture:8095|dev
+    extra_hosts:
+      - timeout-fixture:${REST_TIMEOUT_FIXTURE_IP:?Run init-rest.mjs}
   partner:
     environment:
       PARTNER_VERIFICATION: "true"

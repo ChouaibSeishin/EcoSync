@@ -1,0 +1,4 @@
+services:
+  backend:
+    environment:
+      ECOSYNC_REST_DESTINATIONS: http://supplier:8081|dev,http://partner:8095/directory|dev,http://timeout-fixture:8095|dev

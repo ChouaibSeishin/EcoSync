@@ -16,12 +16,12 @@ public final class PinnedHttp {
  public Map<String,Object> get(Map<String,Object> config,Map<String,Object> arguments,Operations.Operation operation,Runnable reauthorize){
   var meta=object(config.get("operation"));String target=RestArguments.target(meta,arguments);String type=(String)config.get("authType"),header=(String)config.get("authHeader"),secret=(String)config.get("secret");RestAuth.configuration(type,header,secret);var destination=destinations.target((String)config.get("baseUrl"));
   destinations.resolve(destination);operation.check();var address=destinations.resolve(destination);reauthorize.run();operation.check();
-  try(Socket raw=new Socket()){
+  try(Socket raw=new Socket(Proxy.NO_PROXY)){
    operation.socket(raw);raw.connect(new InetSocketAddress(address,destination.port()),2000);raw.setSoTimeout(3000);Socket connection=raw;
    if(destination.scheme().equals("https")){var tls=(SSLSocket)tlsFactory.createSocket(raw,destination.host(),destination.port(),true);operation.socket(tls);var parameters=tls.getSSLParameters();parameters.setEndpointIdentificationAlgorithm("HTTPS");parameters.setServerNames(List.of(new SNIHostName(destination.host())));parameters.setApplicationProtocols(new String[]{"http/1.1"});tls.setSSLParameters(parameters);tls.setSoTimeout(3000);tls.startHandshake();connection=tls;}
    operation.check();reauthorize.run();operation.check();String auth=type.equals("NONE")?"":type.equals("BEARER")?"Authorization: Bearer "+secret+"\r\n":header+": "+secret+"\r\n";
    String request="GET "+destination.basePath()+target+" HTTP/1.1\r\nHost: "+destination.host()+":"+destination.port()+"\r\nAccept: application/json\r\nAccept-Encoding: gzip\r\nConnection: close\r\n"+auth+"\r\n";if(request.length()>12288)throw new RestFailure("REST_LIMIT");connection.getOutputStream().write(request.getBytes(StandardCharsets.US_ASCII));connection.getOutputStream().flush();
-   var result=read(connection.getInputStream(),meta,operation);operation.check();reauthorize.run();operation.check();String encoded=MAPPER.writeValueAsString(result);if(!secret.isEmpty()&&encoded.contains(secret))throw new RestFailure("REST_INVALID_RESPONSE");return result;
+   var result=read(connection.getInputStream(),meta,operation);operation.check();reauthorize.run();operation.check();if(RestJson.containsSecret(result,secret))throw new RestFailure("REST_INVALID_RESPONSE");return result;
   }catch(RestFailure e){throw e;}catch(SSLException e){throw new RestFailure("REST_TLS_FAILED");}catch(SocketTimeoutException e){throw new RestFailure("REST_TIMEOUT");}catch(IOException e){operation.check();throw new RestFailure("REST_NETWORK_ERROR");}
  }
  static Map<String,Object> read(InputStream source,Map<String,Object> meta,Operations.Operation operation)throws IOException{

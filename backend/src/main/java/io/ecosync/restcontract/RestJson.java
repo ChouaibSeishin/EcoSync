@@ -13,6 +13,7 @@ public final class RestJson {
   .enable(StreamReadFeature.STRICT_DUPLICATE_DETECTION)
   .streamReadConstraints(StreamReadConstraints.builder().maxNestingDepth(40).maxStringLength(262144).maxNumberLength(64).build()).build()).build();
  private RestJson(){}
+ public static boolean containsSecret(Object value,String secret){if(secret==null||secret.isEmpty()||value==null)return false;if(value instanceof Map<?,?> map){for(var e:map.entrySet())if(e.getKey().toString().contains(secret)||containsSecret(e.getValue(),secret))return true;return false;}if(value instanceof List<?> list){for(Object item:list)if(containsSecret(item,secret))return true;return false;}return value.toString().contains(secret);}
  public static Object read(byte[] bytes,int maximum){try{
   if(bytes.length>maximum)throw new RestFailure("REST_LIMIT");
   try(var parser=MAPPER.createParser(bytes)){Object value=MAPPER.readValue(parser,Object.class);if(parser.nextToken()!=null)throw new IllegalArgumentException();bounds(value,0,new int[]{0});return value;}
