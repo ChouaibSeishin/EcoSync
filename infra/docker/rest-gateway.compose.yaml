@@ -1,0 +1,57 @@
+name: ecosync-rest
+services:
+  partner:
+    image: ecosync-demo-partner:phase5
+    build: {context: ../../demo-systems/partner-api}
+    platform: linux/amd64
+    environment:
+      PARTNER_API_KEY: ${PARTNER_API_KEY:?Run init-rest.mjs}
+      PARTNER_VERIFICATION: ${REST_DEVELOPMENT_VERIFICATION:-false}
+    networks: [sources]
+    read_only: true
+    tmpfs: ["/tmp:size=16m,mode=1777"]
+    cap_drop: [ALL]
+    security_opt: [no-new-privileges:true]
+    mem_limit: 192m
+    cpus: 0.5
+    pids_limit: 64
+    healthcheck:
+      test: [CMD, node, -e, "fetch('http://127.0.0.1:8095/health/ready').then(r=>process.exit(r.ok?0:1)).catch(()=>process.exit(1))"]
+      interval: 5s
+      timeout: 3s
+      retries: 20
+  rest-gateway:
+    image: ecosync-managed-rest-gateway:phase5
+    build: {context: ../../rest-gateway}
+    platform: linux/amd64
+    environment:
+      REST_ENVIRONMENT: development
+      REST_GATEWAY_HOST: rest-gateway
+      REST_GATEWAY_TOKEN: ${REST_GATEWAY_TOKEN:?Run init-rest.mjs}
+      REST_DELEGATION_PUBLIC_KEY: /run/ecosync/rest-public.der
+      REST_AUTHORITY_URL: http://backend:8080
+      REST_DESTINATIONS: http://supplier:8081|dev,http://partner:8095/directory|dev
+      REST_ALLOWED_CIDRS: ${REST_ALLOWED_CIDRS:?Run init-rest.mjs}
+    volumes:
+      - ../../.verification/rest/assertion-public.der:/run/ecosync/rest-public.der:ro
+    networks: [control, sources]
+    read_only: true
+    tmpfs: ["/tmp:size=32m,mode=1777"]
+    cap_drop: [ALL]
+    security_opt: [no-new-privileges:true]
+    mem_limit: 512m
+    cpus: 1.0
+    pids_limit: 128
+    healthcheck:
+      test: [CMD, bash, -c, "exec 3<>/dev/tcp/127.0.0.1/8094; printf 'GET /health/ready HTTP/1.0\r\nHost: localhost\r\n\r\n' >&3; head -1 <&3 | grep -q 200"]
+      interval: 5s
+      timeout: 3s
+      start_period: 20s
+      retries: 25
+networks:
+  control:
+    name: ecosync-rest_control
+    internal: true
+  sources:
+    name: ecosync-rest_sources
+    external: true # init-rest.mjs creates and verifies this internal network.

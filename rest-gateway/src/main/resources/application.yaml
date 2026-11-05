@@ -1,0 +1,8 @@
+server:
+  port: 8094
+  tomcat:
+    threads:
+      max: 24
+logging:
+  level:
+    io.modelcontextprotocol: OFF

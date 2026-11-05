@@ -1,0 +1,19 @@
+package io.ecosync.restgateway;
+import io.ecosync.restcontract.*;
+import java.io.*;
+import java.nio.charset.StandardCharsets;
+import java.util.*;
+import java.util.zip.GZIPOutputStream;
+import org.junit.jupiter.api.Test;
+import static org.assertj.core.api.Assertions.*;
+class PinnedHttpTest {
+ Map<String,Object> metadata(){return Map.of("responses",Map.of("200",RestSchema.normalize(Map.of("type","object","properties",Map.of("ok",Map.of("type","boolean")),"required",List.of("ok"),"additionalProperties",false),true)));}
+ Map<String,Object> read(byte[] value){try(var ops=new Operations();var op=ops.begin(UUID.randomUUID(),"fixture")){return PinnedHttp.read(new ByteArrayInputStream(value),metadata(),op);}catch(IOException e){throw new RuntimeException(e);}}
+ byte[] response(String headers,String body){return ("HTTP/1.1 200 OK\r\nContent-Type: application/json\r\n"+headers+"\r\n"+body).getBytes(StandardCharsets.US_ASCII);}
+ @Test void fixedAndChunkedJsonAreValidated(){assertThat(read(response("Content-Length: 11\r\n","{\"ok\":true}")).get("untrusted")).isEqualTo(true);assertThat(read(response("Transfer-Encoding: chunked\r\n","b\r\n{\"ok\":true}\r\n0\r\n\r\n")).get("status")).isEqualTo(200);}
+ @Test void redirectAndNonSuccessAreExplicitFailures(){for(var e:Map.of(302,"REST_REDIRECT_DENIED",401,"REST_AUTHENTICATION_FAILED",403,"REST_FORBIDDEN",404,"REST_NOT_FOUND",503,"REST_HTTP_ERROR").entrySet())assertThatThrownBy(()->read(("HTTP/1.1 "+e.getKey()+" Failure\r\nLocation: http://169.254.169.254/\r\n\r\n").getBytes(StandardCharsets.US_ASCII))).isInstanceOf(RestFailure.class).extracting(x->((RestFailure)x).code).isEqualTo(e.getValue());}
+ @Test void ambiguousFramingDuplicateHeadersAndInvalidJsonFail(){for(String headers:List.of("Content-Length: 11\r\nContent-Length: 11\r\n","Content-Length: 11\r\nTransfer-Encoding: chunked\r\n","Transfer-Encoding: gzip\r\n","Content-Length: -1\r\n"))assertThatThrownBy(()->read(response(headers,"{\"ok\":true}"))).isInstanceOf(RestFailure.class);assertThatThrownBy(()->read(response("Content-Length: 12\r\n","{\"ok\":true}"))).isInstanceOf(RestFailure.class);assertThatThrownBy(()->read(response("","{\"ok\":\"wrong\"}"))).isInstanceOf(RestFailure.class);assertThatThrownBy(()->read(response("","{\"ok\":true,\"ok\":false}"))).isInstanceOf(RestFailure.class);}
+ @Test void compressedAndDecompressedLimitsAreIndependent()throws Exception{var compressed=new ByteArrayOutputStream();try(var gzip=new GZIPOutputStream(compressed)){gzip.write(("{\"blob\":\""+"x".repeat(300000)+"\"}").getBytes(StandardCharsets.US_ASCII));}var response=new ByteArrayOutputStream();response.write(response("Content-Encoding: gzip\r\nContent-Length: "+compressed.size()+"\r\n",""));response.write(compressed.toByteArray());assertThatThrownBy(()->read(response.toByteArray())).isInstanceOf(RestFailure.class).extracting(x->((RestFailure)x).code).isEqualTo("REST_RESPONSE_LIMIT");assertThatThrownBy(()->read(response("Content-Length: 262145\r\n",""))).isInstanceOf(RestFailure.class);}
+ @Test void nestingAndChunkComplexityAreBounded(){assertThatThrownBy(()->read(response("","{\"x\":".repeat(45)+"0"+"}".repeat(45)))).isInstanceOf(RestFailure.class);assertThatThrownBy(()->read(response("Transfer-Encoding: chunked\r\n","ffffffff\r\n"))).isInstanceOf(RestFailure.class);}
+ @Test void cancellationAndConnectorConcurrencyAreEnforced(){try(var ops=new Operations();var first=ops.begin(UUID.randomUUID(),"one");var second=ops.begin(UUID.randomUUID(),"one")){assertThatThrownBy(()->ops.begin(UUID.randomUUID(),"one")).isInstanceOf(RestFailure.class);ops.retire("one");assertThatThrownBy(first::check).isInstanceOf(RestFailure.class);assertThatThrownBy(second::check).isInstanceOf(RestFailure.class);}}
+}

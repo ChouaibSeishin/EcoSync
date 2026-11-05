@@ -1,0 +1,8 @@
+# Attach only the independently owned Supplier API, never either database, to REST sources.
+services:
+  supplier:
+    networks: [sources, rest-sources]
+networks:
+  rest-sources:
+    external: true
+    name: ecosync-rest_sources

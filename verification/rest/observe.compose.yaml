@@ -1,0 +1,4 @@
+services:
+  partner:
+    environment:
+      PARTNER_VERIFICATION: "true"

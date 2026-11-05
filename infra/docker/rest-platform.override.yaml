@@ -1,0 +1,20 @@
+services:
+  backend:
+    environment:
+      ECOSYNC_REST_ENABLED: "true"
+      ECOSYNC_REST_ENVIRONMENT: development
+      ECOSYNC_REST_GATEWAY_URL: http://rest-gateway:8094
+      ECOSYNC_REST_SERVICE_TOKEN: ${REST_GATEWAY_TOKEN:?Required}
+      ECOSYNC_REST_DESTINATIONS: http://supplier:8081|dev,http://partner:8095/directory|dev
+      ECOSYNC_REST_KEYRING: /run/ecosync/keyring.json
+      ECOSYNC_REST_PRIVATE_KEY: /run/ecosync/rest-private.der
+      ECOSYNC_REST_PUBLIC_KEY: /run/ecosync/rest-public.der
+    volumes:
+      - ../../.verification/mcp/keyring.json:/run/ecosync/keyring.json:ro
+      - ../../.verification/rest/assertion-private.der:/run/ecosync/rest-private.der:ro
+      - ../../.verification/rest/assertion-public.der:/run/ecosync/rest-public.der:ro
+    networks: [default, rest-control]
+networks:
+  rest-control:
+    external: true
+    name: ecosync-rest_control
