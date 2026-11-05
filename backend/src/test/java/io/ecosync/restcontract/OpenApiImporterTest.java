@@ -5,6 +5,7 @@ import org.junit.jupiter.api.Test;
 import static org.assertj.core.api.Assertions.*;
 import static io.ecosync.restcontract.RestJson.*;
 class OpenApiImporterTest {
+ @Test void assertionKeywordsCannotBeSilentlyAppliedToWrongTypes(){for(var schema:List.of(Map.of("type","integer","minLength",2),Map.of("type","string","minimum",2),Map.of("type","boolean","maxItems",2),Map.of("type","string","nullable",true,"enum",List.of("x"))))assertThatThrownBy(()->RestSchema.normalize(new HashMap<String,Object>(schema),false)).isInstanceOf(RestFailure.class);}
  static String document(){return """
  {"openapi":"3.1.0","info":{"title":"Independent","version":"2"},"paths":{"/people/{id}":{"get":{"operationId":"person","parameters":[{"name":"id","in":"path","required":true,"schema":{"type":"integer","minimum":1}}],"responses":{"200":{"description":"one","content":{"application/json":{"schema":{"$ref":"#/components/schemas/Person"}}}}}}}},"components":{"schemas":{"Person":{"type":"object","properties":{"name":{"type":"string"}},"required":["name"],"additionalProperties":false}}}}
  """;}

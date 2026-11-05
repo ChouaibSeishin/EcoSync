@@ -7,6 +7,7 @@ import java.util.zip.GZIPOutputStream;
 import org.junit.jupiter.api.Test;
 import static org.assertj.core.api.Assertions.*;
 class PinnedHttpTest {
+ @Test void validNullableRootKeepsAnExplicitNullDataValue()throws Exception{var meta=Map.<String,Object>of("responses",Map.of("200",RestSchema.normalize(Map.of("type",List.of("object","null")),true)));try(var ops=new Operations();var op=ops.begin(UUID.randomUUID(),"nullable")){var result=PinnedHttp.read(new ByteArrayInputStream(response("Content-Length: 4\r\n","null")),meta,op);assertThat(result).containsEntry("data",null).containsEntry("untrusted",true);}}
  Map<String,Object> metadata(){return Map.of("responses",Map.of("200",RestSchema.normalize(Map.of("type","object","properties",Map.of("ok",Map.of("type","boolean")),"required",List.of("ok"),"additionalProperties",false),true)));}
  Map<String,Object> read(byte[] value){try(var ops=new Operations();var op=ops.begin(UUID.randomUUID(),"fixture")){return PinnedHttp.read(new ByteArrayInputStream(value),metadata(),op);}catch(IOException e){throw new RuntimeException(e);}}
  byte[] response(String headers,String body){return ("HTTP/1.1 200 OK\r\nContent-Type: application/json\r\n"+headers+"\r\n"+body).getBytes(StandardCharsets.US_ASCII);}

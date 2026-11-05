@@ -1,0 +1,114 @@
+{
+  "openapi": "3.1.0",
+  "info": {
+    "title": "Controlled adversarial fixture",
+    "version": "1.0.0"
+  },
+  "servers": [
+    {
+      "url": "http://untrusted-suggestion.invalid"
+    }
+  ],
+  "security": [
+    {
+      "partnerKey": []
+    }
+  ],
+  "paths": {
+    "/v2/probes/{kind}": {
+      "get": {
+        "operationId": "probe",
+        "parameters": [
+          {
+            "name": "kind",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "enum": [
+                "redirect",
+                "loopback",
+                "cross-origin",
+                "downgrade",
+                "unauthorized",
+                "forbidden",
+                "missing",
+                "failure",
+                "html",
+                "invalid",
+                "large",
+                "deep",
+                "gzip-bomb",
+                "slow",
+                "delay",
+                "ok"
+              ]
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "JSON success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "ok": {
+                      "type": "boolean"
+                    }
+                  },
+                  "required": [
+                    "ok"
+                  ],
+                  "additionalProperties": false
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "securitySchemes": {
+      "partnerKey": {
+        "type": "apiKey",
+        "in": "header",
+        "name": "X-Partner-Key"
+      }
+    },
+    "schemas": {
+      "Partner": {
+        "type": "object",
+        "properties": {
+          "code": {
+            "type": "string",
+            "pattern": "^PT-[0-9]{3}$"
+          },
+          "name": {
+            "type": "string",
+            "maxLength": 80
+          },
+          "tier": {
+            "type": "string",
+            "enum": [
+              "GOLD",
+              "SILVER"
+            ]
+          },
+          "enabled": {
+            "type": "boolean"
+          }
+        },
+        "required": [
+          "code",
+          "name",
+          "tier",
+          "enabled"
+        ],
+        "additionalProperties": false
+      }
+    }
+  }
+}

@@ -22,9 +22,9 @@ public class RestAssertions {
   try{String p=Base64.getUrlEncoder().withoutPadding().encodeToString(json.writeValueAsBytes(Map.of("alg","EdDSA","typ","JWT")))+"."+Base64.getUrlEncoder().withoutPadding().encodeToString(json.writeValueAsBytes(c));var s=Signature.getInstance("Ed25519");s.initSign(privateKey);s.update(p.getBytes(StandardCharsets.US_ASCII));return p+"."+Base64.getUrlEncoder().withoutPadding().encodeToString(s.sign());}catch(Exception e){throw new RestFailure("REST_UNAVAILABLE");}
  }
  public Map<String,Object> verify(String value){try{
-  if(value==null||value.length()>4096)throw new Exception();String[] p=value.split("\\.");if(p.length!=3)throw new Exception();var d=Base64.getUrlDecoder();var h=json.readTree(d.decode(p[0]));if(!h.path("alg").asString().equals("EdDSA")||!h.path("typ").asString().equals("JWT"))throw new Exception();
+  if(value==null||value.length()>4096)throw new Exception();String[] p=value.split("\\.",-1);if(p.length!=3)throw new Exception();var d=Base64.getUrlDecoder();var h=json.readTree(d.decode(p[0]));if(!h.path("alg").asString().equals("EdDSA")||!h.path("typ").asString().equals("JWT"))throw new Exception();
   var s=Signature.getInstance("Ed25519");s.initVerify(publicKey);s.update((p[0]+"."+p[1]).getBytes(StandardCharsets.US_ASCII));if(!s.verify(d.decode(p[2])))throw new Exception();var c=json.readTree(d.decode(p[1]));long now=Instant.now().getEpochSecond();
-  if(!c.path("iss").asString().equals("ecosync-platform")||!c.path("aud").asString().equals("ecosync-rest-gateway")||c.path("exp").asLong()<=now||c.path("iat").asLong()>now+2||c.path("exp").asLong()-c.path("iat").asLong()>30||c.path("revision").asLong()<1)throw new Exception();
+  if(!c.path("iss").asString().equals("ecosync-platform")||!c.path("aud").asString().equals("ecosync-rest-gateway")||c.path("exp").asLong()<=now||c.path("iat").asLong()>now+2||c.path("exp").asLong()<=c.path("iat").asLong()||c.path("exp").asLong()-c.path("iat").asLong()>30||c.path("revision").asLong()<1)throw new Exception();
   for(String field:List.of("sub","org","connector","execution","jti"))UUID.fromString(c.path(field).asString());
   if(!Set.of("TEST","LIST","INVOKE","DESCRIBE").contains(c.path("action").asString()))throw new Exception();return json.convertValue(c,Map.class);
  }catch(Exception e){throw new RestFailure("REST_ACCESS_DENIED");}}

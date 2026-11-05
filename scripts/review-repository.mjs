@@ -8,13 +8,15 @@ if(listing.status!==0)throw new Error('Cannot inspect tracked files.');
 const files=listing.stdout.split('\0').filter(Boolean),failures=[];
 let secrets=[];
 for(const name of await readdir(path.join(root,'infra/docker'))){
- if(!['.env','demo.env','.env.mcp','.env.database'].includes(name)&&!name.startsWith('.env.demo-repro-'))continue;
+ if(!['.env','demo.env','.env.mcp','.env.database','.env.rest'].includes(name)&&!name.startsWith('.env.demo-repro-'))continue;
  const source=await readFile(path.join(root,'infra/docker',name),'utf8');
- secrets.push(...source.split(/\r?\n/).filter(l=>/^[A-Z_]*(PASSWORD|TOKEN|SECRET)=/.test(l)).map(l=>l.slice(l.indexOf('=')+1)).filter(v=>v.length>=16));
+ secrets.push(...source.split(/\r?\n/).filter(l=>/^[A-Z_]*(PASSWORD|TOKEN|SECRET|API_KEY)=/.test(l)).map(l=>l.slice(l.indexOf('=')+1)).filter(v=>v.length>=16));
 }
 try{const ring=JSON.parse(await readFile(path.join(root,'.verification/mcp/keyring.json'),'utf8'));secrets.push(...Object.values(ring.keys).filter(v=>typeof v==='string'&&v.length>=16));}catch(error){if(error.code!=='ENOENT')failures.push('Cannot inspect local MCP keyring for known-secret review.');}
 secrets=[...new Set(secrets)];
 try{secrets.push((await readFile(path.join(root,'.verification/database/assertion-private.der'))).toString('base64'));}catch(error){if(error.code!=='ENOENT')failures.push('Cannot inspect delegated signing key for known-secret review.');}
+try{secrets.push((await readFile(path.join(root,'.verification/rest/assertion-private.der'))).toString('base64'));}catch(error){if(error.code!=='ENOENT')failures.push('Cannot inspect REST signing key.');}
+try{const values=await readFile(path.join(root,'.verification/movies/reader.env'),'utf8');secrets.push(...values.split(/\r?\n/).filter(l=>l.startsWith('MOVIES_DB_PASSWORD=')).map(l=>l.slice(l.indexOf('=')+1)).filter(v=>v.length>=16));}catch(error){if(error.code!=='ENOENT')failures.push('Cannot inspect optional local movies credential.');}
 for(const file of files){
  const base=path.basename(file);
  if(file.split('/').some(p=>['node_modules','target','.verification','test-results','playwright-report'].includes(p))||base==='demo.env'||base==='.env'||base.startsWith('.env.')&&base!=='.env.example')failures.push('Generated/private path tracked: '+file);
@@ -66,6 +68,8 @@ for(const file of ['infra/docker/compose.yaml','infra/docker/demo-systems.compos
  const previous=spawnSync('git',['show','a38682428457cca417cbac8f20bc14e7c0792f21:'+file],{cwd:root,encoding:'utf8',windowsHide:true});
  if(previous.status===0&&(await readFile(path.join(root,file),'utf8')).replaceAll('\r\n','\n')!==previous.stdout.replaceAll('\r\n','\n'))failures.push('Accepted platform/source lifecycle file changed: '+file);
 }
+const phase4Workflow=await readFile(path.join(root,'config/phase4-ci-workflow.txt'),'utf8');
+for(const name of ['verify','managed_database','demo','native_mcp']){const prior=phase4Workflow.split('\n  '+name+':\n')[1]?.split(/\n  [a-z_]+:\n/)[0];const current=workflow.replaceAll('\r\n','\n').split('\n  '+name+':\n')[1]?.split(/\n  [a-z_]+:\n/)[0];if(!prior||prior.trimEnd()!==current?.trimEnd())failures.push('Accepted Phase 4 CI job changed: '+name);}
 for(const match of workflow.matchAll(/uses:\s*([^\s#]+)/g))if(!/@[a-f0-9]{40}$/.test(match[1]))failures.push('Unpinned Action: '+match[1]);
 const prior=spawnSync('git',['show','603cfb993566f465d0c3328f175d71b27f6a4942:.github/workflows/ci.yml'],{cwd:root,encoding:'utf8',windowsHide:true});
 if(prior.status===0){

@@ -83,3 +83,7 @@ Follow [database local setup](docs/development/DATABASE_LOCAL_SETUP.md) for the 
 The private Java gateway serves MCP 2025-11-25 only; native MCP retains its tested dual-generation client. Two neutral tools enforce live actor/organization/revision/scope authorization. Backend stays outside the source network and alone receives AES/private signing keys. Source schemas/data and volumes are preserved.
 
 See [architecture](docs/architecture/DATABASE_CONNECTORS.md), [security](docs/architecture/DATABASE_SECURITY.md), [acceptance](docs/development/PHASE_4_ACCEPTANCE.md) and [verification](docs/development/PHASE_4_VERIFICATION.md). One backend replica, bounded single-table reads and explicit refresh are supported. Local Docker/CI do not establish production readiness. Phase 5/6 have not begun.
+
+## Phase 5 REST connectors
+
+Dynamic REST work uses a separate private MCP gateway and JSON OpenAPI review for approved GET operations. See [REST local setup](docs/development/REST_LOCAL_SETUP.md), [contract subset](docs/architecture/REST_CONNECTORS.md), [security](docs/architecture/REST_SECURITY.md), [verification](docs/development/PHASE_5_VERIFICATION.md) and [acceptance status](docs/development/PHASE_5_ACCEPTANCE.md). Phase 6 chat remains unimplemented.

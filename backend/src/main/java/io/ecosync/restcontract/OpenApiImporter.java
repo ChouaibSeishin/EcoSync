@@ -15,8 +15,8 @@ public final class OpenApiImporter {
   var raw=object(read(document.getBytes(StandardCharsets.UTF_8),limits.bytes));
   String version=Objects.toString(raw.get("openapi"),"");if(!version.matches("3\\.(0|1)\\.[0-9]{1,3}"))throw new RestFailure("REST_CONTRACT_INVALID");boolean v31=version.startsWith("3.1.");
   if(raw.containsKey("webhooks")||raw.containsKey("jsonSchemaDialect"))throw new RestFailure("REST_CONTRACT_UNSUPPORTED");
-  var expanded=object(expand(raw,raw,new HashSet<>(),0,new int[]{0}));var info=object(expanded.get("info"));String title=label(info.get("title"),120),release=label(info.get("version"),100);
-  var paths=object(expanded.get("paths"));if(paths.isEmpty()||paths.size()>limits.paths)throw new RestFailure("REST_LIMIT");var result=new ArrayList<Operation>();var ids=new HashSet<String>();var templates=new HashSet<String>();
+  var expanded=object(expand(raw,raw,new HashSet<>(),0,new int[]{0}));if(MAPPER.writeValueAsBytes(expanded).length>1048576)throw new RestFailure("REST_LIMIT");var info=object(expanded.get("info"));String title=label(info.get("title"),120),release=label(info.get("version"),100);
+  var paths=object(expanded.get("paths"));if(paths.isEmpty()||paths.size()>limits.paths)throw new RestFailure("REST_LIMIT");var result=new ArrayList<Operation>();int reviewBytes=0;var ids=new HashSet<String>();var templates=new HashSet<String>();
   var securitySchemes=object(object(expanded.getOrDefault("components",Map.of())).getOrDefault("securitySchemes",Map.of()));
   for(String path:new TreeSet<>(paths.keySet())){
    if(!path.matches("/(?:[A-Za-z0-9._~-]+|\\{[A-Za-z_][A-Za-z0-9_]{0,63}\\})(?:/(?:[A-Za-z0-9._~-]+|\\{[A-Za-z_][A-Za-z0-9_]{0,63}\\}))*")||Arrays.stream(path.split("/")).anyMatch(s->s.equals(".")||s.equals("..")))throw new RestFailure("REST_CONTRACT_INVALID");
@@ -51,8 +51,9 @@ public final class OpenApiImporter {
      if(requirements.isEmpty())auth.add("NONE");else for(Object requirement:requirements){var r=object(requirement);if(r.isEmpty()){auth.add("NONE");continue;}if(r.size()!=1)throw new RestFailure("REST_AUTH_UNSUPPORTED");String key=r.keySet().iterator().next();if(!array(r.get(key)).isEmpty())throw new RestFailure("REST_AUTH_UNSUPPORTED");var scheme=object(securitySchemes.get(key));
       if("http".equals(scheme.get("type"))&&"bearer".equals(scheme.get("scheme")))auth.add("BEARER");else if("apiKey".equals(scheme.get("type"))&&"header".equals(scheme.get("in"))){String header=label(scheme.get("name"),64);RestAuth.header(header);auth.add("HEADER_API_KEY:"+header.toLowerCase(Locale.ROOT));}else throw new RestFailure("REST_AUTH_UNSUPPORTED");
      }
+     if(MAPPER.writeValueAsBytes(Map.of("parameters",params,"responses",responses,"authentication",auth)).length>32768)throw new RestFailure("REST_LIMIT");
     }catch(RestFailure e){reason=e.code;}catch(Exception e){reason="REST_CONTRACT_UNSUPPORTED";}
-    boolean supported=reason.isEmpty();String fingerprint=hash(List.of(id,method,path,supported,reason,params,responses,auth));result.add(new Operation(id,method.toUpperCase(Locale.ROOT),path,supported,reason,List.copyOf(params),Map.copyOf(responses),List.copyOf(auth),fingerprint));
+    boolean supported=reason.isEmpty();if(!supported){params.clear();responses.clear();auth.clear();}String fingerprint=hash(List.of(id,method,path,supported,reason,params,responses,auth));result.add(new Operation(id,method.toUpperCase(Locale.ROOT),path,supported,reason,List.copyOf(params),Map.copyOf(responses),List.copyOf(auth),fingerprint));reviewBytes+=MAPPER.writeValueAsBytes(result.getLast()).length;if(reviewBytes>524288)throw new RestFailure("REST_LIMIT");
    }
   }
   if(result.isEmpty())throw new RestFailure("REST_CONTRACT_INVALID");return new Contract(title,release,version,hash(raw),List.copyOf(result));

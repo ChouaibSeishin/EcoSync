@@ -10,14 +10,15 @@ import static io.ecosync.restcontract.RestJson.*;
 
 /** Strict GET-only HTTP/1.1. No redirects, retries, proxy, cookies or second resolver. */
 public final class PinnedHttp {
- private final DestinationPolicy destinations;
- public PinnedHttp(DestinationPolicy destinations){this.destinations=destinations;}
+ private final DestinationPolicy destinations;private final SSLSocketFactory tlsFactory;
+ public PinnedHttp(DestinationPolicy destinations){this(destinations,(SSLSocketFactory)SSLSocketFactory.getDefault());}
+ PinnedHttp(DestinationPolicy destinations,SSLSocketFactory tlsFactory){this.destinations=destinations;this.tlsFactory=tlsFactory;}
  public Map<String,Object> get(Map<String,Object> config,Map<String,Object> arguments,Operations.Operation operation,Runnable reauthorize){
   var meta=object(config.get("operation"));String target=RestArguments.target(meta,arguments);String type=(String)config.get("authType"),header=(String)config.get("authHeader"),secret=(String)config.get("secret");RestAuth.configuration(type,header,secret);var destination=destinations.target((String)config.get("baseUrl"));
   destinations.resolve(destination);operation.check();var address=destinations.resolve(destination);reauthorize.run();operation.check();
   try(Socket raw=new Socket()){
    operation.socket(raw);raw.connect(new InetSocketAddress(address,destination.port()),2000);raw.setSoTimeout(3000);Socket connection=raw;
-   if(destination.scheme().equals("https")){var tls=(SSLSocket)((SSLSocketFactory)SSLSocketFactory.getDefault()).createSocket(raw,destination.host(),destination.port(),true);operation.socket(tls);var parameters=tls.getSSLParameters();parameters.setEndpointIdentificationAlgorithm("HTTPS");parameters.setServerNames(List.of(new SNIHostName(destination.host())));parameters.setApplicationProtocols(new String[]{"http/1.1"});tls.setSSLParameters(parameters);tls.setSoTimeout(3000);tls.startHandshake();connection=tls;}
+   if(destination.scheme().equals("https")){var tls=(SSLSocket)tlsFactory.createSocket(raw,destination.host(),destination.port(),true);operation.socket(tls);var parameters=tls.getSSLParameters();parameters.setEndpointIdentificationAlgorithm("HTTPS");parameters.setServerNames(List.of(new SNIHostName(destination.host())));parameters.setApplicationProtocols(new String[]{"http/1.1"});tls.setSSLParameters(parameters);tls.setSoTimeout(3000);tls.startHandshake();connection=tls;}
    operation.check();reauthorize.run();operation.check();String auth=type.equals("NONE")?"":type.equals("BEARER")?"Authorization: Bearer "+secret+"\r\n":header+": "+secret+"\r\n";
    String request="GET "+destination.basePath()+target+" HTTP/1.1\r\nHost: "+destination.host()+":"+destination.port()+"\r\nAccept: application/json\r\nAccept-Encoding: gzip\r\nConnection: close\r\n"+auth+"\r\n";if(request.length()>12288)throw new RestFailure("REST_LIMIT");connection.getOutputStream().write(request.getBytes(StandardCharsets.US_ASCII));connection.getOutputStream().flush();
    var result=read(connection.getInputStream(),meta,operation);operation.check();reauthorize.run();operation.check();String encoded=MAPPER.writeValueAsString(result);if(!secret.isEmpty()&&encoded.contains(secret))throw new RestFailure("REST_INVALID_RESPONSE");return result;
@@ -35,7 +36,7 @@ public final class PinnedHttp {
   else bytes=bounded(in,262144,operation);
   String encoding=headers.getOrDefault("content-encoding","identity");if(encoding.equalsIgnoreCase("gzip"))bytes=bounded(new GZIPInputStream(new ByteArrayInputStream(bytes)),262144,operation);else if(!encoding.equalsIgnoreCase("identity"))throw new RestFailure("REST_INVALID_RESPONSE");
   Object value=RestJson.read(bytes,262144);var responses=object(meta.get("responses"));if(!responses.containsKey(Integer.toString(code)))throw new RestFailure("REST_INVALID_RESPONSE");RestSchema.validate(object(responses.get(Integer.toString(code))),value,"REST_INVALID_RESPONSE");
-  int[] items={0};Object bounded=items(value,items);return Map.of("data",bounded,"status",code,"untrusted",true,"truncated",items[0]>100,"partial",items[0]>100,"returnedItems",Math.min(items[0],100),"retrievedAt",java.time.Instant.now().toString());
+  int[] items={0};Object bounded=items(value,items);var result=new LinkedHashMap<String,Object>();result.put("data",bounded);result.put("status",code);result.put("untrusted",true);result.put("truncated",items[0]>100);result.put("partial",items[0]>100);result.put("returnedItems",Math.min(items[0],100));result.put("retrievedAt",java.time.Instant.now().toString());return result;
  }
  private static Object items(Object value,int[] count){if(value instanceof List<?> list){var out=new ArrayList<>();for(Object item:list){count[0]++;if(count[0]<=100)out.add(items(item,count));}return out;}if(value instanceof Map<?,?> map){var out=new LinkedHashMap<String,Object>();for(var e:map.entrySet())out.put(e.getKey().toString(),items(e.getValue(),count));return out;}return value;}
  private static byte[] bounded(InputStream in,int maximum,Operations.Operation op)throws IOException{var out=new ByteArrayOutputStream();byte[] buffer=new byte[4096];for(int n;(n=in.read(buffer))!=-1;){op.check();if(n>maximum-out.size())throw new RestFailure("REST_RESPONSE_LIMIT");out.write(buffer,0,n);}return out.toByteArray();}
