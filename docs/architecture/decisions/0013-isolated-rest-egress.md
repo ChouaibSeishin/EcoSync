@@ -1,6 +1,6 @@
 # ADR 0013: Isolated REST execution and configuration-driven MCP
 
-Date: 2026-11-05. Status: selected for implementation; acceptance requires the Phase 5 tests and final remote run.
+Date: 2026-11-05. Status: accepted. [Observed implementation and verification evidence](../../development/PHASE_5_VERIFICATION.md) records five successful CI jobs, controlled TCP/TLS tests and both actual REST browser journeys. Final branch-head verification remains separately identified from application acceptance.
 
 ## Context and alternatives
 

@@ -1,0 +1,250 @@
+{
+  "phase": 5,
+  "verifiedAt": "2026-11-05T11:32:27.207Z",
+  "result": "PASS",
+  "checks": [
+    {
+      "check": "Session CSRF tenant and management permissions",
+      "result": "PASS",
+      "partnerOutboundRequests": 0
+    },
+    {
+      "check": "Operator URL destination cannot be expanded by imported servers or arguments",
+      "result": "PASS",
+      "partnerOutboundRequests": 0
+    },
+    {
+      "check": "External refs and duplicate JSON contract keys rejected",
+      "result": "PASS",
+      "partnerOutboundRequests": 0
+    },
+    {
+      "check": "supplier DRAFT and inspection do not execute or approve",
+      "result": "PASS",
+      "partnerOutboundRequests": 0
+    },
+    {
+      "check": "supplier explicit GET approval then authenticated test and activation",
+      "result": "PASS"
+    },
+    {
+      "check": "supplier actual MCP catalog contains only two neutral tools",
+      "result": "PASS"
+    },
+    {
+      "check": "supplier real generic GET returns independent source facts",
+      "result": "PASS"
+    },
+    {
+      "check": "partner DRAFT and inspection do not execute or approve",
+      "result": "PASS",
+      "partnerOutboundRequests": 0
+    },
+    {
+      "check": "partner explicit GET approval then authenticated test and activation",
+      "result": "PASS"
+    },
+    {
+      "check": "partner actual MCP catalog contains only two neutral tools",
+      "result": "PASS"
+    },
+    {
+      "check": "partner real generic GET returns independent source facts",
+      "result": "PASS"
+    },
+    {
+      "check": "Explicit no-auth integration uses the same governed MCP workflow",
+      "result": "PASS"
+    },
+    {
+      "check": "Incorrect real API credential fails authentication and revision recovery requires fresh approval",
+      "result": "PASS"
+    },
+    {
+      "check": "Approved typed path parameters reach the independent API",
+      "result": "PASS"
+    },
+    {
+      "check": "Actual TCP connection timeout on one owned unused internal fixture address",
+      "result": "PASS"
+    },
+    {
+      "check": "MCP describes an approved templated operation without executing its source",
+      "result": "PASS",
+      "partnerOutboundRequests": 0
+    },
+    {
+      "check": "Partner unsupported write operation cannot be approved",
+      "result": "PASS",
+      "partnerOutboundRequests": 0
+    },
+    {
+      "check": "Typed parameters unknown keys headers URLs and traversal rejected",
+      "result": "PASS",
+      "partnerOutboundRequests": 0
+    },
+    {
+      "check": "Actual URL encoding pagination and explicit item truncation",
+      "result": "PASS"
+    },
+    {
+      "check": "Auditor and unapproved user cannot invoke active API",
+      "result": "PASS",
+      "partnerOutboundRequests": 0
+    },
+    {
+      "check": "Official SDK calls generic REST tool and rejects replay",
+      "result": "PASS"
+    },
+    {
+      "check": "Wrong audience denied",
+      "result": "PASS"
+    },
+    {
+      "check": "Expired assertion denied",
+      "result": "PASS"
+    },
+    {
+      "check": "Tampered signature denied",
+      "result": "PASS"
+    },
+    {
+      "check": "Wrong argument hash denied",
+      "result": "PASS"
+    },
+    {
+      "check": "Auditor context denied",
+      "result": "PASS"
+    },
+    {
+      "check": "Unapproved user context denied",
+      "result": "PASS"
+    },
+    {
+      "check": "Forged organization denied",
+      "result": "PASS"
+    },
+    {
+      "check": "Guessed unapproved operation denied",
+      "result": "PASS"
+    },
+    {
+      "check": "Missing delegation denied",
+      "result": "PASS"
+    },
+    {
+      "check": "Missing service identity denied",
+      "result": "PASS"
+    },
+    {
+      "check": "Host override denied",
+      "result": "PASS"
+    },
+    {
+      "check": "Unsolicited Origin denied",
+      "result": "PASS"
+    },
+    {
+      "check": "Explicit user grant and current revocation",
+      "result": "PASS"
+    },
+    {
+      "check": "Actual HTTP fixture redirect classified REST_REDIRECT_DENIED",
+      "result": "PASS"
+    },
+    {
+      "check": "Actual HTTP fixture loopback classified REST_REDIRECT_DENIED",
+      "result": "PASS"
+    },
+    {
+      "check": "Actual HTTP fixture cross-origin classified REST_REDIRECT_DENIED",
+      "result": "PASS"
+    },
+    {
+      "check": "Actual HTTP fixture downgrade classified REST_REDIRECT_DENIED",
+      "result": "PASS"
+    },
+    {
+      "check": "Actual HTTP fixture unauthorized classified REST_AUTHENTICATION_FAILED",
+      "result": "PASS"
+    },
+    {
+      "check": "Actual HTTP fixture forbidden classified REST_FORBIDDEN",
+      "result": "PASS"
+    },
+    {
+      "check": "Actual HTTP fixture missing classified REST_NOT_FOUND",
+      "result": "PASS"
+    },
+    {
+      "check": "Actual HTTP fixture failure classified REST_HTTP_ERROR",
+      "result": "PASS"
+    },
+    {
+      "check": "Actual HTTP fixture html classified REST_INVALID_RESPONSE",
+      "result": "PASS"
+    },
+    {
+      "check": "Actual HTTP fixture invalid classified REST_INVALID_RESPONSE",
+      "result": "PASS"
+    },
+    {
+      "check": "Actual HTTP fixture large classified REST_RESPONSE_LIMIT",
+      "result": "PASS"
+    },
+    {
+      "check": "Actual HTTP fixture deep classified REST_INVALID_JSON",
+      "result": "PASS"
+    },
+    {
+      "check": "Actual HTTP fixture gzip-bomb classified REST_RESPONSE_LIMIT",
+      "result": "PASS"
+    },
+    {
+      "check": "Actual HTTP fixture slow classified REST_TIMEOUT",
+      "result": "PASS"
+    },
+    {
+      "check": "Disable during an admitted real HTTP request fences result delivery",
+      "result": "PASS"
+    },
+    {
+      "check": "Cancellation fences an admitted actual HTTP operation",
+      "result": "PASS"
+    },
+    {
+      "check": "Gateway restart reconstructs catalog with current persisted authority",
+      "result": "PASS"
+    },
+    {
+      "check": "Contract revision invalidates immutable previous approval",
+      "result": "PASS"
+    },
+    {
+      "check": "Backend is outside REST sources and both database source paths",
+      "result": "PASS"
+    },
+    {
+      "check": "Sanitized history contains neither source bodies arguments nor credentials",
+      "result": "PASS"
+    }
+  ],
+  "skippedTests": 0,
+  "fixtures": [
+    "independent Phase 2 Supplier API",
+    "independent Partner Directory API"
+  ],
+  "limits": {
+    "decodedBytes": 262144,
+    "arrayItems": 100
+  },
+  "note": "Synthetic checks and request counts only; no credentials, raw arguments or response bodies. Does not claim verification of a later final head.",
+  "evidenceKind": "actual-local-stack-at-application-acceptance",
+  "applicationHead": "4c5c7404fedfc1abe1e1a1d99b40e02441e437b0",
+  "browserJourneys": {
+    "supplier": "PASS",
+    "partner": "PASS",
+    "passed": 2,
+    "skipped": 0
+  }
+}

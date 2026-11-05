@@ -2,7 +2,7 @@
 
 ## Phase 5 ordered checkpoints (authorized 2026-11-05)
 
-Base: `ec310f8c25b4778396bdc5f698f3ef7253967401`, final Phase 4 run 41814237164. Historical application acceptance below is unchanged. Every row remains pending until its evidence is recorded.
+Base: `ec310f8c25b4778396bdc5f698f3ef7253967401`, final Phase 4 run 41814237164. Historical application acceptance below is unchanged. P5-A through P5-I passed the evidence in [Phase 5 verification](docs/development/PHASE_5_VERIFICATION.md). P5-J application acceptance passed all five jobs in run 42018755865; the later documentation/guard commit requires its own final-head run, reported at handoff.
 
 | Checkpoint | Dependency | Required exit evidence |
 |---|---|---|
@@ -17,7 +17,7 @@ Base: `ec310f8c25b4778396bdc5f698f3ef7253967401`, final Phase 4 run 41814237164.
 | P5-I | All above | Importer/tenant/SSRF/DNS/HTTP/MCP/live-stack/browser negative and recovery tests; all Phase 1–4 regressions |
 | P5-J | I | Dedicated fifth CI job, exact final remote SHA/run/counts, documentation/evidence/security review, no merge or Phase 6 |
 
-Phase 4 is complete at application head `18aafb7d41011171e64da25e14cc1bdf363fc533` on `codex/phase-4-managed-db-connectors`. [Actual run 41812225715](https://github.com/ChouaibSeishin/EcoSync/actions/runs/41812225715) passed all four jobs. Phase 5/6 remain unstarted. P4-01 through P4-08 are complete with actual evidence. Historical earlier work-package descriptions below remain as the project record.
+Phase 4 is complete at application head `18aafb7d41011171e64da25e14cc1bdf363fc533` on `codex/phase-4-managed-db-connectors`. [Actual run 41812225715](https://github.com/ChouaibSeishin/EcoSync/actions/runs/41812225715) passed all four jobs. This historical Phase 4 record is preserved; Phase 5 delivery is recorded above and Phase 6 remains unstarted. P4-01 through P4-08 are complete with actual evidence. Historical earlier work-package descriptions below remain as the project record.
 
 ## Phase 1: ordered implementation plan
 
@@ -90,7 +90,7 @@ The implementing developer owns each decision unless the user must supply extern
 | P3-10 / D-G (passed) | Sanitized actor/org/revision/tool/protocol execution/audit metadata | Recent UI history, duration/correlation/denials without raw credentials/results |
 | P3-11 / H (passed implementation CI) | Add real native MCP CI job; preserve Phase 1/2 jobs | Actual final-head jobs/test counts, docs/ADRs/security review, incremental Git push |
 
-Phases 4/5 dynamic DB/REST connectors, managed gateway, general joins/mapping UI, AI/chat, benchmark execution and deployment/publishing remain excluded.
+At the historical Phase 3 boundary, dynamic DB/REST connectors were excluded. They have since been implemented in Phases 4/5. General joins/mapping UI, AI/chat, benchmark execution and deployment/publishing remain excluded.
 
 ## Phase 4 checkpoint status
 
@@ -105,4 +105,4 @@ Phases 4/5 dynamic DB/REST connectors, managed gateway, general joins/mapping UI
 | P4-07 | Adversarial/outage/restart/secret/limit checks | 58 actual stack checks passed locally and in CI |
 | P4-08 | Preserve all three old CI jobs; dedicated fourth job; final head/docs | Passed; actual four-job run 41812225715 |
 
-Phase 5 REST and Phase 6 AI/chat require separate explicit authorization.
+Phase 5 REST was separately authorized and is delivered above. Phase 6 AI/chat still requires separate explicit authorization.

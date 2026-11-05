@@ -6,9 +6,11 @@ Research: **AI-Driven Interoperability: Exploring the Role of Large Language Mod
 
 ## Current release
 
-Phase 1 implements a Spring MVC/PostgreSQL foundation, secure session login, tenant-scoped workspace access, and a responsive React interface. It includes secure workspace access and system status. Phase 2 adds independent sales PostgreSQL, inventory MySQL and Supplier REST with deterministic data and external research fixtures. Phase 3 implements native MCP registration, actual legacy/modern tool discovery, explicit approvals, encrypted credentials, scoped manual invocation and execution history in the existing React app. Phase 4 adds dynamic PostgreSQL/MySQL registration, bounded JDBC metadata, explicit column approvals, typed prepared reads and a private managed MCP gateway. REST onboarding, AI/chat and deployment automation remain future work. Phase 4 is complete at application head `18aafb7d41011171e64da25e14cc1bdf363fc533` on `codex/phase-4-managed-db-connectors`. [Actual run 41812225715](https://github.com/ChouaibSeishin/EcoSync/actions/runs/41812225715) passed all four jobs. Phase 5/6 remain unstarted.
+Phase 1 provides secure Spring MVC/PostgreSQL identity and a React workspace. Phase 2 adds independent PostgreSQL, MySQL and Supplier REST fixtures. Phase 3 adds governed native MCP registration and manual invocation. Phase 4 adds dynamic database connectors through a private managed gateway. **Phase 5 adds dynamic REST connectors:** import a supported JSON OpenAPI 3.0/3.1 contract, explicitly approve GET operations, test/activate and invoke through a separate private MCP gateway. Supplier and the independent Partner Directory use the same generic workflow; no source-specific orchestrator adapter is needed.
 
-The repository is currently [public](https://github.com/ChouaibSeishin/EcoSync) (verified 2026-11-03); visibility was not changed by this work. Current work is on `codex/phase-4-managed-db-connectors`, based on exact accepted Phase 3 head `0e681ab5cb9a1930a159d3b459d9380fe660a363`. The default Phase 0 branch remains preserved.
+Application acceptance: `4c5c7404fedfc1abe1e1a1d99b40e02441e437b0`, [five-job run 42018755865](https://github.com/ChouaibSeishin/EcoSync/actions/runs/42018755865), all successful. Final documentation/guard commit verification is separately recorded in the final handoff; this application run does not prove a newer head. See [current status](PROJECT_STATUS.md) and [Phase 5 acceptance](docs/development/PHASE_5_ACCEPTANCE.md). LLM/chat and deployment automation remain future phases.
+
+The repository is intentionally [public](https://github.com/ChouaibSeishin/EcoSync) (rechecked 2026-11-05). Current branch: `codex/phase-5-dynamic-rest-connectors`, exact base `ec310f8c25b4778396bdc5f698f3ef7253967401`. Previous branches and the Phase 0 default are preserved.
 
 ## Run locally
 
@@ -16,7 +18,7 @@ Requires Java 21 (Temurin 21.0.13+9), Node 24.22.2/npm 11.19.1 and Docker with L
 
 ```powershell
 # The default branch still contains Phase 0; select the implementation branch.
-git clone --branch codex/phase-4-managed-db-connectors https://github.com/ChouaibSeishin/EcoSync.git
+git clone --branch codex/phase-5-dynamic-rest-connectors https://github.com/ChouaibSeishin/EcoSync.git
 Set-Location EcoSync
 Push-Location backend
 ./mvnw.cmd -B -ntp verify
@@ -74,7 +76,7 @@ All ports are localhost-only: sales 55433, inventory 53307 and supplier API 1808
 - [Version pins](config/versions.json), [image pins](config/container-images.json), [compatibility and official sources](docs/architecture/COMPATIBILITY.md), [architecture](docs/architecture/ARCHITECTURE.md), [security](docs/architecture/SECURITY.md), [data model](docs/architecture/DATA_MODEL.md).
 - [Roadmap](ROADMAP.md), [backlog](BACKLOG.md), [Phase 1 identity/runtime decision](docs/architecture/decisions/0006-phase1-identity-and-local-stack.md), [research methodology](docs/research/METHODOLOGY.md), [deployment design](docs/deployment/DEPLOYMENT.md), [historical Phase 0 report](docs/development/PHASE_0_VERIFICATION.md).
 
-Phase 3 is accepted on `codex/phase-3-native-mcp` at final head `0e681ab5cb9a1930a159d3b459d9380fe660a363`: all three jobs succeeded in [actual final run 41619804974](https://github.com/ChouaibSeishin/EcoSync/actions/runs/41619804974). Final verify passed 6 backend unit, 23 PostgreSQL integration and 17 frontend tests plus browser/persistence checks, zero skipped tests. The final metadata-refresh regression preserves capability identity while refreshing server/protocol observations. Only two failure-only diagnostic steps were skipped. See [native MCP startup and UI instructions](docs/development/MCP_LOCAL_SETUP.md), [acceptance](docs/development/PHASE_3_ACCEPTANCE.md), [compatibility](docs/architecture/MCP_COMPATIBILITY.md) and [verification](docs/development/PHASE_3_VERIFICATION.md). Preserve existing phase branches, volumes and local credentials. Phase 4 is now authorized on `codex/phase-4-managed-db-connectors` from that exact head; its gateway gate comes first. No Phase 5/6 work is authorized.
+Phase 3 is accepted on `codex/phase-3-native-mcp` at final head `0e681ab5cb9a1930a159d3b459d9380fe660a363`: all three jobs succeeded in [actual final run 41619804974](https://github.com/ChouaibSeishin/EcoSync/actions/runs/41619804974). Final verify passed 6 backend unit, 23 PostgreSQL integration and 17 frontend tests plus browser/persistence checks, zero skipped tests. The final metadata-refresh regression preserves capability identity while refreshing server/protocol observations. Only two failure-only diagnostic steps were skipped. See [native MCP startup and UI instructions](docs/development/MCP_LOCAL_SETUP.md), [acceptance](docs/development/PHASE_3_ACCEPTANCE.md), [compatibility](docs/architecture/MCP_COMPATIBILITY.md) and [verification](docs/development/PHASE_3_VERIFICATION.md). Preserve existing phase branches, volumes and local credentials. Phase 4 is now authorized on `codex/phase-4-managed-db-connectors` from that exact head; its gateway gate comes first. This is the historical Phase 3 boundary; Phase 5 delivery is recorded below. Phase 6 is unstarted.
 
 ## Managed database connectors (Phase 4)
 
@@ -82,8 +84,10 @@ Follow [database local setup](docs/development/DATABASE_LOCAL_SETUP.md) for the 
 
 The private Java gateway serves MCP 2025-11-25 only; native MCP retains its tested dual-generation client. Two neutral tools enforce live actor/organization/revision/scope authorization. Backend stays outside the source network and alone receives AES/private signing keys. Source schemas/data and volumes are preserved.
 
-See [architecture](docs/architecture/DATABASE_CONNECTORS.md), [security](docs/architecture/DATABASE_SECURITY.md), [acceptance](docs/development/PHASE_4_ACCEPTANCE.md) and [verification](docs/development/PHASE_4_VERIFICATION.md). One backend replica, bounded single-table reads and explicit refresh are supported. Local Docker/CI do not establish production readiness. Phase 5/6 have not begun.
+See [architecture](docs/architecture/DATABASE_CONNECTORS.md), [security](docs/architecture/DATABASE_SECURITY.md), [acceptance](docs/development/PHASE_4_ACCEPTANCE.md) and [verification](docs/development/PHASE_4_VERIFICATION.md). One backend replica, bounded single-table reads and explicit refresh are supported. Local Docker/CI do not establish production readiness. This records Phase 4 acceptance; Phase 5 delivery is recorded below and Phase 6 is unstarted.
 
 ## Phase 5 REST connectors
 
-Dynamic REST work uses a separate private MCP gateway and JSON OpenAPI review for approved GET operations. See [REST local setup](docs/development/REST_LOCAL_SETUP.md), [contract subset](docs/architecture/REST_CONNECTORS.md), [security](docs/architecture/REST_SECURITY.md), [verification](docs/development/PHASE_5_VERIFICATION.md) and [acceptance status](docs/development/PHASE_5_ACCEPTANCE.md). Phase 6 chat remains unimplemented.
+Delivered dynamic REST connectors use a separate private MCP gateway and JSON OpenAPI review for approved GET operations. See [REST local setup](docs/development/REST_LOCAL_SETUP.md), [contract subset](docs/architecture/REST_CONNECTORS.md), [security](docs/architecture/REST_SECURITY.md), [verification](docs/development/PHASE_5_VERIFICATION.md) and [acceptance status](docs/development/PHASE_5_ACCEPTANCE.md). Phase 6 chat remains unimplemented.
+
+For the complete initialized Phase 4/5 stack, build `backend` and `rest-gateway` with the Maven wrapper, then run `node scripts/init-rest.mjs` and `node scripts/start-rest.mjs`. A fresh checkout also needs the earlier independent source/native/database setup. The [REST local guide](docs/development/REST_LOCAL_SETUP.md) contains exact commands, fixture fields, key preservation, shutdown and live/browser verification.

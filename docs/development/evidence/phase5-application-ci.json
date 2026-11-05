@@ -1,0 +1,84 @@
+{
+  "phase": 5,
+  "evidenceKind": "observed-application-ci-not-later-final-head",
+  "verifiedOn": "2026-11-05",
+  "base": "ec310f8c25b4778396bdc5f698f3ef7253967401",
+  "branch": "codex/phase-5-dynamic-rest-connectors",
+  "head": "4c5c7404fedfc1abe1e1a1d99b40e02441e437b0",
+  "runId": "42018755865",
+  "url": "https://github.com/ChouaibSeishin/EcoSync/actions/runs/42018755865",
+  "status": "completed",
+  "conclusion": "success",
+  "jobs": [
+    {
+      "id": 127215832581,
+      "name": "Managed database gateway and connector governance",
+      "status": "completed",
+      "conclusion": "success",
+      "skippedDiagnosticSteps": [
+        "Bounded redacted managed database diagnostics on failure"
+      ]
+    },
+    {
+      "id": 127215832725,
+      "name": "Native MCP interoperability and governance",
+      "status": "completed",
+      "conclusion": "success",
+      "skippedDiagnosticSteps": [
+        "Bounded redacted diagnostics on failure"
+      ]
+    },
+    {
+      "id": 127215832766,
+      "name": "Dynamic REST connectors and isolated MCP egress",
+      "status": "completed",
+      "conclusion": "success",
+      "skippedDiagnosticSteps": [
+        "Sanitized REST diagnostics on failure"
+      ]
+    },
+    {
+      "id": 127215832808,
+      "name": "verify",
+      "status": "completed",
+      "conclusion": "success",
+      "skippedDiagnosticSteps": []
+    },
+    {
+      "id": 127215832930,
+      "name": "Independent demo sources and dataset",
+      "status": "completed",
+      "conclusion": "success",
+      "skippedDiagnosticSteps": [
+        "Demo startup diagnostics on failure"
+      ]
+    }
+  ],
+  "suiteCounts": {
+    "backendUnit": 24,
+    "backendPostgresqlIntegration": 54,
+    "restRegistryPostgresqlWithinBackend": 16,
+    "restGateway": 25,
+    "frontend": 27,
+    "partnerHttp": 3,
+    "supplier": 14,
+    "nativeClient": 25,
+    "nativeStack": 30,
+    "databaseGatewayUnit": 17,
+    "databaseGatewayRealPostgresqlMysqlIntegration": 10,
+    "databaseWireProof": 11,
+    "databaseDirectDelegation": 13,
+    "databaseStack": 58,
+    "restStackIncluding13DirectDelegation": 54,
+    "restBrowsers": 2,
+    "databaseBrowsers": 2,
+    "nativeBrowsers": 2,
+    "foundationBrowsers": 1,
+    "referenceCases": 36,
+    "freshIndependentSourceInitializations": 2
+  },
+  "skippedTests": 0,
+  "skippedFailureOnlyDiagnosticSteps": 4,
+  "countPolicy": "Per suite; do not sum repetitions across jobs. Final regex guard adds one backend/importer unit test and needs its own CI run.",
+  "finalHeadPolicy": "Later documentation/guard head is independently checked; exact SHA/run in final handoff and ignored .verification/phase5/final-ci.json."
+}

@@ -35,7 +35,7 @@ public final class RestSchema {
   return out;
  }
  // No user-supplied unbounded repetition, lookaround, backreference or nested grouping.
- static boolean safePattern(String p){if(p.equals("^(0|[1-9][0-9]{0,8})[.][0-9]{2}$"))return true;if(p.length()>160||!p.startsWith("^")||!p.endsWith("$"))return false;String body=p.substring(1,p.length()-1);return body.matches("(?:[A-Za-z0-9 _:-]|\\[(?:[A-Za-z0-9 ._:-]|-)+\\](?:\\{[0-9]{1,3}\\})?)+");}
+ static boolean safePattern(String p){if(p.equals("^(0|[1-9][0-9]{0,8})[.][0-9]{2}$"))return true;if(p.length()>160||!p.startsWith("^")||!p.endsWith("$"))return false;String body=p.substring(1,p.length()-1);return body.matches("(?:[A-Za-z0-9 _:-]|\\[[A-Za-z0-9 ._:-]+\\](?:\\{[0-9]{1,3}\\})?)+");}
  public static void validate(Map<String,Object> s,Object value,String code){try{check(s,value,0,new int[]{0});}catch(Exception e){throw new RestFailure(code);}}
  private static void untyped(Object value,int depth,int[] count){if(depth>16||++count[0]>10000)throw new IllegalArgumentException();if(value instanceof String text&&text.length()>8192)throw new IllegalArgumentException();if(value instanceof Map<?,?> map){if(map.size()>64)throw new IllegalArgumentException();map.values().forEach(v->untyped(v,depth+1,count));}else if(value instanceof List<?> list){if(list.size()>1000)throw new IllegalArgumentException();list.forEach(v->untyped(v,depth+1,count));}}
  private static BigDecimal decimal(Object v){return new BigDecimal(v.toString());}
