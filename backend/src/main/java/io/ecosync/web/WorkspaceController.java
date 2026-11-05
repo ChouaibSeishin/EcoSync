@@ -12,7 +12,8 @@ public class WorkspaceController {
     private final JdbcTemplate jdbc;
     private final org.springframework.beans.factory.ObjectProvider<io.ecosync.integrations.McpRegistry> registry;
     private final org.springframework.beans.factory.ObjectProvider<io.ecosync.database.DatabaseRegistry> databases;
-    public WorkspaceController(TenantDirectory directory, JdbcTemplate jdbc,org.springframework.beans.factory.ObjectProvider<io.ecosync.integrations.McpRegistry> registry,org.springframework.beans.factory.ObjectProvider<io.ecosync.database.DatabaseRegistry> databases) { this.directory = directory; this.jdbc = jdbc;this.registry=registry;this.databases=databases; }
+    private final org.springframework.beans.factory.ObjectProvider<io.ecosync.rest.RestRegistry> rest;
+    public WorkspaceController(TenantDirectory directory, JdbcTemplate jdbc,org.springframework.beans.factory.ObjectProvider<io.ecosync.integrations.McpRegistry> registry,org.springframework.beans.factory.ObjectProvider<io.ecosync.database.DatabaseRegistry> databases,org.springframework.beans.factory.ObjectProvider<io.ecosync.rest.RestRegistry> rest) { this.directory = directory; this.jdbc = jdbc;this.registry=registry;this.databases=databases;this.rest=rest; }
     @GetMapping("/api/csrf") public Map<String,String> csrf(CsrfToken token) {
         return Map.of("token", token.getToken(), "headerName", token.getHeaderName());
     }
@@ -23,7 +24,7 @@ public class WorkspaceController {
     @GetMapping("/api/organizations/{id}/overview")
     public Map<String,Object> overview(@PathVariable UUID id, @AuthenticationPrincipal AccountPrincipal account) {
         return Map.of("workspace", directory.requireMembership(account.id(), id),
-            "registeredIntegrations", (registry.getIfAvailable()==null?0:registry.getObject().count(account.id(),id))+(databases.getIfAvailable()==null?0:databases.getObject().count(account.id(),id)), "integrationManagementAvailable", registry.getIfAvailable()!=null,"databaseManagementAvailable",databases.getIfAvailable()!=null,"aiAvailable", false);
+            "registeredIntegrations", (registry.getIfAvailable()==null?0:registry.getObject().count(account.id(),id))+(databases.getIfAvailable()==null?0:databases.getObject().count(account.id(),id))+(rest.getIfAvailable()==null?0:rest.getObject().count(account.id(),id)), "integrationManagementAvailable", registry.getIfAvailable()!=null,"databaseManagementAvailable",databases.getIfAvailable()!=null,"aiAvailable", false);
     }
     @GetMapping("/api/organizations/{id}/integrations")
     public Map<String,Object> integrations(@PathVariable UUID id, @AuthenticationPrincipal AccountPrincipal account) {

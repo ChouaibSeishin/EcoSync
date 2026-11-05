@@ -10,6 +10,8 @@ import org.springframework.web.servlet.resource.NoResourceFoundException;
 import org.springframework.http.converter.HttpMessageNotReadableException;
 @RestControllerAdvice
 public class ApiExceptionHandler {
+    @ExceptionHandler(io.ecosync.restcontract.RestFailure.class)
+    ResponseEntity<ApiError> rest(io.ecosync.restcontract.RestFailure error,HttpServletRequest request){String code=error.code;int status=code.equals("REST_ACCESS_DENIED")?403:java.util.Set.of("REST_DISABLED","REST_CANCELLED").contains(code)?409:code.equals("REST_BUSY")||code.equals("REST_LIMIT")?429:java.util.Set.of("REST_UNAVAILABLE","REST_GATEWAY_UNAVAILABLE","REST_NETWORK_ERROR","REST_TIMEOUT").contains(code)?503:422;return result(status,code,"REST operation failed: "+code+". Review the configuration and current approval.",request);}
     @ExceptionHandler(io.ecosync.database.DatabaseFailure.class)
     ResponseEntity<ApiError> database(io.ecosync.database.DatabaseFailure error,HttpServletRequest request){return result(error.status(),error.code(),error.getMessage(),request);}
     @ExceptionHandler(io.ecosync.mcp.McpFailure.class)
