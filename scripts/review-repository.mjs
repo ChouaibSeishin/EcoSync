@@ -68,6 +68,8 @@ for(const file of ['infra/docker/compose.yaml','infra/docker/demo-systems.compos
  const previous=spawnSync('git',['show','a38682428457cca417cbac8f20bc14e7c0792f21:'+file],{cwd:root,encoding:'utf8',windowsHide:true});
  if(previous.status===0&&(await readFile(path.join(root,file),'utf8')).replaceAll('\r\n','\n')!==previous.stdout.replaceAll('\r\n','\n'))failures.push('Accepted platform/source lifecycle file changed: '+file);
 }
+const phase5Workflow=await readFile(path.join(root,'config/phase5-ci-workflow.txt'),'utf8');
+for(const name of ['verify','managed_database','demo','native_mcp','dynamic_rest']){const prior=phase5Workflow.split('\n  '+name+':\n')[1]?.split(/\n  [a-z_]+:\n/)[0];const current=workflow.replaceAll('\r\n','\n').split('\n  '+name+':\n')[1]?.split(/\n  [a-z_]+:\n/)[0];if(!prior||prior.trimEnd()!==current?.trimEnd())failures.push('Accepted Phase 5 CI job changed: '+name);}
 const phase4Workflow=await readFile(path.join(root,'config/phase4-ci-workflow.txt'),'utf8');
 for(const name of ['verify','managed_database','demo','native_mcp']){const prior=phase4Workflow.split('\n  '+name+':\n')[1]?.split(/\n  [a-z_]+:\n/)[0];const current=workflow.replaceAll('\r\n','\n').split('\n  '+name+':\n')[1]?.split(/\n  [a-z_]+:\n/)[0];if(!prior||prior.trimEnd()!==current?.trimEnd())failures.push('Accepted Phase 4 CI job changed: '+name);}
 for(const match of workflow.matchAll(/uses:\s*([^\s#]+)/g))if(!/@[a-f0-9]{40}$/.test(match[1]))failures.push('Unpinned Action: '+match[1]);

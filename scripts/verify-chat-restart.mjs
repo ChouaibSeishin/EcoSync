@@ -1,0 +1,8 @@
+import assert from 'node:assert/strict';
+import {writeFile} from 'node:fs/promises';
+import {chatSession,terminal,docker,delay,counts} from './chat-runtime.mjs';
+const {api,base}=await chatSession(),conversation=(await api.call(base+'/conversations','POST',{title:'Actual backend restart interruption'})).id,before=counts();
+const turn=await api.call(base+'/conversations/'+conversation+'/messages','POST',{requestId:crypto.randomUUID(),message:'VERIFY '+JSON.stringify({rounds:[],delayMs:35000,answer:{status:'CLARIFICATION_REQUIRED',references:[],question:'Which source?'}})},202);
+await delay(250);docker(['restart','ecosync-phase1-backend-1']);const end=performance.now()+120000;let healthy=false;while(performance.now()<end){if(docker(['inspect','--format','{{.State.Health.Status}}','ecosync-phase1-backend-1']).trim()==='healthy'){healthy=true;break;}await delay(500);}assert.ok(healthy,'Backend restart readiness');await api.login();
+const value=await terminal(api,base,conversation,turn.id);assert.equal(value.turn.status,'INTERRUPTED');assert.equal(value.turn.error_code,'CHAT_INTERRUPTED');assert.ok(!value.answer.includes('reports'));assert.deepEqual(counts(),before);assert.ok(value.detail.messages.every((m,n,a)=>n===0||m.sequence>a[n-1].sequence));
+const evidence={verifiedAt:new Date().toISOString(),result:'PASS',checks:['Actual backend restart persists INTERRUPTED for an in-flight model wait','Late model completion cannot commit success after restart','Conversation and stable message order survive restart'],protectedSourceOperations:0};await writeFile('.verification/phase6/restart.json',JSON.stringify(evidence,null,2)+'\n');console.log(JSON.stringify(evidence));

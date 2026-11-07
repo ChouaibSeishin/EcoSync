@@ -9,6 +9,120 @@ concurrency:
   group: ecosync-${{ github.workflow }}-${{ github.ref }}
   cancel-in-progress: true
 jobs:
+  llm_chat:
+    name: Controlled chat orchestration and real MCP sources
+    runs-on: ubuntu-24.04
+    timeout-minutes: 60
+    steps:
+      - name: Checkout source
+        uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803
+        with:
+          persist-credentials: false
+      - name: Set up pinned Java
+        uses: actions/setup-java@b6effb05e454b25005698d916606bdc6ffcbf961
+        with:
+          distribution: temurin
+          java-version: '21.0.13+9.0.LTS'
+          cache: maven
+          cache-dependency-path: |
+            backend/pom.xml
+            rest-gateway/pom.xml
+            managed-gateway/pom.xml
+            mcp-servers/sales/pom.xml
+      - name: Set up pinned Node
+        uses: actions/setup-node@249970729cb0ef3589644e2896645e5dc5ba9c38
+        with:
+          node-version: '24.22.2'
+          cache: npm
+          cache-dependency-path: |
+            frontend/package-lock.json
+            demo-systems/partner-api/package-lock.json
+      - name: Actual authority PostgreSQL and bounded socket TLS gateway verification
+        run: |
+          ./backend/mvnw -B -ntp -f backend/pom.xml verify
+          ./backend/mvnw -B -ntp -f rest-gateway/pom.xml verify
+          ./backend/mvnw -B -ntp -f managed-gateway/pom.xml package
+          ./backend/mvnw -B -ntp -f mcp-servers/sales/pom.xml package
+      - name: Independent fixture and extended UI checks
+        run: |
+          npm ci --prefix demo-systems/partner-api
+          npm run verify --prefix demo-systems/partner-api
+          npm audit --prefix demo-systems/partner-api --audit-level=high
+          npm ci --prefix frontend
+          npm run lint --prefix frontend
+          npm run typecheck --prefix frontend
+          npm test --prefix frontend -- --run
+          npm run build --prefix frontend
+          npm audit --prefix frontend --audit-level=high
+          npm ci --prefix demo-systems/supplier-api
+          npm run verify --prefix demo-systems/supplier-api
+      - name: Install pinned browser
+        working-directory: frontend
+        run: npx --no-install playwright install --with-deps chromium
+      - name: Initialize retained identity and independently owned source fixtures
+        run: |
+          node scripts/init-local.mjs
+          node scripts/init-demo.mjs
+          node scripts/init-mcp.mjs
+          docker compose --env-file infra/docker/demo.env -f infra/docker/demo-systems.compose.yaml up -d --build --wait --wait-timeout 240
+          node scripts/init-database.mjs
+          node scripts/provision-database-readers.mjs
+          node scripts/init-rest.mjs
+          sudo chgrp 10001 .verification/mcp/keyring.json .verification/database/assertion-private.der .verification/rest/assertion-private.der
+          chmod 640 .verification/mcp/keyring.json .verification/database/assertion-private.der .verification/rest/assertion-private.der
+          chmod 644 .verification/database/assertion-public.der .verification/rest/assertion-public.der
+          node scripts/mcp-mask-secrets.mjs
+          node scripts/rest-mask-secrets.mjs
+      - name: Start native and database regressions alongside isolated REST
+        run: |
+          docker compose --env-file infra/docker/demo.env --env-file infra/docker/.env.mcp -f infra/docker/mcp-demo.compose.yaml up -d --build --wait --wait-timeout 180
+          docker compose --env-file infra/docker/.env.database -f infra/docker/database-gateway.compose.yaml up -d --build --wait --wait-timeout 180
+          node scripts/start-rest.mjs --verification
+      - name: Actual REST SDK delegation SSRF HTTP lifecycle and network proof
+        run: node scripts/verify-rest-stack.mjs
+      - name: Two independent API browser journeys
+        run: node scripts/run-rest-e2e.mjs
+      - name: Original native and database browser regression journeys
+        run: |
+          node scripts/run-database-e2e.mjs
+          node scripts/run-mcp-e2e.mjs
+      - name: Enroll explicit read-only chat fixtures and enable only the verification adapter
+        run: node scripts/enable-chat-verification.mjs
+      - name: Real cross-source chat authorization budgets provenance and recovery
+        run: |
+          node scripts/verify-chat-stack.mjs
+          node scripts/verify-chat-races.mjs
+          node scripts/verify-chat-restart.mjs
+      - name: Actual persistent chat browser journeys
+        run: node scripts/run-chat-e2e.mjs
+      - name: AI-disabled startup and retained source-backed history
+        run: |
+          node scripts/start-chat.mjs
+          node scripts/verify-chat-disabled.mjs
+      - name: Dataset original jobs and secret review
+        run: |
+          node scripts/demo/validate-dataset.mjs
+          node scripts/verify-foundation.mjs
+          node scripts/review-repository.mjs
+          git diff --check
+          git diff --exit-code
+      - name: Sanitized chat diagnostics on failure
+        if: failure()
+        run: node scripts/chat-diagnostics.mjs
+      - name: Stop only this job's disposable containers and retain volumes
+        if: always()
+        run: |
+          if [ -f infra/docker/.env.rest ]; then
+            docker compose --env-file infra/docker/.env.rest -f infra/docker/rest-gateway.compose.yaml stop
+          fi
+          if [ -f infra/docker/.env ] && [ -f infra/docker/.env.mcp ] && [ -f infra/docker/.env.database ] && [ -f infra/docker/.env.rest ]; then
+            docker compose --env-file infra/docker/.env --env-file infra/docker/.env.mcp --env-file infra/docker/.env.database --env-file infra/docker/.env.rest -f infra/docker/compose.yaml -f infra/docker/mcp-platform.override.yaml -f infra/docker/database-platform.override.yaml -f infra/docker/rest-platform.override.yaml stop
+            docker compose --env-file infra/docker/.env.database -f infra/docker/database-gateway.compose.yaml stop
+            docker compose --env-file infra/docker/demo.env --env-file infra/docker/.env.mcp -f infra/docker/mcp-demo.compose.yaml stop
+          fi
+          if [ -f infra/docker/demo.env ]; then
+            docker compose --env-file infra/docker/demo.env -f infra/docker/demo-systems.compose.yaml stop
+          fi
   dynamic_rest:
     name: Dynamic REST connectors and isolated MCP egress
     runs-on: ubuntu-24.04
