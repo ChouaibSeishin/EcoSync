@@ -1,0 +1,10 @@
+package io.ecosync.chat;
+import java.util.*;
+import java.time.Instant;
+/** Full bounded values live only for the current query; persistence receives provenance only. */
+public record ChatEvidence(String id,ChatCapabilities.Capability capability,UUID correlation,String status,Object data,boolean truncated,String retrievedAt) {
+ public ChatEvidence(String id,ChatCapabilities.Capability capability,UUID correlation,String status,Object data,boolean truncated){this(id,capability,correlation,status,data,truncated,Instant.now().toString());}
+ public Map<String,Object> provenance(){var p=new LinkedHashMap<String,Object>();p.put("id",id);p.put("source",capability.source());p.put("canonicalSource",capability.canonicalSource());p.put("integration",capability.connector());p.put("operation",capability.operation());p.put("revision",capability.revision());p.put("tool",capability.name());p.put("status",status);p.put("truncated",truncated);p.put("retrievedAt",retrievedAt);p.put("correlation",correlation);if(capability.kind().equals("DETERMINISTIC")&&data instanceof Map<?,?> m){for(String key:List.of("mappingId","mappingVersion","operation","currency","unit","inputs"))if(m.containsKey(key))p.put(key,m.get(key));}return p;}
+ public Map<String,Object> context(){var p=new LinkedHashMap<>(provenance());p.put("data",data);return p;}
+ public static ChatEvidence success(String id,ChatCapabilities.Capability cap,UUID correlation,Map<String,Object> response,int limit){Object result=response.get("result");Object payload=result;if(result instanceof Map<?,?> m){if(m.containsKey("structuredContent"))payload=m.get("structuredContent");else if(m.containsKey("data"))payload=m.get("data");}Object cleaned=ChatData.clean(payload);if(ChatData.bytes(cleaned)>limit)throw new ChatFailure("CHAT_EVIDENCE_LIMIT");String encoded=ChatData.json(result);boolean truncated=encoded.contains("\"truncated\":true")||encoded.contains("\"partial\":true");return new ChatEvidence(id,cap,correlation,"SUCCESS",cleaned,truncated);}
+}
