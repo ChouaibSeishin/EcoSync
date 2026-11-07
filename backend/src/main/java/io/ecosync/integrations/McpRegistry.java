@@ -196,8 +196,7 @@ public class McpRegistry {
   }return view(org,id);
  }
  private NativeMcpClient.Handle ensure(Revision rev,UUID actor){
-  var lease=leases.get(key(rev.org,rev.id));
-  if(lease!=null&&lease.version==rev.version)return lease.handle;
+  // The bridge expires idle handles independently. Refresh metadata before dispatch; never retry a business call.
   var snapshot=connect(rev);snapshot=client.discover(snapshot.handle());persistDiscovery(actor,rev,snapshot,false);return snapshot.handle();
  }
  public Map<String,Object> invoke(UUID actor,UUID org,UUID id,UUID capability,UUID invocation,Map<String,Object> arguments){
