@@ -9,6 +9,7 @@ import org.springframework.web.bind.annotation.*;
 @RestController
 public class WorkspaceController {
     private final TenantDirectory directory;
+    @org.springframework.beans.factory.annotation.Autowired private org.springframework.beans.factory.ObjectProvider<io.ecosync.chat.ChatService> chat;
     private final JdbcTemplate jdbc;
     private final org.springframework.beans.factory.ObjectProvider<io.ecosync.integrations.McpRegistry> registry;
     private final org.springframework.beans.factory.ObjectProvider<io.ecosync.database.DatabaseRegistry> databases;
@@ -24,7 +25,7 @@ public class WorkspaceController {
     @GetMapping("/api/organizations/{id}/overview")
     public Map<String,Object> overview(@PathVariable UUID id, @AuthenticationPrincipal AccountPrincipal account) {
         return Map.of("workspace", directory.requireMembership(account.id(), id),
-            "registeredIntegrations", (registry.getIfAvailable()==null?0:registry.getObject().count(account.id(),id))+(databases.getIfAvailable()==null?0:databases.getObject().count(account.id(),id))+(rest.getIfAvailable()==null?0:rest.getObject().count(account.id(),id)), "integrationManagementAvailable", registry.getIfAvailable()!=null,"databaseManagementAvailable",databases.getIfAvailable()!=null,"aiAvailable", false);
+            "registeredIntegrations", (registry.getIfAvailable()==null?0:registry.getObject().count(account.id(),id))+(databases.getIfAvailable()==null?0:databases.getObject().count(account.id(),id))+(rest.getIfAvailable()==null?0:rest.getObject().count(account.id(),id)), "integrationManagementAvailable", registry.getIfAvailable()!=null,"databaseManagementAvailable",databases.getIfAvailable()!=null,"aiAvailable", chat!=null&&Boolean.TRUE.equals(chat.getObject().status().get("available")));
     }
     @GetMapping("/api/organizations/{id}/integrations")
     public Map<String,Object> integrations(@PathVariable UUID id, @AuthenticationPrincipal AccountPrincipal account) {
