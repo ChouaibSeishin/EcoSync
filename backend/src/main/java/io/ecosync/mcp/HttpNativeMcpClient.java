@@ -38,13 +38,14 @@ public class HttpNativeMcpClient implements NativeMcpClient {
  }
  @Override public void close(Handle h,boolean revoke){post("/v1/close",Map.of("key",h.key(),"leaseId",h.leaseId(),"revoke",revoke),Map.class);}
  @jakarta.annotation.PreDestroy public void shutdown(){http.shutdownNow();}
+ private static Duration operationTimeout(){try{return io.ecosync.execution.CallDeadline.limit(Duration.ofSeconds(30));}catch(io.ecosync.execution.CallDeadline.Expired e){throw new McpFailure("MCP_TIMEOUT");}}
  private <T>T post(String path,Object body,Class<T> type){
   byte[] data=json.writeValueAsBytes(body);if(data.length>65536)throw new McpFailure("MCP_ARGUMENTS_TOO_LARGE");
-  var request=HttpRequest.newBuilder(base.resolve(path)).timeout(Duration.ofSeconds(30)).header("Authorization","Bearer "+credential)
+  var request=HttpRequest.newBuilder(base.resolve(path)).timeout(operationTimeout()).header("Authorization","Bearer "+credential)
     .header("Content-Type","application/json").POST(HttpRequest.BodyPublishers.ofByteArray(data)).build();
   var future=http.sendAsync(request,info->new BoundedBody(2097152));
   try{
-   var response=future.get(30,TimeUnit.SECONDS);
+   var response=future.get(io.ecosync.execution.CallDeadline.limit(Duration.ofSeconds(30)).toNanos(),TimeUnit.NANOSECONDS);
    if(response.statusCode()!=200){
     String code="MCP_UNAVAILABLE";
     try{var node=json.readTree(response.body()).path("error").path("code");if(node.isString())code=node.asString();}catch(Exception ignored){}
@@ -54,6 +55,7 @@ public class HttpNativeMcpClient implements NativeMcpClient {
   }catch(InterruptedException error){future.cancel(true);Thread.currentThread().interrupt();throw new McpFailure("MCP_CANCELLED");}
   catch(TimeoutException error){future.cancel(true);throw new McpFailure("MCP_TIMEOUT");}
   catch(ExecutionException error){future.cancel(true);if(error.getCause() instanceof McpFailure failure)throw failure;throw new McpFailure("MCP_UNAVAILABLE");}
+  catch(io.ecosync.execution.CallDeadline.Expired error){future.cancel(true);throw new McpFailure("MCP_TIMEOUT");}
   catch(McpFailure error){throw error;}
   catch(Exception error){future.cancel(true);throw new McpFailure("MCP_INVALID_RESPONSE");}
  }
