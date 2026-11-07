@@ -1,0 +1,7 @@
+services:
+  backend:
+    networks: [default, rest-control, ai-control]
+networks:
+  ai-control:
+    external: true
+    name: ecosync-ai_control

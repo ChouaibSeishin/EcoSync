@@ -1,0 +1,7 @@
+services:
+  backend:
+    environment:
+      AI_ENABLED: "true"
+      AI_PROVIDER: verification
+      AI_MODEL: deterministic-test-double
+      SPRING_PROFILES_ACTIVE: chat-verification

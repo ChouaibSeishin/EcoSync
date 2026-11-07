@@ -1,0 +1,16 @@
+import assert from 'node:assert/strict';
+import {mkdir,writeFile} from 'node:fs/promises';
+const origin='http://127.0.0.1:11434',model='qwen3:1.7b',results=[];
+await mkdir('.verification/phase6',{recursive:true});
+const request=async(path,body)=>{const r=await fetch(origin+path,{method:body?'POST':'GET',headers:body?{'Content-Type':'application/json'}:{},body:body?JSON.stringify(body):undefined,signal:AbortSignal.timeout(30000),redirect:'error'});assert.equal(r.status,200);return r.json();};
+let identity;
+try{
+ const version=await request('/api/version'),tags=await request('/api/tags'),entry=tags.models.find(m=>m.name===model);assert.ok(entry?.digest?.match(/^[a-f0-9]{64}$/));
+ const running=await request('/api/ps');const show=await request('/api/show',{model});identity={loadedBeforeCall:running.models.some(m=>m.name===model),runtime:version.version,model,manifestDigest:entry.digest,details:show.details,capabilities:show.capabilities};assert.ok(show.capabilities.includes('tools'));
+ const messages=[{role:'system',content:'Use the provided tool to obtain facts. Request lookup_stock with the exact SKU the user supplied. Do not guess a stock value.'},{role:'user',content:'Look up stock for SKU DEMO-42.'}];
+ const tools=[{type:'function',function:{name:'lookup_stock',description:'Read stock for one exact SKU. This experiment has no source connection.',parameters:{type:'object',properties:{sku:{type:'string'}},required:['sku'],additionalProperties:false}}}];
+ const start=performance.now();const response=await request('/api/chat',{model,messages,tools,stream:false,think:false,options:{temperature:0,seed:7,num_ctx:4096,num_predict:128},keep_alive:'1m'});const durationMs=Math.round(performance.now()-start);const call=response.message?.tool_calls?.[0];assert.equal(call?.function?.name,'lookup_stock');assert.deepEqual(call.function.arguments,{sku:'DEMO-42'});assert.equal(response.message.tool_calls.length,1);
+ results.push({check:'Actual local model proposes the supplied tool with valid structured arguments',result:'PASS',durationMs});
+ const report={verifiedAt:new Date().toISOString(),result:'PASS',evidenceKind:'real-local-model-compatibility-not-EcoSync-end-to-end',identity,promptVersion:'model-compatibility-v1',sampling:{temperature:0,seed:7,context:4096,predict:128,thinking:false},results,sourceOperations:0,notes:'Synthetic tool definition only. This does not prove real-source answer accuracy, the full EcoSync loop, or scientific performance. Each model request is bounded at 30 seconds.'};
+ await writeFile('.verification/phase6/real-model.json',JSON.stringify(report,null,2)+'\n');console.log(JSON.stringify(report,null,2));
+}catch(error){const report={verifiedAt:new Date().toISOString(),result:'FAIL',evidenceKind:'real-local-model-compatibility-not-EcoSync-end-to-end',identity:identity??null,error:error.name==='TimeoutError'?'MODEL_COMPATIBILITY_TIMEOUT':'MODEL_COMPATIBILITY_FAILED',sourceOperations:0,notes:'No real-model acceptance claim. CI and default startup remain independent of the optional runtime.'};await writeFile('.verification/phase6/real-model.json',JSON.stringify(report,null,2)+'\n');console.log(JSON.stringify(report));process.exitCode=1;}

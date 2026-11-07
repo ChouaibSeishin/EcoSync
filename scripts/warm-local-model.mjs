@@ -1,0 +1,4 @@
+import assert from 'node:assert/strict';
+const model='qwen3:1.7b',digest='8f68893c685c3ddff2aa3fffce2aa60a30bb2da65ca488b61fff134a4d1730e7';
+const tags=await fetch('http://127.0.0.1:11434/api/tags',{signal:AbortSignal.timeout(5000)}).then(r=>r.json());assert.ok(tags.models.some(m=>m.name===model&&m.digest===digest),'Reviewed model digest required');
+const response=await fetch('http://127.0.0.1:11434/api/generate',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({model,prompt:'',stream:false,keep_alive:'10m',options:{num_ctx:8192,num_predict:1}}),signal:AbortSignal.timeout(180000),redirect:'error'});assert.equal(response.status,200);const result=await response.json();assert.equal(result.done,true);console.log('PASS explicit local model warm-up; no source data or user query sent. Chat deadline remains 30 seconds.');

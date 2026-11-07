@@ -83,5 +83,16 @@
   "data": {
     "postgresImage": "postgres:17.11-bookworm",
     "mysqlImage": "mysql:8.4.13"
+  },
+  "ai": {
+    "springAiOllama": "2.0.2",
+    "provider": "optional-local-ollama",
+    "ollama": "0.40.15",
+    "ollamaImage": "ollama/ollama:0.40.15@sha256:0e59999e0e8f9fd4e704bd788a89b7e4cad399367fb1365f8c102ac662288761",
+    "model": "qwen3:1.7b",
+    "modelDigest": "8f68893c685c3ddff2aa3fffce2aa60a30bb2da65ca488b61fff134a4d1730e7",
+    "quantization": "Q4_K_M",
+    "defaultEnabled": false,
+    "realModelEvidence": "warm synthetic tool proposal only; cold timed out at 30s; full source-backed model orchestration not yet verified"
   }
 }
