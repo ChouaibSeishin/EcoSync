@@ -1,5 +1,21 @@
 # Backlog
 
+## Phase 6 ordered checkpoints (authorized 2026-11-07)
+
+Exact base `7afd445dd2690505d8da2a1e421dc941d66823ad`, branch `codex/phase-6-llm-cross-system-chat`. The following implementation checkpoints are delivered; live/browser/final-head verification is recorded separately in [Phase 6 verification](docs/development/PHASE_6_VERIFICATION.md). Historical earlier acceptance records below are preserved.
+
+| Checkpoint | Delivered behavior and acceptance evidence |
+|---|---|
+| P6-A/B | ADR 0014, official compatibility/advisory review, resolved Spring AI 2.0.2 graph, optional digest-pinned local model experiment |
+| P6-C | V6 tenant/owner conversations, ordered messages, idempotency, archive, cancellation and restart fencing |
+| P6-D/E | Fresh per-user capability catalog, central proposal validation, existing MCP transports, 30-second/eight-call shared budget and bounded evidence |
+| P6-F/G | Exact evidence references, derivation lineage, BigDecimal arithmetic, verified canonical sources and byte-preserved unique approved mappings 1.0.0 |
+| P6-H | Untrusted prompts/results, structural final-answer validation, current-grant history filtering and injection/identity/URL/SQL rejection tests |
+| P6-I/J | Persistent React chat, provider/test-double labels, actual source-backed development examples and provenance |
+| P6-K/L | PostgreSQL authority tests, live MCP/source-counter races, real browsers, AI-disabled persistence, dedicated sixth CI job and exact remote-head review |
+
+Phase 7 general mapping management and Phase 9 scientific evaluation are not started. No merge/default/history change is authorized.
+
 ## Phase 5 ordered checkpoints (authorized 2026-11-05)
 
 Base: `ec310f8c25b4778396bdc5f698f3ef7253967401`, final Phase 4 run 41814237164. Historical application acceptance below is unchanged. P5-A through P5-I passed the evidence in [Phase 5 verification](docs/development/PHASE_5_VERIFICATION.md). P5-J application acceptance passed all five jobs in run 42018755865; the later documentation/guard commit requires its own final-head run, reported at handoff.

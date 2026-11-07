@@ -1,6 +1,6 @@
 # Ecosync AI
 
-A controlled workspace for connecting heterogeneous systems and, in later phases, answering questions with traceable evidence.
+A controlled workspace for connecting heterogeneous systems and answering questions with traceable source evidence.
 
 Research: **AI-Driven Interoperability: Exploring the Role of Large Language Models and the Model Context Protocol in Digital Ecosystem Integration.**
 
@@ -8,9 +8,15 @@ Research: **AI-Driven Interoperability: Exploring the Role of Large Language Mod
 
 Phase 1 provides secure Spring MVC/PostgreSQL identity and a React workspace. Phase 2 adds independent PostgreSQL, MySQL and Supplier REST fixtures. Phase 3 adds governed native MCP registration and manual invocation. Phase 4 adds dynamic database connectors through a private managed gateway. **Phase 5 adds dynamic REST connectors:** import a supported JSON OpenAPI 3.0/3.1 contract, explicitly approve GET operations, test/activate and invoke through a separate private MCP gateway. Supplier and the independent Partner Directory use the same generic workflow; no source-specific orchestrator adapter is needed.
 
-Application acceptance: `4c5c7404fedfc1abe1e1a1d99b40e02441e437b0`, [five-job run 42018755865](https://github.com/ChouaibSeishin/EcoSync/actions/runs/42018755865), all successful. Final documentation/guard commit verification is separately recorded in the final handoff; this application run does not prove a newer head. See [current status](PROJECT_STATUS.md) and [Phase 5 acceptance](docs/development/PHASE_5_ACCEPTANCE.md). LLM/chat and deployment automation remain future phases.
+Application acceptance: `4c5c7404fedfc1abe1e1a1d99b40e02441e437b0`, [five-job run 42018755865](https://github.com/ChouaibSeishin/EcoSync/actions/runs/42018755865), all successful. Final documentation/guard commit verification is separately recorded in the final handoff; this application run does not prove a newer head. See [current status](PROJECT_STATUS.md) and [Phase 5 acceptance](docs/development/PHASE_5_ACCEPTANCE.md). This is historical Phase 5 application evidence. Current Phase 6 verification is recorded separately below.
 
-The repository is intentionally [public](https://github.com/ChouaibSeishin/EcoSync) (rechecked 2026-11-05). Current branch: `codex/phase-5-dynamic-rest-connectors`, exact base `ec310f8c25b4778396bdc5f698f3ef7253967401`. Previous branches and the Phase 0 default are preserved.
+The repository is intentionally [public](https://github.com/ChouaibSeishin/EcoSync) (rechecked 2026-11-05). Current branch: `codex/phase-6-llm-cross-system-chat`, exact Phase 5 base `7afd445dd2690505d8da2a1e421dc941d66823ad`. Previous branches and the Phase 0 default are preserved.
+
+## Phase 6 controlled chat
+
+Persistent owner-scoped conversations, a contextual capability catalog over native/database/REST MCP, independently validated model tool proposals, explicit seeded relationships, exact evidence-based arithmetic, partial results and source provenance are implemented. Every query shares a 30-second deadline and eight-call budget. AI defaults off; the optional pinned local Ollama provider never pulls a model automatically. The explicit verification adapter is labeled as a test double. See [architecture](docs/architecture/CHAT_ORCHESTRATION.md), [security](docs/architecture/AI_SECURITY.md), [setup and exact commands](docs/development/AI_LOCAL_SETUP.md), and [current acceptance/evidence](docs/development/PHASE_6_ACCEPTANCE.md). Final six-job remote-head verification remains required until recorded there. Phase 7 has not started.
+
+For an already initialized Phase 5 stack: `node scripts/init-chat-demo.mjs`, then `node scripts/start-chat.mjs` (AI disabled). Optional model setup and verification commands are in the setup guide. [Open chat](http://127.0.0.1:5173/chat).
 
 ## Run locally
 
@@ -18,7 +24,7 @@ Requires Java 21 (Temurin 21.0.13+9), Node 24.22.2/npm 11.19.1 and Docker with L
 
 ```powershell
 # The default branch still contains Phase 0; select the implementation branch.
-git clone --branch codex/phase-5-dynamic-rest-connectors https://github.com/ChouaibSeishin/EcoSync.git
+git clone --branch codex/phase-6-llm-cross-system-chat https://github.com/ChouaibSeishin/EcoSync.git
 Set-Location EcoSync
 Push-Location backend
 ./mvnw.cmd -B -ntp verify
