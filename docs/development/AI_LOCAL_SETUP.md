@@ -42,6 +42,7 @@ docker compose -f infra/docker/ai.compose.yaml exec -T ollama ollama pull qwen3:
 node scripts/warm-local-model.mjs
 node scripts/verify-local-model.mjs
 node scripts/start-chat.mjs --model
+node scripts/verify-chat-local-model.mjs --run-real-model
 ```
 
 Warm-up is an explicit operator setup action with no source data, outside any user query. It never increases the 30-second chat deadline. The initial cold synthetic compatibility request timed out at 30 seconds; a warm request proposed the exact tool/arguments in 11,758 ms. That proves structured tool-call compatibility only. Full source-backed real-model behavior and multi-round latency must be recorded separately. The application fails honestly when the model cannot finish within budget.
@@ -80,3 +81,7 @@ After restart, incomplete turns are INTERRUPTED; retry as a new request. A trans
 Thirty-second queries, eight calls, six default model rounds, 16 KiB evidence, 64 KiB context and 4,000-character input are operator-controlled safe limits; clients cannot increase them. Evidence/schema limits can reject legitimate large responses. Free-form factual synthesis, fuzzy matching, arbitrary joins, writes, general mapping management and scientific evaluation are outside this phase. [Security and residual risks](../architecture/AI_SECURITY.md), [architecture](../architecture/CHAT_ORCHESTRATION.md), [verification](PHASE_6_VERIFICATION.md).
 
 A controlled stop/start may give a source container a different IP. The gateway intentionally pins the complete DNS address set. Recovery requires an operator gateway restart followed by normal inspect/approve/test/activate; do not weaken destination rules to bypass pinning.
+
+The optional application smoke explicitly creates a temporary USER fixture with only the Partner search grant, then disables the identity and restores any grant it introduced. It records actual Spring AI/MCP/source status separately. A timeout or invalid model response is retained as failure, never relabeled as successful reasoning.
+
+Native MCP bridge clients expire after five idle minutes. The registry now reconnects and rediscovers metadata at admission before a single protected invocation; this is not a retry of a business read. Revoked revisions remain denied.
